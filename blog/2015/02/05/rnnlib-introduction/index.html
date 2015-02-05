@@ -5,12 +5,13 @@
 <!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
 <head>
   <meta charset="utf-8">
-  <title>Blog Archive - Formula Coding</title>
+  <title>RNNLIB: Introduction - Formula Coding</title>
   <meta name="author" content="Wantee Wang">
 
   
-  <meta name="description" content="Blog Archive 2015 RNNLIB: Introduction
-Feb 05 2015 posted in neural network Recent Posts RNNLIB: Introduction GitHub Repos Status updating... @ &hellip;">
+  <meta name="description" content="RNNLIB is a recurrent neural network library for sequence learning problems,
+which is written by Alex Graves. In this paper,
+Graves proposed the CTC( &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -19,7 +20,7 @@ Feb 05 2015 posted in neural network Recent Posts RNNLIB: Introduction GitHub Re
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
   
-  <link rel="canonical" href="http://wantee.github.io/blog/archives/">
+  <link rel="canonical" href="http://wantee.github.io/blog/2015/02/05/rnnlib-introduction/">
   <link href="/favicon.png" rel="icon">
   <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
   <link href="/atom.xml" rel="alternate" title="Formula Coding" type="application/atom+xml">
@@ -75,36 +76,96 @@ Feb 05 2015 posted in neural network Recent Posts RNNLIB: Introduction GitHub Re
   <div id="main">
     <div id="content">
       <div>
-<article role="article">
+<article class="hentry" role="article">
   
   <header>
-    <h1 class="entry-title">Blog Archive</h1>
+    
+      <h1 class="entry-title">RNNLIB: Introduction</h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+<time class='entry-date' datetime='2015-02-05T16:02:28+08:00'><span class='date'><span class='date-month'>Feb</span> <span class='date-day'>5</span><span class='date-suffix'>th</span>, <span class='date-year'>2015</span></span> <span class='time'>4:02 pm</span></time>
+        
+      </p>
     
   </header>
-  
-  <div id="blog-archives">
 
 
+<div class="entry-content"><p>RNNLIB is a recurrent neural network library for sequence learning problems,
+which is written by <a href="http://www.cs.toronto.edu/~graves/">Alex Graves</a>.</p>
 
-  
-  <h2>2015</h2>
+<p>In <a href="http://www6.in.tum.de/pub/Main/Publications/Graves2006a.pdf">this paper</a>,
+Graves proposed the CTC(Connectionist Temporal Classification), 
+which allows the system to transcribe unsegmented sequence data. 
+The most exciting thing is that by training a deep bidirectional 
+LSTM network with CTC, it is possible to 
+perform automatic speech recognition in 
+an <a href="http://www.jmlr.org/proceedings/papers/v32/graves14.pdf">end-to-end fashion</a>, 
+i.e. without any human expertise.</p>
 
-<article>
-  
-<h1><a href="/blog/2015/02/05/rnnlib-introduction/">RNNLIB: Introduction</a></h1>
-<time datetime="2015-02-05T16:02:28+08:00" pubdate><span class='month'>Feb</span> <span class='day'>05</span> <span class='year'>2015</span></time>
+<p>RNNLIB covers all the theories in Graves’s paper, including:</p>
 
-<footer>
-  <span class="categories">posted in <a class='category' href='/blog/categories/neural-network/'>neural network</a></span>
-</footer>
+<ul>
+  <li>Bidirectional Long Short-Term Memory</li>
+  <li>Connectionist Temporal Classification</li>
+  <li>Multidimensional Recurrent Neural Networks</li>
+</ul>
 
-
-</article>
+<p>I will try to explain the codes in RNNLIB in following posts.</p>
 
 </div>
 
+
+  <footer>
+    <p class="meta">
+      
   
+
+<span class="byline author vcard">Posted by <span class="fn">Wantee Wang</span></span>
+
+      
+
+
+
+
+<time class='entry-date' datetime='2015-02-05T16:02:28+08:00'><span class='date'><span class='date-month'>Feb</span> <span class='date-day'>5</span><span class='date-suffix'>th</span>, <span class='date-year'>2015</span></span> <span class='time'>4:02 pm</span></time>
+      
+
+<span class="categories">
+  
+    <a class='category' href='/blog/categories/neural-network/'>neural network</a>
+  
+</span>
+
+
+    </p>
+    
+      <div class="sharing">
+  
+  <a href="//twitter.com/share" class="twitter-share-button" data-url="http://wantee.github.io/blog/2015/02/05/rnnlib-introduction/" data-via="" data-counturl="http://wantee.github.io/blog/2015/02/05/rnnlib-introduction/" >Tweet</a>
+  
+  
+  
+</div>
+
+    
+    <p class="meta">
+      
+      
+    </p>
+  </footer>
 </article>
+
+  <section>
+    <h1>Comments</h1>
+    <div id="disqus_thread" aria-live="polite"><noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+</div>
+  </section>
 
 </div>
 
@@ -173,7 +234,10 @@ Feb 05 2015 posted in neural network Recent Posts RNNLIB: Introduction GitHub Re
       var disqus_shortname = 'wantee';
       
         
-        var disqus_script = 'count.js';
+        // var disqus_developer = 1;
+        var disqus_identifier = 'http://wantee.github.io/blog/2015/02/05/rnnlib-introduction/';
+        var disqus_url = 'http://wantee.github.io/blog/2015/02/05/rnnlib-introduction/';
+        var disqus_script = 'embed.js';
       
     (function () {
       var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
