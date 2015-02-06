@@ -76,10 +76,10 @@ S_i(\mathbf{u})
 = S_i(\hat{\mathbf{u}})  
 \end{equation}$$ 
 
-thus, in order to avoid overflow when calculating exp, 
-we can replace $u_k$ with $\hat{u}_k=u_k-c$.
+thus, in order to avoid overflow when calculating exponentials[^1], 
+we can replace $u_k$ with $\hat{u}\_k=u\_k-c$. Typically, $c$ is set to $u\_{max}$.
 
-In RNNLIB, $$c=\frac{u_{max}+u_{min}}{2}$$.
+In RNNLIB, $$c=\frac{u\_{max}+u\_{min}}{2}$$.
 
 ## Backpropagating
 
@@ -122,3 +122,6 @@ Finally, we reach equation \eqref{eq:error_u_res}.
 
 In this way, softmax operation can be implemented to be a standalone layer.
 
+[^1]: Strictly speaking, this converts overflow into underflow. 
+      Underflow is no problem, because that rounds off to zero, which is a well-behaved floating point number.
+      otherwise, it will be Infinity or NaN. see [this article](http://lingpipe-blog.com/2009/03/17/softmax-without-overflow/) for details.
