@@ -214,10 +214,10 @@ S_i(\mathbf{u})
 = S_i(\hat{\mathbf{u}})  
 \end{equation}</script>
 
-<p>thus, in order to avoid overflow when calculating exp, 
-we can replace $u_k$ with $\hat{u}_k=u_k-c$.</p>
+<p>thus, in order to avoid overflow when calculating exponentials<sup id="fnref:1"><a href="#fn:1" class="footnote">1</a></sup>, 
+we can replace $u_k$ with $\hat{u}_k=u_k-c$. Typically, $c$ is set to $u_{max}$.</p>
 
-<p>In RNNLIB, <script type="math/tex">c=\frac{u_{max}+u_{min}}{2}</script>.</p>
+<p>In RNNLIB, <script type="math/tex">c=\frac{u\_{max}+u\_{min}}{2}</script>.</p>
 
 <h2 id="backpropagating">Backpropagating</h2>
 
@@ -261,6 +261,15 @@ we can write,</p>
 
 <p>In this way, softmax operation can be implemented to be a standalone layer.</p>
 
+<div class="footnotes">
+  <ol>
+    <li id="fn:1">
+      <p>Strictly speaking, this converts overflow into underflow. 
+  Underflow is no problem, because that rounds off to zero, which is a well-behaved floating point number.
+  otherwise, it will be Infinity or NaN. see <a href="http://lingpipe-blog.com/2009/03/17/softmax-without-overflow/">this article</a> for details. <a href="#fnref:1" class="reversefootnote">&#8617;</a></p>
+    </li>
+  </ol>
+</div>
 </div>
   
   
