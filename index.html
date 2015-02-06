@@ -9,8 +9,7 @@
   <meta name="author" content="Wantee Wang">
 
   
-  <meta name="description" content="I used to think that, in order to get the proper gradient, we have to take derivative of $\log$ of softmax with respect to weights. However,
-the &hellip;">
+  <meta name="description" content="Fundamentals List of Symbols Formulas Layers in RNNLIB Forward Pass Backpropagating I used to think that, in order to get the proper gradient, we &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -99,7 +98,18 @@ the &hellip;">
   </header>
 
 
-  <div class="entry-content"><p>I used to think that, in order to get the proper gradient, we have to take derivative of 
+  <div class="entry-content"><ul id="markdown-toc">
+  <li><a href="#fundamentals">Fundamentals</a>    <ul>
+      <li><a href="#list-of-symbols">List of Symbols</a></li>
+      <li><a href="#formulas">Formulas</a></li>
+      <li><a href="#layers-in-rnnlib">Layers in RNNLIB</a></li>
+    </ul>
+  </li>
+  <li><a href="#forward-pass">Forward Pass</a></li>
+  <li><a href="#backpropagating">Backpropagating</a></li>
+</ul>
+
+<p>I used to think that, in order to get the proper gradient, we have to take derivative of 
 $\log$ of softmax with respect to weights. However,
 the RNNLIB shows that we can actually factorize the network into single layers. In this post, 
 we look into the Softmax Layer.</p>
@@ -300,6 +310,10 @@ i.e. without any human expertise.</p>
 </ul>
 
 <p>I will try to explain the codes in RNNLIB in following posts.</p>
+
+<ol>
+  <li><a href="/blog/2015/02/05/rnnlib-softmax-layer/">RNNLIB: Softmax Layer</a> </li>
+</ol>
 
 </div>
   
