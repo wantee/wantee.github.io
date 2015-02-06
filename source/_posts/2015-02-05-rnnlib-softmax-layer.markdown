@@ -6,6 +6,9 @@ comments: true
 categories: [Neural Network]
 ---
 
+* list element with functor item
+{:toc}
+
 I used to think that, in order to get the proper gradient, we have to take derivative of 
 $\log$ of softmax with respect to weights. However,
 the RNNLIB shows that we can actually factorize the network into single layers. In this post, 

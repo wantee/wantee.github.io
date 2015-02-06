@@ -26,3 +26,5 @@ RNNLIB covers all the theories in Graves's paper, including:
 
 I will try to explain the codes in RNNLIB in following posts.
 
+1. {% post_link 2015-02-05-rnnlib-softmax-layer %} 
+
