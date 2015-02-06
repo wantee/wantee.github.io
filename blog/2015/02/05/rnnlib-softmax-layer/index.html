@@ -5,13 +5,12 @@
 <!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
 <head>
   <meta charset="utf-8">
-  <title>RNNLIB: Introduction - Formula Coding</title>
+  <title>RNNLIB: Softmax Layer - Formula Coding</title>
   <meta name="author" content="Wantee Wang">
 
   
-  <meta name="description" content="RNNLIB is a recurrent neural network library for sequence learning problems,
-which is written by Alex Graves. In this paper,
-Graves proposed the CTC( &hellip;">
+  <meta name="description" content="I used to think that, in order to get the proper gradient, we have to take derivative of $\log$ of softmax with respect to weights. However,
+the &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -20,7 +19,7 @@ Graves proposed the CTC( &hellip;">
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
   
-  <link rel="canonical" href="http://wantee.github.io/blog/2015/02/05/rnnlib-introduction/">
+  <link rel="canonical" href="http://wantee.github.io/blog/2015/02/05/rnnlib-softmax-layer/">
   <link href="/favicon.png" rel="icon">
   <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
   <link href="/stylesheets/data-table.css" media="screen, projection" rel="stylesheet" type="text/css">
@@ -81,7 +80,7 @@ Graves proposed the CTC( &hellip;">
   
   <header>
     
-      <h1 class="entry-title">RNNLIB: Introduction</h1>
+      <h1 class="entry-title">RNNLIB: Softmax Layer</h1>
     
     
       <p class="meta">
@@ -90,34 +89,164 @@ Graves proposed the CTC( &hellip;">
 
 
 
-<time class='entry-date' datetime='2015-02-05T16:02:28+08:00'><span class='date'><span class='date-month'>Feb</span> <span class='date-day'>5</span><span class='date-suffix'>th</span>, <span class='date-year'>2015</span></span> <span class='time'>4:02 pm</span></time>
+<time class='entry-date' datetime='2015-02-05T21:08:17+08:00'><span class='date'><span class='date-month'>Feb</span> <span class='date-day'>5</span><span class='date-suffix'>th</span>, <span class='date-year'>2015</span></span> <span class='time'>9:08 pm</span></time>
         
       </p>
     
   </header>
 
 
-<div class="entry-content"><p>RNNLIB is a recurrent neural network library for sequence learning problems,
-which is written by <a href="http://www.cs.toronto.edu/~graves/">Alex Graves</a>.</p>
+<div class="entry-content"><p>I used to think that, in order to get the proper gradient, we have to take derivative of 
+$\log$ of softmax with respect to weights. However,
+the RNNLIB shows that we can actually factorize the network into single layers. In this post, 
+we look into the Softmax Layer.</p>
 
-<p>In <a href="http://www6.in.tum.de/pub/Main/Publications/Graves2006a.pdf">this paper</a>,
-Graves proposed the CTC(Connectionist Temporal Classification), 
-which allows the system to transcribe unsegmented sequence data. 
-The most exciting thing is that by training a deep bidirectional 
-LSTM network with CTC, it is possible to 
-perform automatic speech recognition in 
-an <a href="http://www.jmlr.org/proceedings/papers/v32/graves14.pdf">end-to-end fashion</a>, 
-i.e. without any human expertise.</p>
+<h2 id="fundamentals">Fundamentals</h2>
 
-<p>RNNLIB covers all the theories in Graves’s paper, including:</p>
+<h3 id="list-of-symbols">List of Symbols</h3>
 
-<ul>
-  <li>Bidirectional Long Short-Term Memory</li>
-  <li>Connectionist Temporal Classification</li>
-  <li>Multidimensional Recurrent Neural Networks</li>
-</ul>
+<table>
+  <thead>
+    <tr>
+      <th>Symbol</th>
+      <th>Meaning</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>$J$</td>
+      <td>cost function</td>
+    </tr>
+    <tr>
+      <td>$y_k$</td>
+      <td>activation of a neon</td>
+    </tr>
+    <tr>
+      <td>$u_k$</td>
+      <td>input of a neon</td>
+    </tr>
+    <tr>
+      <td>$S_i(\mathbf{u})$</td>
+      <td>softmax function, $i$th value for a vector $\mathbf{u}$</td>
+    </tr>
+  </tbody>
+</table>
 
-<p>I will try to explain the codes in RNNLIB in following posts.</p>
+<h3 id="formulas">Formulas</h3>
+
+<p>Softmax of a vector $\mathbf{u}$ is defined as,</p>
+
+<script type="math/tex; mode=display">\begin{equation} \label{eq:softmax}
+S_i(\mathbf{u}) = \frac{e^{u_i}}{\sum_k{e^{u_k}}} = y_i
+\end{equation}</script>
+
+<p>the derivative of softmax is,</p>
+
+<script type="math/tex; mode=display">% <![CDATA[
+\begin{equation} \label{eq:softmax_dev}
+    \frac{\partial S_i(\mathbf{u})}{\partial u_j} =
+    \frac{\partial y_i}{\partial u_j} = 
+          \left\{\begin{array}{ll}
+                        y_i(1-y_i) & i = j \\
+                        -y_iy_j & i \neq j 
+                \end{array} \right.
+\end{equation} %]]></script>
+
+<h3 id="layers-in-rnnlib">Layers in RNNLIB</h3>
+
+<p>Every layer in RNNLIB consists of input and output sides,
+both sides contain activations and errors.
+Their relations with terms in math are shown in following table,</p>
+
+<table>
+  <thead>
+    <tr>
+      <th>Variable</th>
+      <th style="text-align: center">Term</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><em>inputActivations</em></td>
+      <td style="text-align: center">$u_k$</td>
+    </tr>
+    <tr>
+      <td><em>outputActivations</em></td>
+      <td style="text-align: center">$y_k$</td>
+    </tr>
+    <tr>
+      <td><em>inputErrors</em></td>
+      <td style="text-align: center">$\frac{\partial J}{\partial u_k}$</td>
+    </tr>
+    <tr>
+      <td><em>outputErrors</em></td>
+      <td style="text-align: center">$\frac{\partial J}{\partial y_k}$</td>
+    </tr>
+  </tbody>
+</table>
+
+<h2 id="forward-pass">Forward Pass</h2>
+
+<p>Forward pass computes $y_k$ from $u_k$ using equation 
+\eqref{eq:softmax}. There is a trick in the code, 
+we can call it the <em>safe</em> softmax.</p>
+
+<p>To understand it, consider dividing both numerator and denominator
+by $e^c$ in equation \eqref{eq:softmax}, </p>
+
+<script type="math/tex; mode=display">\begin{equation}
+S_i(\mathbf{u}) 
+= \frac{\frac{e^{u_i}}{e^{c}}}{\frac{\sum_k{e^{u_k}}}{e^c}} 
+= \frac{e^{u_i - c}}{\sum_k{e^{u_k - c}}} 
+= S_i(\hat{\mathbf{u}})  
+\end{equation}</script>
+
+<p>thus, in order to avoid overflow when calculating exp, 
+we can replace $u_k$ with $\hat{u}_k=u_k-c$.</p>
+
+<p>In RNNLIB, <script type="math/tex">c=\frac{u_{max}+u_{min}}{2}</script>.</p>
+
+<h2 id="backpropagating">Backpropagating</h2>
+
+<p>Backpropagation computes $\frac{\partial J}{\partial u_k}$ 
+from $\frac{\partial J}{\partial y_k}$.</p>
+
+<p>In RNNLIB, the result is</p>
+
+<script type="math/tex; mode=display">\begin{equation} \label{eq:error_u_res}
+\frac{\partial J}{\partial u_j} = y_j (\frac{\partial J}{\partial y_j} 
+- \langle \mathbf{y}, \frac{\partial J}{\partial \mathbf{y}} \rangle)
+\end{equation}</script>
+
+<p>where, $\langle \cdot \, , \cdot \rangle$ denotes inner product.</p>
+
+<p>To get the above equation, we first notice that variations in 
+$u_j$ give rise to variations in the error function $J$ 
+through variations in all $y_k$s. 
+Thus, according to the <a href="https://www.math.hmc.edu/calculus/tutorials/multichainrule/">Multivariable Chain Rules</a>,
+we can write,</p>
+
+<script type="math/tex; mode=display">\begin{equation} \label{eq:error_u}
+\frac{\partial J}{\partial u_j} = \sum_k{\frac{\partial J}{\partial y_k}\frac{\partial y_k}{\partial u_j}}
+\end{equation}</script>
+
+<p>Using equation \eqref{eq:softmax_dev} to replace $\frac{\partial y_k}{\partial u_j}$, we get,</p>
+
+<script type="math/tex; mode=display">% <![CDATA[
+\begin{equation} 
+\begin{split} 
+\frac{\partial J}{\partial u_j} &= y_j(1-y_j)\frac{\partial J}{\partial y_j} +
+\sum_{k: k\neq j}{-y_k y_j \frac{\partial J}{\partial y_k}} \\
+&= y_j(\frac{\partial J}{\partial y_j} -y_j \frac{\partial J}{\partial y_j} 
++ \sum_{k: k\neq j}{-y_k \frac{\partial J}{\partial y_k}}) \\
+&= y_j(\frac{\partial J}{\partial y_j} - \sum_{k}{y_k \frac{\partial J}{\partial y_k}}) \\
+&= y_j(\frac{\partial J}{\partial y_j} - \langle \mathbf{y}, \frac{\partial J}{\partial \mathbf{y}} \rangle)
+\end{split}
+\end{equation} %]]></script>
+
+<p>Finally, we reach equation \eqref{eq:error_u_res}.</p>
+
+<p>In this way, softmax operation can be implemented to be a standalone layer.</p>
 
 </div>
 
@@ -134,7 +263,7 @@ i.e. without any human expertise.</p>
 
 
 
-<time class='entry-date' datetime='2015-02-05T16:02:28+08:00'><span class='date'><span class='date-month'>Feb</span> <span class='date-day'>5</span><span class='date-suffix'>th</span>, <span class='date-year'>2015</span></span> <span class='time'>4:02 pm</span></time>
+<time class='entry-date' datetime='2015-02-05T21:08:17+08:00'><span class='date'><span class='date-month'>Feb</span> <span class='date-day'>5</span><span class='date-suffix'>th</span>, <span class='date-year'>2015</span></span> <span class='time'>9:08 pm</span></time>
       
 
 <span class="categories">
@@ -148,7 +277,7 @@ i.e. without any human expertise.</p>
     
       <div class="sharing">
   
-  <a href="//twitter.com/share" class="twitter-share-button" data-url="http://wantee.github.io/blog/2015/02/05/rnnlib-introduction/" data-via="" data-counturl="http://wantee.github.io/blog/2015/02/05/rnnlib-introduction/" >Tweet</a>
+  <a href="//twitter.com/share" class="twitter-share-button" data-url="http://wantee.github.io/blog/2015/02/05/rnnlib-softmax-layer/" data-via="" data-counturl="http://wantee.github.io/blog/2015/02/05/rnnlib-softmax-layer/" >Tweet</a>
   
   
   
@@ -157,8 +286,8 @@ i.e. without any human expertise.</p>
     
     <p class="meta">
       
+        <a class="basic-alignment left" href="/blog/2015/02/05/rnnlib-introduction/" title="Previous Post: RNNLIB: Introduction">&laquo; RNNLIB: Introduction</a>
       
-        <a class="basic-alignment right" href="/blog/2015/02/05/rnnlib-softmax-layer/" title="Next Post: RNNLIB: Softmax Layer">RNNLIB: Softmax Layer &raquo;</a>
       
     </p>
   </footer>
@@ -242,8 +371,8 @@ i.e. without any human expertise.</p>
       
         
         // var disqus_developer = 1;
-        var disqus_identifier = 'http://wantee.github.io/blog/2015/02/05/rnnlib-introduction/';
-        var disqus_url = 'http://wantee.github.io/blog/2015/02/05/rnnlib-introduction/';
+        var disqus_identifier = 'http://wantee.github.io/blog/2015/02/05/rnnlib-softmax-layer/';
+        var disqus_url = 'http://wantee.github.io/blog/2015/02/05/rnnlib-softmax-layer/';
         var disqus_script = 'embed.js';
       
     (function () {

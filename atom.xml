@@ -4,7 +4,7 @@
   <title><![CDATA[Formula Coding]]></title>
   <link href="http://wantee.github.io/atom.xml" rel="self"/>
   <link href="http://wantee.github.io/"/>
-  <updated>2015-02-05T18:14:36+08:00</updated>
+  <updated>2015-02-06T11:16:38+08:00</updated>
   <id>http://wantee.github.io/</id>
   <author>
     <name><![CDATA[Wantee Wang]]></name>
@@ -12,6 +12,166 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[RNNLIB: Softmax Layer]]></title>
+    <link href="http://wantee.github.io/blog/2015/02/05/rnnlib-softmax-layer/"/>
+    <updated>2015-02-05T21:08:17+08:00</updated>
+    <id>http://wantee.github.io/blog/2015/02/05/rnnlib-softmax-layer</id>
+    <content type="html"><![CDATA[<p>I used to think that, in order to get the proper gradient, we have to take derivative of 
+$\log$ of softmax with respect to weights. However,
+the RNNLIB shows that we can actually factorize the network into single layers. In this post, 
+we look into the Softmax Layer.</p>
+
+<h2 id="fundamentals">Fundamentals</h2>
+
+<h3 id="list-of-symbols">List of Symbols</h3>
+
+<table>
+  <thead>
+    <tr>
+      <th>Symbol</th>
+      <th>Meaning</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>$J$</td>
+      <td>cost function</td>
+    </tr>
+    <tr>
+      <td>$y_k$</td>
+      <td>activation of a neon</td>
+    </tr>
+    <tr>
+      <td>$u_k$</td>
+      <td>input of a neon</td>
+    </tr>
+    <tr>
+      <td>$S_i(\mathbf{u})$</td>
+      <td>softmax function, $i$th value for a vector $\mathbf{u}$</td>
+    </tr>
+  </tbody>
+</table>
+
+<h3 id="formulas">Formulas</h3>
+
+<p>Softmax of a vector $\mathbf{u}$ is defined as,</p>
+
+<script type="math/tex; mode=display">\begin{equation} \label{eq:softmax}
+S_i(\mathbf{u}) = \frac{e^{u_i}}{\sum_k{e^{u_k}}} = y_i
+\end{equation}</script>
+
+<p>the derivative of softmax is,</p>
+
+<script type="math/tex; mode=display">% &lt;![CDATA[
+\begin{equation} \label{eq:softmax_dev}
+    \frac{\partial S_i(\mathbf{u})}{\partial u_j} =
+    \frac{\partial y_i}{\partial u_j} = 
+          \left\{\begin{array}{ll}
+                        y_i(1-y_i) & i = j \\
+                        -y_iy_j & i \neq j 
+                \end{array} \right.
+\end{equation} %]]&gt;</script>
+
+<h3 id="layers-in-rnnlib">Layers in RNNLIB</h3>
+
+<p>Every layer in RNNLIB consists of input and output sides,
+both sides contain activations and errors.
+Their relations with terms in math are shown in following table,</p>
+
+<table>
+  <thead>
+    <tr>
+      <th>Variable</th>
+      <th style="text-align: center">Term</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><em>inputActivations</em></td>
+      <td style="text-align: center">$u_k$</td>
+    </tr>
+    <tr>
+      <td><em>outputActivations</em></td>
+      <td style="text-align: center">$y_k$</td>
+    </tr>
+    <tr>
+      <td><em>inputErrors</em></td>
+      <td style="text-align: center">$\frac{\partial J}{\partial u_k}$</td>
+    </tr>
+    <tr>
+      <td><em>outputErrors</em></td>
+      <td style="text-align: center">$\frac{\partial J}{\partial y_k}$</td>
+    </tr>
+  </tbody>
+</table>
+
+<h2 id="forward-pass">Forward Pass</h2>
+
+<p>Forward pass computes $y_k$ from $u_k$ using equation 
+\eqref{eq:softmax}. There is a trick in the code, 
+we can call it the <em>safe</em> softmax.</p>
+
+<p>To understand it, consider dividing both numerator and denominator
+by $e^c$ in equation \eqref{eq:softmax}, </p>
+
+<script type="math/tex; mode=display">\begin{equation}
+S_i(\mathbf{u}) 
+= \frac{\frac{e^{u_i}}{e^{c}}}{\frac{\sum_k{e^{u_k}}}{e^c}} 
+= \frac{e^{u_i - c}}{\sum_k{e^{u_k - c}}} 
+= S_i(\hat{\mathbf{u}})  
+\end{equation}</script>
+
+<p>thus, in order to avoid overflow when calculating exp, 
+we can replace $u_k$ with $\hat{u}_k=u_k-c$.</p>
+
+<p>In RNNLIB, <script type="math/tex">c=\frac{u_{max}+u_{min}}{2}</script>.</p>
+
+<h2 id="backpropagating">Backpropagating</h2>
+
+<p>Backpropagation computes $\frac{\partial J}{\partial u_k}$ 
+from $\frac{\partial J}{\partial y_k}$.</p>
+
+<p>In RNNLIB, the result is</p>
+
+<script type="math/tex; mode=display">\begin{equation} \label{eq:error_u_res}
+\frac{\partial J}{\partial u_j} = y_j (\frac{\partial J}{\partial y_j} 
+- \langle \mathbf{y}, \frac{\partial J}{\partial \mathbf{y}} \rangle)
+\end{equation}</script>
+
+<p>where, $\langle \cdot \, , \cdot \rangle$ denotes inner product.</p>
+
+<p>To get the above equation, we first notice that variations in 
+$u_j$ give rise to variations in the error function $J$ 
+through variations in all $y_k$s. 
+Thus, according to the <a href="https://www.math.hmc.edu/calculus/tutorials/multichainrule/">Multivariable Chain Rules</a>,
+we can write,</p>
+
+<script type="math/tex; mode=display">\begin{equation} \label{eq:error_u}
+\frac{\partial J}{\partial u_j} = \sum_k{\frac{\partial J}{\partial y_k}\frac{\partial y_k}{\partial u_j}}
+\end{equation}</script>
+
+<p>Using equation \eqref{eq:softmax_dev} to replace $\frac{\partial y_k}{\partial u_j}$, we get,</p>
+
+<script type="math/tex; mode=display">% &lt;![CDATA[
+\begin{equation} 
+\begin{split} 
+\frac{\partial J}{\partial u_j} &= y_j(1-y_j)\frac{\partial J}{\partial y_j} +
+\sum_{k: k\neq j}{-y_k y_j \frac{\partial J}{\partial y_k}} \\
+&= y_j(\frac{\partial J}{\partial y_j} -y_j \frac{\partial J}{\partial y_j} 
++ \sum_{k: k\neq j}{-y_k \frac{\partial J}{\partial y_k}}) \\
+&= y_j(\frac{\partial J}{\partial y_j} - \sum_{k}{y_k \frac{\partial J}{\partial y_k}}) \\
+&= y_j(\frac{\partial J}{\partial y_j} - \langle \mathbf{y}, \frac{\partial J}{\partial \mathbf{y}} \rangle)
+\end{split}
+\end{equation} %]]&gt;</script>
+
+<p>Finally, we reach equation \eqref{eq:error_u_res}.</p>
+
+<p>In this way, softmax operation can be implemented to be a standalone layer.</p>
+
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[RNNLIB: Introduction]]></title>
