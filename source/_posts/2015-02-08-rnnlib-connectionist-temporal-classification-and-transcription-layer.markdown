@@ -61,13 +61,12 @@ Following the notations in the paper, we first list the symbols.
 | $\mathbf{l} \in L^{\leq T}$ | label sequence or *labelling* |
 | $\mathcal{B}:L'^{T} \mapsto L^{\leq T}$ | map from path to labelling |
 | $\mathbf{l}\_{a\mathord{:}b}$ | sub-sequence of $\mathbf{l}$ from $a$th to $b$th labels |
-| $\mathbf{l}$ | modified label sequence, with blanks added to the beginning and the end and inserted between every pair of labels in $\mathbf{l}$ |
+| $\mathbf{l}'$ | modified label sequence, with blanks added to the beginning and the end and inserted between every pair of labels in $\mathbf{l}$ |
 | $\alpha\_t(s)$ | forward variable, the total probability of $\mathbf{l}\_{1:s}$ at time $t$ |
 | $\beta\_t(s) $ | backward variable, the total probability of $\mathbf{l}\_{s:\|\mathbf{l}'\|}$ at time $t$ |
-| $\hat{\alpha}\_t(s)$ | normalised forward variable |
-| $\hat{\beta}\_t(s) $ | normalised backward variable |
+| $\tilde{\beta}\_t(s) $ | backward variable, the total probability of $\mathbf{l}\_{s:\|\mathbf{l}'\|}$ start at time $t+1$ |
 | $O^{ML}(S,\mathcal{N}\_{w})$ | maximum likelihood objective function |
-| $\delta\_{kk'}$ | [Kronecker delta]() |
+| $\delta\_{kk'}$ | [Kronecker delta](http://en.wikipedia.org/wiki/Kronecker_delta) |
 
 
 ### Training Procedure
@@ -154,8 +153,8 @@ $$\begin{equation} \label{eq:labelling_drv}
 \frac{\partial p(\mathbf{l}|\mathbf{x})}{\partial y_k^t} 
   &= \sum_{s \in lab(\mathbf{l}, k)}{\frac{\partial p(\pi|\mathbf{x})}{\partial y_k^t}} \\
   &= \sum_{s \in lab(\mathbf{l}, k)}{\frac{\partial \prod_{t'=1}^{T}{y_{\pi_{t'}}^{t'}}}{\partial y_k^t}} \\
-  &= \sum_{s \in lab(\mathbf{l}, k)}{\frac{\partial y_k^t\prod_{t' \neq s}{y_{\pi_{t'}}^{t'}}}{\partial y_k^t}} \\
-  &= \sum_{s \in lab(\mathbf{l}, k)}{\prod_{t' \neq s}{y_{\pi_{t'}}^{t'}}} \\
+  &= \sum_{s \in lab(\mathbf{l}, k)}{\frac{\partial y_k^t\prod_{t' \neq t}{y_{\pi_{t'}}^{t'}}}{\partial y_k^t}} \\
+  &= \sum_{s \in lab(\mathbf{l}, k)}{\prod_{t' \neq t}{y_{\pi_{t'}}^{t'}}} \\
   &= \frac{1}{ {y^t_k}^2 } \sum_{s \in lab(\mathbf{l}, k)}{\alpha_t(s)\beta_t(s)}
 \end{split} 
 \end{equation}$$
@@ -239,7 +238,7 @@ Similarly, the backward variables can be initalisd as,
 $$
 \begin{split} 
 \beta_T(|\mathbf{l}'|) &= y_b^T \\ 
-\beta_T(|\mathbf{l}'| - 1) &= y_{|\mathbf{l}|}^T \\ 
+\beta_T(|\mathbf{l}'| - 1) &= y_{\mathbf{l}_{|\mathbf{l}|}}^T \\ 
 \beta_T(s) &= 0, \forall s< |\mathbf{l}'| - 1\\                               
 \end{split} 
 $$
@@ -271,7 +270,7 @@ But backward variables are in another form, given in Graves' [Dissertation](www6
 Consider backward variable started from time $t+1$,
 
 $$\begin{equation} \label{eq:bwd_new}
-\tilde\beta_t(s) = \sum_{\pi \in L^{T}:\mathcal{B}(\pi_{t+1\mathord{:}T})=\mathbf{l}_{s\mathord{:} |\mathbf{l}'|}}
+\tilde\beta_t(s) = \sum_{\pi \in L^{T}:\mathcal{B}(\pi_{t\mathord{:}T})=\mathbf{l}_{s\mathord{:} |\mathbf{l}'|}}
    {\prod_{t'=t+1}^{T}{y^{t'}_{\pi_{t'}}}}
 \end{equation}$$
 
@@ -297,6 +296,8 @@ $$ \begin{equation} \label{eq:beta_new}
                 y_{\mathbf{l}'_s}^{t+1}\tilde\beta_{t+1}(s) + y_{\mathbf{l}'_{s+1}}^{t+1}\tilde\beta_{t+1}(s+1) + y_{\mathbf{l}'_{s+2}}^{t+1}\tilde\beta_{t+1}(s+2) & otherwise
                 \end{array} \right.
 \end{equation}$$
+
+Noting that, if $\mathbf{l}'\_s \neq blank$, then $\mathbf{l}'\_{s+1}$ must be $blank$.
 
 And the gradient for output \eqref{eq:grad} becomes,
 
