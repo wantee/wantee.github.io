@@ -213,7 +213,7 @@ into output sequence(e.g. words).</p>
       <td>sub-sequence of $\mathbf{l}$ from $a$th to $b$th labels</td>
     </tr>
     <tr>
-      <td>$\mathbf{l}$</td>
+      <td>$\mathbf{l}’$</td>
       <td>modified label sequence, with blanks added to the beginning and the end and inserted between every pair of labels in $\mathbf{l}$</td>
     </tr>
     <tr>
@@ -225,12 +225,8 @@ into output sequence(e.g. words).</p>
       <td>backward variable, the total probability of $\mathbf{l}_{s:|\mathbf{l}’|}$ at time $t$</td>
     </tr>
     <tr>
-      <td>$\hat{\alpha}_t(s)$</td>
-      <td>normalised forward variable</td>
-    </tr>
-    <tr>
-      <td>$\hat{\beta}_t(s) $</td>
-      <td>normalised backward variable</td>
+      <td>$\tilde{\beta}_t(s) $</td>
+      <td>backward variable, the total probability of $\mathbf{l}_{s:|\mathbf{l}’|}$ start at time $t+1$</td>
     </tr>
     <tr>
       <td>$O^{ML}(S,\mathcal{N}_{w})$</td>
@@ -238,7 +234,7 @@ into output sequence(e.g. words).</p>
     </tr>
     <tr>
       <td>$\delta_{kk’}$</td>
-      <td><a href="">Kronecker delta</a></td>
+      <td><a href="http://en.wikipedia.org/wiki/Kronecker_delta">Kronecker delta</a></td>
     </tr>
   </tbody>
 </table>
@@ -328,8 +324,8 @@ which may be empty. We then differentiate \eqref{eq:labelling_all} to get,</p>
 \frac{\partial p(\mathbf{l}|\mathbf{x})}{\partial y_k^t} 
   &= \sum_{s \in lab(\mathbf{l}, k)}{\frac{\partial p(\pi|\mathbf{x})}{\partial y_k^t}} \\
   &= \sum_{s \in lab(\mathbf{l}, k)}{\frac{\partial \prod_{t'=1}^{T}{y_{\pi_{t'}}^{t'}}}{\partial y_k^t}} \\
-  &= \sum_{s \in lab(\mathbf{l}, k)}{\frac{\partial y_k^t\prod_{t' \neq s}{y_{\pi_{t'}}^{t'}}}{\partial y_k^t}} \\
-  &= \sum_{s \in lab(\mathbf{l}, k)}{\prod_{t' \neq s}{y_{\pi_{t'}}^{t'}}} \\
+  &= \sum_{s \in lab(\mathbf{l}, k)}{\frac{\partial y_k^t\prod_{t' \neq t}{y_{\pi_{t'}}^{t'}}}{\partial y_k^t}} \\
+  &= \sum_{s \in lab(\mathbf{l}, k)}{\prod_{t' \neq t}{y_{\pi_{t'}}^{t'}}} \\
   &= \frac{1}{ {y^t_k}^2 } \sum_{s \in lab(\mathbf{l}, k)}{\alpha_t(s)\beta_t(s)}
 \end{split} 
 \end{equation} %]]></script>
@@ -417,7 +413,7 @@ because these variables correspond to states for which there are not enough time
 
 \begin{split} 
 \beta_T(|\mathbf{l}'|) &= y_b^T \\ 
-\beta_T(|\mathbf{l}'| - 1) &= y_{|\mathbf{l}|}^T \\ 
+\beta_T(|\mathbf{l}'| - 1) &= y_{\mathbf{l}_{|\mathbf{l}|}}^T \\ 
 \beta_T(s) &= 0, \forall s< |\mathbf{l}'| - 1\\                               
 \end{split} 
  %]]></script>
@@ -450,7 +446,7 @@ Forward variables are got using \eqref{eq:alpha}. </p>
 Consider backward variable started from time $t+1$,</p>
 
 <script type="math/tex; mode=display">\begin{equation} \label{eq:bwd_new}
-\tilde\beta_t(s) = \sum_{\pi \in L^{T}:\mathcal{B}(\pi_{t+1\mathord{:}T})=\mathbf{l}_{s\mathord{:} |\mathbf{l}'|}}
+\tilde\beta_t(s) = \sum_{\pi \in L^{T}:\mathcal{B}(\pi_{t\mathord{:}T})=\mathbf{l}_{s\mathord{:} |\mathbf{l}'|}}
    {\prod_{t'=t+1}^{T}{y^{t'}_{\pi_{t'}}}}
 \end{equation}</script>
 
@@ -478,6 +474,8 @@ Consider backward variable started from time $t+1$,</p>
                 y_{\mathbf{l}'_s}^{t+1}\tilde\beta_{t+1}(s) + y_{\mathbf{l}'_{s+1}}^{t+1}\tilde\beta_{t+1}(s+1) + y_{\mathbf{l}'_{s+2}}^{t+1}\tilde\beta_{t+1}(s+2) & otherwise
                 \end{array} \right.
 \end{equation} %]]></script>
+
+<p>Noting that, if $\mathbf{l}’_s \neq blank$, then $\mathbf{l}’_{s+1}$ must be $blank$.</p>
 
 <p>And the gradient for output \eqref{eq:grad} becomes,</p>
 
@@ -750,6 +748,7 @@ i.e. without any human expertise.</p>
 
 <ol>
   <li><a href="/blog/2015/02/05/rnnlib-softmax-layer/">RNNLIB: Softmax Layer</a> </li>
+  <li><a href="/blog/2015/02/08/rnnlib-connectionist-temporal-classification-and-transcription-layer/">RNNLIB: Connectionist Temporal Classification and Transcription Layer</a></li>
 </ol>
 
 </div>
