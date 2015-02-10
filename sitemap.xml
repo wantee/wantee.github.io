@@ -1,6 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.sitemaps.org/schemas/sitemap/0.9 http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd" xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
+    <loc>http://wantee.github.io/blog/2015/02/08/rnnlib-connectionist-temporal-classification-and-transcription-layer/</loc>
+    <lastmod>2015-02-08T16:56:40+08:00</lastmod>
+  </url>
+  <url>
     <loc>http://wantee.github.io/blog/2015/02/05/rnnlib-softmax-layer/</loc>
     <lastmod>2015-02-05T21:08:17+08:00</lastmod>
   </url>
@@ -10,10 +14,10 @@
   </url>
   <url>
     <loc>http://wantee.github.io/blog/archives/</loc>
-    <lastmod>2015-02-06T17:22:16+08:00</lastmod>
+    <lastmod>2015-02-10T11:17:25+08:00</lastmod>
   </url>
   <url>
     <loc>http://wantee.github.io/</loc>
-    <lastmod>2015-02-06T17:22:16+08:00</lastmod>
+    <lastmod>2015-02-10T11:17:25+08:00</lastmod>
   </url>
 </urlset>
