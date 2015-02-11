@@ -610,7 +610,7 @@ extending $\mathbf{p}^*$ to $\mathbf{p} = \mathbf{p}^* + k$ with label $k \in L$
 \end{equation}</script>
 
 <script type="math/tex; mode=display"> \begin{equation}
-    p(\mathbf{p}\dotsc \mid \mathbf{x}) = \sum_{t=1}^{T}{\gamma_{t}(\mathbf{p}_n)} -( \gamma_1(\mathbf{p}_n) + \sum_{t=2}^{T}{y^t_k \gamma_{t-1}(\mathbf{p}_n)}) - p(\mathbf{p} \mid \mathbf{x})
+    p(\mathbf{p}\dotsc \mid \mathbf{x}) = \gamma_1(\mathbf{p}_n) + \sum_{t=2}^{T}{(\gamma_{t}(\mathbf{p}_n) - y^t_k \gamma_{t-1}(\mathbf{p}_n))} - p(\mathbf{p} \mid \mathbf{x})
 \end{equation}</script>
 
 <p>The extension procedure start from $\mathbf{p}^* = \emptyset$, with initialisation,</p>
