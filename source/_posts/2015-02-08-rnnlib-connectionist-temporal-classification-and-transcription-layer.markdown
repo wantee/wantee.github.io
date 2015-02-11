@@ -29,7 +29,9 @@ In the traditional neural network recipe, we independently model the input seque
 in each time-step or frame. This can be referred as *framewise classification*.
 [Kadous](http://citeseerx.ist.psu.edu/viewdoc/download?doi=10.1.1.67.8007&rep=rep1&type=pdf) 
 extends the classification paradigm to multivariate time series, and 
-names it as *temporal classification*.
+names it as *temporal classification*. Mathematically, 
+framewise classification models the distribution over output sequences of the *same* length as the input sequence,
+nevertheless,  temporal classification models the distribution over output sequences of *all* lengths.
 With this, we do not have to label every time step in training data set.
 
 Combining RNN and temporal classification, Graves proposes the *connectionist temporal classification*.
@@ -318,3 +320,135 @@ To wrap up, CTC using a forward-backward algorithm to efficiently compute the RN
 corresponding to a new ML objective function. With these errors, 
 we can use any traditional gradient methods to train the network.
  
+## Decoding
+
+Once the network is trained, we would use it to transcribe some unknown input sequence $\mathbf{x}$.
+*Decoding* is referred to the task of finding the best labelling $\mathbf{l}^*$,
+
+$$\begin{equation}
+\mathbf{l}^* = \mathop{\arg\!\max}\limits_{\mathbf{l}}{\,p(\mathbf{l}|\mathbf{x})}
+\end{equation}$$
+
+There are two approximate algorithms.
+
+### Best Path Decoding
+
+This method assumes that the most probable path corresponding to the most probable labelling,
+
+$$\begin{equation}
+\mathbf{l}^* \approx \mathcal{B}(\pi^*)
+\end{equation}$$
+
+where $\pi^* = \mathop{\arg\\!\max}\limits\_{\pi}{\,p(\pi\|\mathbf{x})}$.
+
+This is trivial to compute, simply by concatenating the most active outputs at every time step.
+But it can lead to errors, because that the map $\mathcal{B}$ is a many-to-one map.
+
+### Prefix Search Decoding
+
+By modifying the forward variables, this method can efficiently calculate the probabilities of successive extensions of labelling prefixes.
+
+Prefix search decoding is a best-first search through the tree of labellings, 
+where the children of a given labelling are those that share it as a prefix. 
+At each step the search extends the labelling whose children have the largest cumulative probability (see below figure).
+
+{% img center /images/posts/CTC-prefix-decoding.png Prefix Search Decoding %} 
+
+Each node either ends ($e$) or extends the prefix at its parent node. 
+The number above an extending node is the total probability of all labellings beginning with that prefix. 
+The number above an end node is the probability of the single labelling ending at its parent. 
+At every iteration the extensions of the most probable remaining prefix are explored. 
+Search ends when a single labelling (here $XY$) is more probable than any remaining prefix.
+
+To extend the tree, we need to compute extended path probability, which can be computed in a recursive way.
+Let $\gamma\_t(\mathbf{p}\_n)$ be the probability of the network outputting prefix $\mathbf{p}$
+by time $t$ such that a non-blank label is output at $t$. Similarly, let $\gamma\_t(\mathbf{p}\_b)$ be the
+probability of the network outputting prefix $\mathbf{p}$ by time $t$ such that the blank label is output at $t$. i.e.
+
+$$\begin{equation}
+\gamma_t(\mathbf{p}_n) = p(\pi_{1\mathord{:}t} : \mathcal{B}(\pi_{1\mathord{:}t}) = \mathbf{p}, \pi_t = \mathbf{p}_{ | \mathbf{p} | } \mid \mathbf{x})
+\end{equation}$$
+
+$$\begin{equation}
+\gamma_t(\mathbf{p}_b) = p(\pi_{1\mathord{:}t} : \mathcal{B}(\pi_{1\mathord{:}t}) = \mathbf{p}, \pi_t = blank \mid \mathbf{x})
+\end{equation}$$
+
+Then for a length $T$ input sequence $\mathbf{x}$, $p(\mathbf{p} \| \mathbf{x}) = \gamma\_T(\mathbf{p}\_n) + \gamma\_T(\mathbf{p}\_b)$.
+Also let $p(\mathbf{p}\dots \| \mathbf{x})$ be the cumulative probability of all labelling not equal to $\mathbf{p}$ 
+of which $$\mathbf{p}$$ is a prefix
+
+$$\begin{equation}
+p(\mathbf{p} \dotsc \mid \mathbf{x}) = \sum_{\mathbf{l} \neq \emptyset}{p(\mathbf{p} + \mathbf{l} \mid \mathbf{x})}
+\end{equation}$$
+
+where $\emptyset$ is the empty sequence. $p(\mathbf{p} \dotsc \mid \mathbf{x})$ is the value for extending node
+in the prefix tree, and $p(\mathbf{p} \mid \mathbf{x})$ is the value for end node.
+
+In fact, by definition, relation between $\gamma$ and $\alpha$ is,
+
+$$ \begin{equation}
+    \gamma_t(\mathbf{p}_n) = \alpha_t(2 | \mathbf{p} |)
+\end{equation}$$
+
+$$ \begin{equation}
+    \gamma_t(\mathbf{p}_b) = \alpha_t(2 | \mathbf{p} | + 1)
+\end{equation}$$
+
+Using \eqref{eq:alpha}, we get the recursion for $\gamma\_t(\mathbf{p}\_n)$ given $\gamma\_{t-1}(\mathbf{p}\_n)$,
+extending $\mathbf{p}^\*$ to $\mathbf{p} = \mathbf{p}^\* + k$ with label $k \in L$,
+
+$$
+\begin{split} 
+\gamma_1(\mathbf{p}_n) &= \left\{\begin{array}{ll}
+            y_k^1 & \mathbf{p}^* = \emptyset \\
+            0 & \text{otherwise}
+                \end{array} \right. \\ 
+\gamma_1(\mathbf{p}_b) &= 0 \\                              
+\end{split} 
+$$
+
+$$ \begin{equation}
+    \gamma_t(\mathbf{p}_n) = \left\{\begin{array}{ll}
+                y_k^t(\gamma_{t-1}(\mathbf{p}^*_b) + \gamma_{t-1}(\mathbf{p}_n)) & \mathbf{p}^* \,\,\text{ends in} \,\, k \\
+                y_k^t(\gamma_{t-1}(\mathbf{p}^*_b) + \gamma_{t-1}(\mathbf{p}^*_n) + \gamma_{t-1}(\mathbf{p}_n))  & otherwise
+                \end{array} \right.
+\end{equation}$$
+
+$$ \begin{equation}
+    \gamma_t(\mathbf{p}_b) = y_b^t(\gamma_{t-1}(\mathbf{p}_b) + \gamma_{t-1}(\mathbf{p}_n))
+\end{equation}$$
+
+And calculating the path probabilities,
+
+$$ \begin{equation}
+    p(\mathbf{p} \mid \mathbf{x}) = \gamma_{T}(\mathbf{p}_b) + \gamma_{T}(\mathbf{p}_n)
+\end{equation}$$
+
+$$ \begin{equation}
+    p(\mathbf{p}\dotsc \mid \mathbf{x}) = \gamma_1(\mathbf{p}_n) + \sum_{t=2}^{T}{(\gamma_{t}(\mathbf{p}_n) - y^t_k \gamma_{t-1}(\mathbf{p}_n))} - p(\mathbf{p} \mid \mathbf{x})
+\end{equation}$$
+
+The extension procedure start from $\mathbf{p}^* = \emptyset$, with initialisation,
+
+$$
+\begin{split} 
+1 \leq t \leq T & \left\{\begin{array}{ll}
+            \gamma_t(\emptyset_n) &= 0 \\
+            \gamma_t(\emptyset_b) &= \prod_{t'=1}^{t}y_b^{t'} \\
+                \end{array} \right. \\ 
+p(\emptyset \mid \mathbf{x}) &= \gamma_T(\emptyset_b) \\ 
+p(\emptyset \dotsc \mid \mathbf{x}) &= 1 - p(\emptyset \mid \mathbf{x}) \\                             
+\end{split} 
+$$
+
+and iterate util $\max\_p p(\mathbf{p} \dotsc \mid \mathbf{x}) < \max\_{p'} p(\mathbf{p}' \mid \mathbf{x})$.
+
+Given enough time, prefix search decoding always finds the most probable labelling. 
+However, the maximum number of prefixes it must expand grows exponentially with the input sequence length. 
+We need further heuristic.
+
+Observing that the outputs of a trained CTC network tend to form a series of spikes separated by strongly predicted blanks, 
+we can divide the output sequence into sections that are very likely to begin and end with a blank. 
+We can do this by choosing boundary points where the probability of observing a blank label is above a certain threshold, 
+then apply the above algorithm to each section individually and concatenate these to get the final transcription.
+
