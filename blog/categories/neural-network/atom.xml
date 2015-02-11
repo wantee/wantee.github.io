@@ -4,7 +4,7 @@
   <title><![CDATA[Category: Neural Network | Formula Coding]]></title>
   <link href="http://wantee.github.io/blog/categories/neural-network/atom.xml" rel="self"/>
   <link href="http://wantee.github.io/"/>
-  <updated>2015-02-10T11:57:48+08:00</updated>
+  <updated>2015-02-11T21:17:22+08:00</updated>
   <id>http://wantee.github.io/</id>
   <author>
     <name><![CDATA[Wantee Wang]]></name>
@@ -27,6 +27,11 @@
     </ul>
   </li>
   <li><a href="#the-implementation">The Implementation</a></li>
+  <li><a href="#decoding">Decoding</a>    <ul>
+      <li><a href="#best-path-decoding">Best Path Decoding</a></li>
+      <li><a href="#prefix-search-decoding">Prefix Search Decoding</a></li>
+    </ul>
+  </li>
 </ul>
 
 <p>CTC is the core concept make it possible to transcribe unsegmented sequence data.
@@ -49,7 +54,9 @@ The most common forms use neural network models. </p>
 in each time-step or frame. This can be referred as <em>framewise classification</em>.
 <a href="http://citeseerx.ist.psu.edu/viewdoc/download?doi=10.1.1.67.8007&amp;rep=rep1&amp;type=pdf">Kadous</a> 
 extends the classification paradigm to multivariate time series, and 
-names it as <em>temporal classification</em>.
+names it as <em>temporal classification</em>. Mathematically, 
+framewise classification models the distribution over output sequences of the <em>same</em> length as the input sequence,
+nevertheless,  temporal classification models the distribution over output sequences of <em>all</em> lengths.
 With this, we do not have to label every time step in training data set.</p>
 
 <p>Combining RNN and temporal classification, Graves proposes the <em>connectionist temporal classification</em>.</p>
@@ -415,6 +422,141 @@ p(\mathbf{z}|\mathbf{x}) = \sum_{s=1}^{|\mathbf{z}'|}{\alpha_t(s)\tilde\beta_t(s
 <p>To wrap up, CTC using a forward-backward algorithm to efficiently compute the RNN output errors, 
 corresponding to a new ML objective function. With these errors, 
 we can use any traditional gradient methods to train the network.</p>
+
+<h2 id="decoding">Decoding</h2>
+
+<p>Once the network is trained, we would use it to transcribe some unknown input sequence $\mathbf{x}$.
+<em>Decoding</em> is referred to the task of finding the best labelling $\mathbf{l}^*$,</p>
+
+<script type="math/tex; mode=display">\begin{equation}
+\mathbf{l}^* = \mathop{\arg\!\max}\limits_{\mathbf{l}}{\,p(\mathbf{l}|\mathbf{x})}
+\end{equation}</script>
+
+<p>There are two approximate algorithms.</p>
+
+<h3 id="best-path-decoding">Best Path Decoding</h3>
+
+<p>This method assumes that the most probable path corresponding to the most probable labelling,</p>
+
+<script type="math/tex; mode=display">\begin{equation}
+\mathbf{l}^* \approx \mathcal{B}(\pi^*)
+\end{equation}</script>
+
+<p>where $\pi^* = \mathop{\arg\!\max}\limits_{\pi}{\,p(\pi|\mathbf{x})}$.</p>
+
+<p>This is trivial to compute, simply by concatenating the most active outputs at every time step.
+But it can lead to errors, because that the map $\mathcal{B}$ is a many-to-one map.</p>
+
+<h3 id="prefix-search-decoding">Prefix Search Decoding</h3>
+
+<p>By modifying the forward variables, this method can efficiently calculate the probabilities of successive extensions of labelling prefixes.</p>
+
+<p>Prefix search decoding is a best-first search through the tree of labellings, 
+where the children of a given labelling are those that share it as a prefix. 
+At each step the search extends the labelling whose children have the largest cumulative probability (see below figure).</p>
+
+<p><img class="center" src="/images/posts/CTC-prefix-decoding.png" title="Prefix Search Decoding" > </p>
+
+<p>Each node either ends ($e$) or extends the prefix at its parent node. 
+The number above an extending node is the total probability of all labellings beginning with that prefix. 
+The number above an end node is the probability of the single labelling ending at its parent. 
+At every iteration the extensions of the most probable remaining prefix are explored. 
+Search ends when a single labelling (here $XY$) is more probable than any remaining prefix.</p>
+
+<p>To extend the tree, we need to compute extended path probability, which can be computed in a recursive way.
+Let $\gamma_t(\mathbf{p}_n)$ be the probability of the network outputting prefix $\mathbf{p}$
+by time $t$ such that a non-blank label is output at $t$. Similarly, let $\gamma_t(\mathbf{p}_b)$ be the
+probability of the network outputting prefix $\mathbf{p}$ by time $t$ such that the blank label is output at $t$. i.e.</p>
+
+<script type="math/tex; mode=display">\begin{equation}
+\gamma_t(\mathbf{p}_n) = p(\pi_{1\mathord{:}t} : \mathcal{B}(\pi_{1\mathord{:}t}) = \mathbf{p}, \pi_t = \mathbf{p}_{ | \mathbf{p} | } \mid \mathbf{x})
+\end{equation}</script>
+
+<script type="math/tex; mode=display">\begin{equation}
+\gamma_t(\mathbf{p}_b) = p(\pi_{1\mathord{:}t} : \mathcal{B}(\pi_{1\mathord{:}t}) = \mathbf{p}, \pi_t = blank \mid \mathbf{x})
+\end{equation}</script>
+
+<p>Then for a length $T$ input sequence $\mathbf{x}$, $p(\mathbf{p} | \mathbf{x}) = \gamma_T(\mathbf{p}_n) + \gamma_T(\mathbf{p}_b)$.
+Also let $p(\mathbf{p}\dots | \mathbf{x})$ be the cumulative probability of all labelling not equal to $\mathbf{p}$ 
+of which <script type="math/tex">\mathbf{p}</script> is a prefix</p>
+
+<script type="math/tex; mode=display">\begin{equation}
+p(\mathbf{p} \dotsc \mid \mathbf{x}) = \sum_{\mathbf{l} \neq \emptyset}{p(\mathbf{p} + \mathbf{l} \mid \mathbf{x})}
+\end{equation}</script>
+
+<p>where $\emptyset$ is the empty sequence. $p(\mathbf{p} \dotsc \mid \mathbf{x})$ is the value for extending node
+in the prefix tree, and $p(\mathbf{p} \mid \mathbf{x})$ is the value for end node.</p>
+
+<p>In fact, by definition, relation between $\gamma$ and $\alpha$ is,</p>
+
+<script type="math/tex; mode=display"> \begin{equation}
+    \gamma_t(\mathbf{p}_n) = \alpha_t(2 | \mathbf{p} |)
+\end{equation}</script>
+
+<script type="math/tex; mode=display"> \begin{equation}
+    \gamma_t(\mathbf{p}_b) = \alpha_t(2 | \mathbf{p} | + 1)
+\end{equation}</script>
+
+<p>Using \eqref{eq:alpha}, we get the recursion for $\gamma_t(\mathbf{p}_n)$ given $\gamma_{t-1}(\mathbf{p}_n)$,
+extending $\mathbf{p}^*$ to $\mathbf{p} = \mathbf{p}^* + k$ with label $k \in L$,</p>
+
+<script type="math/tex; mode=display">% &lt;![CDATA[
+
+\begin{split} 
+\gamma_1(\mathbf{p}_n) &= \left\{\begin{array}{ll}
+            y_k^1 & \mathbf{p}^* = \emptyset \\
+            0 & \text{otherwise}
+                \end{array} \right. \\ 
+\gamma_1(\mathbf{p}_b) &= 0 \\                              
+\end{split} 
+ %]]&gt;</script>
+
+<script type="math/tex; mode=display">% &lt;![CDATA[
+ \begin{equation}
+    \gamma_t(\mathbf{p}_n) = \left\{\begin{array}{ll}
+                y_k^t(\gamma_{t-1}(\mathbf{p}^*_b) + \gamma_{t-1}(\mathbf{p}_n)) & \mathbf{p}^* \,\,\text{ends in} \,\, k \\
+                y_k^t(\gamma_{t-1}(\mathbf{p}^*_b) + \gamma_{t-1}(\mathbf{p}^*_n) + \gamma_{t-1}(\mathbf{p}_n))  & otherwise
+                \end{array} \right.
+\end{equation} %]]&gt;</script>
+
+<script type="math/tex; mode=display"> \begin{equation}
+    \gamma_t(\mathbf{p}_b) = y_b^t(\gamma_{t-1}(\mathbf{p}_b) + \gamma_{t-1}(\mathbf{p}_n))
+\end{equation}</script>
+
+<p>And calculating the path probabilities,</p>
+
+<script type="math/tex; mode=display"> \begin{equation}
+    p(\mathbf{p} \mid \mathbf{x}) = \gamma_{T}(\mathbf{p}_b) + \gamma_{T}(\mathbf{p}_n)
+\end{equation}</script>
+
+<script type="math/tex; mode=display"> \begin{equation}
+    p(\mathbf{p}\dotsc \mid \mathbf{x}) = \sum_{t=1}^{T}{\gamma_{t}(\mathbf{p}_n)} -( \gamma_1(\mathbf{p}_n) + \sum_{t=2}^{T}{y^t_k \gamma_{t-1}(\mathbf{p}_n)}) - p(\mathbf{p} \mid \mathbf{x})
+\end{equation}</script>
+
+<p>The extension procedure start from $\mathbf{p}^* = \emptyset$, with initialisation,</p>
+
+<script type="math/tex; mode=display">% &lt;![CDATA[
+
+\begin{split} 
+1 \leq t \leq T & \left\{\begin{array}{ll}
+            \gamma_t(\emptyset_n) &= 0 \\
+            \gamma_t(\emptyset_b) &= \prod_{t'=1}^{t}y_b^{t'} \\
+                \end{array} \right. \\ 
+p(\emptyset \mid \mathbf{x}) &= \gamma_T(\emptyset_b) \\ 
+p(\emptyset \dotsc \mid \mathbf{x}) &= 1 - p(\emptyset \mid \mathbf{x}) \\                             
+\end{split} 
+ %]]&gt;</script>
+
+<p>and iterate util $\max_p p(\mathbf{p} \dotsc \mid \mathbf{x}) &lt; \max_{p’} p(\mathbf{p}’ \mid \mathbf{x})$.</p>
+
+<p>Given enough time, prefix search decoding always finds the most probable labelling. 
+However, the maximum number of prefixes it must expand grows exponentially with the input sequence length. 
+We need further heuristic.</p>
+
+<p>Observing that the outputs of a trained CTC network tend to form a series of spikes separated by strongly predicted blanks, 
+we can divide the output sequence into sections that are very likely to begin and end with a blank. 
+We can do this by choosing boundary points where the probability of observing a blank label is above a certain threshold, 
+then apply the above algorithm to each section individually and concatenate these to get the final transcription.</p>
 
 ]]></content>
   </entry>
