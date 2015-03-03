@@ -9,7 +9,7 @@
   <meta name="author" content="Wantee Wang">
 
   
-  <meta name="description" content="The Name The Theory List of Symbols Training Procedure The CTC Forward-Backward Algorithm The Implementation Decoding Best Path Decoding Prefix &hellip;">
+  <meta name="description" content="The Method Implementation in Kaldi Dropout is a regularisation technique for reducing over-fitting in large neural nets. Hinton proposes the method &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -76,6 +76,96 @@
     <div id="content">
       <div class="blog-index">
   
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2015/03/03/dropout-training/">Dropout Training</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+<time class='entry-date' datetime='2015-03-03T15:18:26+08:00'><span class='date'><span class='date-month'>Mar</span> <span class='date-day'>3</span><span class='date-suffix'>rd</span>, <span class='date-year'>2015</span></span> <span class='time'>3:18 pm</span></time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><ul id="markdown-toc">
+  <li><a href="#the-method">The Method</a></li>
+  <li><a href="#implementation-in-kaldi">Implementation in Kaldi</a></li>
+</ul>
+
+<p>Dropout is a regularisation technique for reducing over-fitting in large neural nets. Hinton proposes the method in <a href="http://arxiv.org/abs/1207.0580">this paper</a>
+Most materials is from <a href="http://www.cs.toronto.edu/~nitish/dropout/">Srivastava’s page</a>.</p>
+
+<p>It prevents overfitting and provides a way of approximately combining exponentially many different neural network architectures efficiently. The term “dropout” refers to dropping out units (hidden and visible) in a neural network.</p>
+
+<h2 id="the-method">The Method</h2>
+
+<p>There are 2 key points for dropout learning: </p>
+
+<ul>
+  <li>a) Dropping units while training; </li>
+  <li>b) Scaling weight while testing. </li>
+</ul>
+
+<p>As shown in following figure, where $p$ is the dropout retention rate.</p>
+
+<p><img class="center" src="/images/posts/Dropout.png" title="Dropout" /></p>
+
+<p>Units to be dropped is chosen in a random way. Note that dropping a unit out means temporarily removing it from the network, along with all its incoming and outgoing connections. Therefore we have to deal with it both during forward pass and backpropagation.</p>
+
+<p>Applying dropout to a neural network amounts to sampling a “thinned” network from it. A neural net with $n$ units, can be seen as a collection of $2^n$ possible thinned neural networks. For each presentation of each training case, a new thinned network is sampled and trained. </p>
+
+<p>At test time, the ideal way is to explicitly average the predictions from exponentially many thinned models, which is obviously not feasible. However the network with scaled weights gives a good approximation. </p>
+
+<p>The goal is that for any hidden unit the expected output (under the distribution used to drop units at training time) is the same as the actual output at test time.</p>
+
+<p>The expected output of a unit is </p>
+
+<script type="math/tex; mode=display">
+\mathbb{E}[\mathbf{y}_j] = \sum_i{p \mathbf{w}_{ji} \mathbf{x}_i}
+</script>
+
+<p>Therefore, by scaling down the weight used at test time, i.e. $\mathbf{w}’_{ji} = p\mathbf{w}_{ji}$, we can achieve the goal. This is the way used in the above paper and shown in the figure.</p>
+
+<p>Another way is to scale up the output at training time to the same magnitude as test time, i.e. $\mathbf{y}’_{j} = \frac{1}{p}\mathbf{y}_j$.</p>
+
+<h2 id="implementation-in-kaldi">Implementation in Kaldi</h2>
+
+<p>Both Karel’s and Dan’s implementation have the Dropout codes, with some differences.</p>
+
+<p>Karel’s code(<code>src/nnet/nnet-activation.h:Dorpout</code>) uses the scale-up method to get the expected output. Dropping out is implemented during forward pass and by storing the dropped out units using a 0/1 vector, the back-propagated derivative can be set properly.</p>
+
+<p>Dan’s code(<code>src/nnet2/net-component.cc:DropoutComponent</code>) use a clever way to avoid storing the dropping units. While backpropagation, we can get the input error $\mathbf{e_i}$ from output error $\mathbf{e_i}$ by</p>
+
+<script type="math/tex; mode=display">
+\mathbf{e_i} = \frac{\mathbf{a_o}}{\mathbf{a_i}} \mathbf{e_o}
+</script>
+
+<p>where $\mathbf{a_i}$ and $\mathbf{a_o}$ is the activation of input and output for Dropout component. Elements in $\mathbf{a_o}$ is the equal to that in $\mathbf{a_i}$ except the dropping ones, which is zero.</p>
+
+<p>Dan’s code seems to not care about the scaling problem, we can scale the final network before testing using the scale-down method. However, there is another form of scale in Dan’s code, instead of set the output of dropping unit to zero, we just scale the output value by a factor $\alpha$. To get a proper scaled version of output, we’d like to scale all the units besides the dropping ones and make it satisfy that the expected scale factor should be 1, i.e.,</p>
+
+<script type="math/tex; mode=display">
+p \alpha + (1-p)\beta = 1
+</script>
+
+<p>Therefore, we can get the factor of other units $\beta = \frac{1-p\alpha}{1-p}$.</p>
+</div>
+  
+  
+
+
+    </article>
   
   
     <article>
@@ -911,6 +1001,10 @@ i.e. without any human expertise.</p>
     <section>
   <h1>Recent Posts</h1>
   <ul id="recent_posts">
+    
+      <li class="post">
+        <a href="/blog/2015/03/03/dropout-training/">Dropout Training</a>
+      </li>
     
       <li class="post">
         <a href="/blog/2015/02/08/rnnlib-connectionist-temporal-classification-and-transcription-layer/">RNNLIB: Connectionist Temporal Classification and Transcription Layer</a>

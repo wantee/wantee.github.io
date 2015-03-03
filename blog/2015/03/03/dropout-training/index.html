@@ -5,13 +5,11 @@
 <!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
 <head>
   <meta charset="utf-8">
-  <title>RNNLIB: Introduction - Formula Coding</title>
+  <title>Dropout Training - Formula Coding</title>
   <meta name="author" content="Wantee Wang">
 
   
-  <meta name="description" content="RNNLIB is a recurrent neural network library for sequence learning problems,
-which is written by Alex Graves. In this paper,
-Graves proposed the CTC( &hellip;">
+  <meta name="description" content="The Method Implementation in Kaldi Dropout is a regularisation technique for reducing over-fitting in large neural nets. Hinton proposes the method &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -20,7 +18,7 @@ Graves proposed the CTC( &hellip;">
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
   
-  <link rel="canonical" href="http://wantee.github.io/blog/2015/02/05/rnnlib-introduction/">
+  <link rel="canonical" href="http://wantee.github.io/blog/2015/03/03/dropout-training/">
   <link href="/favicon.png" rel="icon">
   <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
   <link href="/stylesheets/data-table.css" media="screen, projection" rel="stylesheet" type="text/css">
@@ -81,7 +79,7 @@ Graves proposed the CTC( &hellip;">
   
   <header>
     
-      <h1 class="entry-title">RNNLIB: Introduction</h1>
+      <h1 class="entry-title">Dropout Training</h1>
     
     
       <p class="meta">
@@ -90,40 +88,75 @@ Graves proposed the CTC( &hellip;">
 
 
 
-<time class='entry-date' datetime='2015-02-05T16:02:28+08:00'><span class='date'><span class='date-month'>Feb</span> <span class='date-day'>5</span><span class='date-suffix'>th</span>, <span class='date-year'>2015</span></span> <span class='time'>4:02 pm</span></time>
+<time class='entry-date' datetime='2015-03-03T15:18:26+08:00'><span class='date'><span class='date-month'>Mar</span> <span class='date-day'>3</span><span class='date-suffix'>rd</span>, <span class='date-year'>2015</span></span> <span class='time'>3:18 pm</span></time>
         
       </p>
     
   </header>
 
 
-<div class="entry-content"><p>RNNLIB is a recurrent neural network library for sequence learning problems,
-which is written by <a href="http://www.cs.toronto.edu/~graves/">Alex Graves</a>.</p>
-
-<p>In <a href="http://www6.in.tum.de/pub/Main/Publications/Graves2006a.pdf">this paper</a>,
-Graves proposed the CTC(Connectionist Temporal Classification), 
-which allows the system to transcribe unsegmented sequence data. 
-The most exciting thing is that by training a deep bidirectional 
-LSTM network with CTC, it is possible to 
-perform automatic speech recognition in 
-an <a href="http://www.jmlr.org/proceedings/papers/v32/graves14.pdf">end-to-end fashion</a>, 
-i.e. without any human expertise.</p>
-
-<p>RNNLIB covers all the theories in Graves’s paper, including:</p>
-
-<ul>
-  <li>Bidirectional Long Short-Term Memory</li>
-  <li>Connectionist Temporal Classification</li>
-  <li>Multidimensional Recurrent Neural Networks</li>
+<div class="entry-content"><ul id="markdown-toc">
+  <li><a href="#the-method">The Method</a></li>
+  <li><a href="#implementation-in-kaldi">Implementation in Kaldi</a></li>
 </ul>
 
-<p>I will try to explain the codes in RNNLIB in following posts.</p>
+<p>Dropout is a regularisation technique for reducing over-fitting in large neural nets. Hinton proposes the method in <a href="http://arxiv.org/abs/1207.0580">this paper</a>
+Most materials is from <a href="http://www.cs.toronto.edu/~nitish/dropout/">Srivastava’s page</a>.</p>
 
-<ol>
-  <li><a href="/blog/2015/02/05/rnnlib-softmax-layer/">RNNLIB: Softmax Layer</a> </li>
-  <li><a href="/blog/2015/02/08/rnnlib-connectionist-temporal-classification-and-transcription-layer/">RNNLIB: Connectionist Temporal Classification and Transcription Layer</a></li>
-</ol>
+<p>It prevents overfitting and provides a way of approximately combining exponentially many different neural network architectures efficiently. The term “dropout” refers to dropping out units (hidden and visible) in a neural network.</p>
 
+<h2 id="the-method">The Method</h2>
+
+<p>There are 2 key points for dropout learning: </p>
+
+<ul>
+  <li>a) Dropping units while training; </li>
+  <li>b) Scaling weight while testing. </li>
+</ul>
+
+<p>As shown in following figure, where $p$ is the dropout retention rate.</p>
+
+<p><img class="center" src="/images/posts/Dropout.png" title="Dropout" /></p>
+
+<p>Units to be dropped is chosen in a random way. Note that dropping a unit out means temporarily removing it from the network, along with all its incoming and outgoing connections. Therefore we have to deal with it both during forward pass and backpropagation.</p>
+
+<p>Applying dropout to a neural network amounts to sampling a “thinned” network from it. A neural net with $n$ units, can be seen as a collection of $2^n$ possible thinned neural networks. For each presentation of each training case, a new thinned network is sampled and trained. </p>
+
+<p>At test time, the ideal way is to explicitly average the predictions from exponentially many thinned models, which is obviously not feasible. However the network with scaled weights gives a good approximation. </p>
+
+<p>The goal is that for any hidden unit the expected output (under the distribution used to drop units at training time) is the same as the actual output at test time.</p>
+
+<p>The expected output of a unit is </p>
+
+<script type="math/tex; mode=display">
+\mathbb{E}[\mathbf{y}_j] = \sum_i{p \mathbf{w}_{ji} \mathbf{x}_i}
+</script>
+
+<p>Therefore, by scaling down the weight used at test time, i.e. $\mathbf{w}’_{ji} = p\mathbf{w}_{ji}$, we can achieve the goal. This is the way used in the above paper and shown in the figure.</p>
+
+<p>Another way is to scale up the output at training time to the same magnitude as test time, i.e. $\mathbf{y}’_{j} = \frac{1}{p}\mathbf{y}_j$.</p>
+
+<h2 id="implementation-in-kaldi">Implementation in Kaldi</h2>
+
+<p>Both Karel’s and Dan’s implementation have the Dropout codes, with some differences.</p>
+
+<p>Karel’s code(<code>src/nnet/nnet-activation.h:Dorpout</code>) uses the scale-up method to get the expected output. Dropping out is implemented during forward pass and by storing the dropped out units using a 0/1 vector, the back-propagated derivative can be set properly.</p>
+
+<p>Dan’s code(<code>src/nnet2/net-component.cc:DropoutComponent</code>) use a clever way to avoid storing the dropping units. While backpropagation, we can get the input error $\mathbf{e_i}$ from output error $\mathbf{e_i}$ by</p>
+
+<script type="math/tex; mode=display">
+\mathbf{e_i} = \frac{\mathbf{a_o}}{\mathbf{a_i}} \mathbf{e_o}
+</script>
+
+<p>where $\mathbf{a_i}$ and $\mathbf{a_o}$ is the activation of input and output for Dropout component. Elements in $\mathbf{a_o}$ is the equal to that in $\mathbf{a_i}$ except the dropping ones, which is zero.</p>
+
+<p>Dan’s code seems to not care about the scaling problem, we can scale the final network before testing using the scale-down method. However, there is another form of scale in Dan’s code, instead of set the output of dropping unit to zero, we just scale the output value by a factor $\alpha$. To get a proper scaled version of output, we’d like to scale all the units besides the dropping ones and make it satisfy that the expected scale factor should be 1, i.e.,</p>
+
+<script type="math/tex; mode=display">
+p \alpha + (1-p)\beta = 1
+</script>
+
+<p>Therefore, we can get the factor of other units $\beta = \frac{1-p\alpha}{1-p}$.</p>
 </div>
 
 
@@ -139,7 +172,7 @@ i.e. without any human expertise.</p>
 
 
 
-<time class='entry-date' datetime='2015-02-05T16:02:28+08:00'><span class='date'><span class='date-month'>Feb</span> <span class='date-day'>5</span><span class='date-suffix'>th</span>, <span class='date-year'>2015</span></span> <span class='time'>4:02 pm</span></time>
+<time class='entry-date' datetime='2015-03-03T15:18:26+08:00'><span class='date'><span class='date-month'>Mar</span> <span class='date-day'>3</span><span class='date-suffix'>rd</span>, <span class='date-year'>2015</span></span> <span class='time'>3:18 pm</span></time>
       
 
 <span class="categories">
@@ -153,7 +186,7 @@ i.e. without any human expertise.</p>
     
       <div class="sharing">
   
-  <a href="//twitter.com/share" class="twitter-share-button" data-url="http://wantee.github.io/blog/2015/02/05/rnnlib-introduction/" data-via="" data-counturl="http://wantee.github.io/blog/2015/02/05/rnnlib-introduction/" >Tweet</a>
+  <a href="//twitter.com/share" class="twitter-share-button" data-url="http://wantee.github.io/blog/2015/03/03/dropout-training/" data-via="" data-counturl="http://wantee.github.io/blog/2015/03/03/dropout-training/" >Tweet</a>
   
   
   
@@ -162,8 +195,8 @@ i.e. without any human expertise.</p>
     
     <p class="meta">
       
+        <a class="basic-alignment left" href="/blog/2015/02/08/rnnlib-connectionist-temporal-classification-and-transcription-layer/" title="Previous Post: RNNLIB: Connectionist Temporal Classification and Transcription Layer">&laquo; RNNLIB: Connectionist Temporal Classification and Transcription Layer</a>
       
-        <a class="basic-alignment right" href="/blog/2015/02/05/rnnlib-softmax-layer/" title="Next Post: RNNLIB: Softmax Layer">RNNLIB: Softmax Layer &raquo;</a>
       
     </p>
   </footer>
@@ -255,8 +288,8 @@ i.e. without any human expertise.</p>
       
         
         // var disqus_developer = 1;
-        var disqus_identifier = 'http://wantee.github.io/blog/2015/02/05/rnnlib-introduction/';
-        var disqus_url = 'http://wantee.github.io/blog/2015/02/05/rnnlib-introduction/';
+        var disqus_identifier = 'http://wantee.github.io/blog/2015/03/03/dropout-training/';
+        var disqus_url = 'http://wantee.github.io/blog/2015/03/03/dropout-training/';
         var disqus_script = 'embed.js';
       
     (function () {
