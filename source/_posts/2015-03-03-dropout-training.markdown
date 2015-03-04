@@ -19,9 +19,9 @@ It prevents overfitting and provides a way of approximately combining exponentia
 There are 2 key points for dropout learning: 
 
 * a) Dropping units while training; 
-* b) Scaling weight while testing. 
+* b) Scaling output to be matched between training and testing. 
 
-As shown in following figure, where $p$ is the dropout retention rate.
+As shown in following figure, where $p$ is the dropout retention.
 
 {% img center /images/posts/Dropout.png Dropout %}
 
@@ -29,19 +29,28 @@ Units to be dropped is chosen in a random way. Note that dropping a unit out mea
 
 Applying dropout to a neural network amounts to sampling a “thinned” network from it. A neural net with $n$ units, can be seen as a collection of $2^n$ possible thinned neural networks. For each presentation of each training case, a new thinned network is sampled and trained. 
 
-At test time, the ideal way is to explicitly average the predictions from exponentially many thinned models, which is obviously not feasible. However the network with scaled weights gives a good approximation. 
+At test time, the ideal way is to explicitly average the predictions from exponentially many thinned models, which is obviously not feasible. The intuitive way is using a single neural net without dropout at test time, however this needs some approximation. 
 
 The goal is that for any hidden unit the expected output (under the distribution used to drop units at training time) is the same as the actual output at test time.
 
-The expected output of a unit is 
+Let $\mathbb{M}$ be the set of all thinned networks, and $\mathcal{M}$ be the network without dropout used in test time, i.e. the network containing all units. Note that, weights for all networks in $\mathbb{M}$ are shared and are equal to the ones in $\mathcal{M}$. Thus the expected output of a unit $j$ is 
 
 $$
-\mathbb{E}[\mathbf{y}_j] = \sum_i{p \mathbf{w}_{ji} \mathbf{x}_i}
+\mathbb{E}[\mathbf{y}_j] = \sum_{M \in \mathbb{M}}{Pr(M)\mathbf{y}^{M}_j}
 $$
 
-Therefore, by scaling down the weight used at test time, i.e. $\mathbf{w}'\_{ji} = p\mathbf{w}\_{ji}$, we can achieve the goal. This is the way used in the above paper and shown in the figure.
+Where, $\mathbf{y}^{M}$ is the output of thinned network $M$.
 
-Another way is to scale up the output at training time to the same magnitude as test time, i.e. $\mathbf{y}'\_{j} = \frac{1}{p}\mathbf{y}\_j$.
+Let $\mathbb{M}^{\*}$ be the set of networks in which unit $j$ is active, then $\|\mathbb{M}^{\*}\| = p\|\mathbb{M}\|$. If we assume that the probability of $M$s are equal, i.e. $Pr(M) = \frac{1}{\|\mathbb{M}\|}$, and assume $\mathbf{y}^{M} = \mathbf{y}^{\mathcal{M}} $, we get,
+
+$$
+\mathbb{E}[\mathbf{y}_j] = p|\mathbb{M}| \frac{1}{|\mathbb{M}|} \mathbf{y}^{\mathcal{M}}_j = p\mathbf{y}^{\mathcal{M}}_j
+$$
+
+At this point, there are two method to match the training output and testing output.
+First one, by scaling down the weight used at test time, i.e. $\mathbf{w}'\_{ji} = p\mathbf{w}\_{ji}$, we can achieve the goal. This is the way used in the above paper and shown in the figure.
+
+The second way is to scale up the output at training time to the same magnitude as test time, i.e. $\mathbf{y}'\_{j} = \frac{1}{p}\mathbf{y}\_j$.
 
 ## Implementation in Kaldi
 
@@ -55,12 +64,13 @@ $$
 \mathbf{e_i} = \frac{\mathbf{a_o}}{\mathbf{a_i}} \mathbf{e_o}
 $$
 
-where $\mathbf{a\_i}$ and $\mathbf{a\_o}$ is the activation of input and output for Dropout component. Elements in $\mathbf{a\_o}$ is the equal to that in $\mathbf{a\_i}$ except the dropping ones, which is zero.
+where $\mathbf{a\_i}$ and $\mathbf{a\_o}$ is the activation of input and output for Dropout component. Elements in $\mathbf{a\_o}$ is the equal to the corresponding scaled value in $\mathbf{a\_i}$, which maybe zero if it is the dropping ones.
 
-Dan's code seems to not care about the scaling problem, we can scale the final network before testing using the scale-down method. However, there is another form of scale in Dan's code, instead of set the output of dropping unit to zero, we just scale the output value by a factor $\alpha$. To get a proper scaled version of output, we'd like to scale all the units besides the dropping ones and make it satisfy that the expected scale factor should be 1, i.e.,
+Dan's code applies a more general form of scaling. Instead of set the output of dropping unit to zero, we can just scale the output value by a factor $\alpha$. To get a proper scaled version of output, we'd like to scale all the units besides the dropping ones and make it satisfy that the expected scale factor should be 1, i.e.,
 
 $$
-p \alpha + (1-p)\beta = 1
+q \alpha + (1-q)\beta = 1
 $$
 
-Therefore, we can get the factor of other units $\beta = \frac{1-p\alpha}{1-p}$.
+where, $q=1-p$ is the dropout proportion. Therefore, we can get the factor of other units $\beta = \frac{1-q\alpha}{1-q}$. If we set $\alpha=0$, then $\beta=\frac{1}{1-q}=\frac{1}{p}$, which is equal to the scale-up factor.
+
