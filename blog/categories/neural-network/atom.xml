@@ -4,7 +4,7 @@
   <title><![CDATA[Category: Neural Network | Formula Coding]]></title>
   <link href="http://wantee.github.io/blog/categories/neural-network/atom.xml" rel="self"/>
   <link href="http://wantee.github.io/"/>
-  <updated>2015-03-05T17:30:32+08:00</updated>
+  <updated>2015-03-05T17:43:59+08:00</updated>
   <id>http://wantee.github.io/</id>
   <author>
     <name><![CDATA[Wantee Wang]]></name>
@@ -657,8 +657,6 @@ then apply the above algorithm to each section individually and concatenate thes
   <li><a href="#forward-pass">Forward Pass</a></li>
   <li><a href="#backpropagating">Backpropagating</a></li>
 </ul>
-
-<p><a href="http://wantee.github.io/assets/printables/">link name</a></p>
 
 <p>I used to think that, in order to get the proper gradient, we have to take derivative of 
 $\log$ of softmax with respect to weights. However,
