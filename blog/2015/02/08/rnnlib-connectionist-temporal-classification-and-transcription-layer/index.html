@@ -89,6 +89,14 @@
 
 
 <time class='entry-date' datetime='2015-02-08T16:56:40+08:00'><span class='date'><span class='date-month'>Feb</span> <span class='date-day'>8</span><span class='date-suffix'>th</span>, <span class='date-year'>2015</span></span> <span class='time'>4:56 pm</span></time>
+        <span class="printable">
+
+
+
+<a href="/assets/printables/2015-02-08-rnnlib-connectionist-temporal-classification-and-transcription-layer.pdf"> <img src="/images/printer.png" alt="printable version"> </a>
+
+</span>
+
         
       </p>
     
@@ -162,7 +170,7 @@ into output sequence(e.g. words).</p>
     </tr>
     <tr>
       <td>$L’$</td>
-      <td>$L \cup \{blank\}$</td>
+      <td>$L \cup {blank}$</td>
     </tr>
     <tr>
       <td>$\mathcal{X}$</td>
@@ -225,11 +233,11 @@ into output sequence(e.g. words).</p>
       <td>forward variable, the total probability of $\mathbf{l}_{1:s}$ at time $t$</td>
     </tr>
     <tr>
-      <td>$\beta_t(s) $</td>
+      <td>$\beta_t(s)$</td>
       <td>backward variable, the total probability of $\mathbf{l}_{s:|\mathbf{l}’|}$ at time $t$</td>
     </tr>
     <tr>
-      <td>$\tilde{\beta}_t(s) $</td>
+      <td>$\tilde{\beta}_t(s)$</td>
       <td>backward variable, the total probability of $\mathbf{l}_{s:|\mathbf{l}’|}$ start at time $t+1$</td>
     </tr>
     <tr>
@@ -402,7 +410,7 @@ We allow all prefixes to start with either a blank ($b$) or the first symbol in 
                                 \end{array} \right.
 \end{equation} %]]></script>
 
-<p>Note that $\alpha_t(s) = 0, \forall s &lt; |\mathbf{l}’|−2(T −t)−1$, 
+<p>Note that $\alpha_t(s) = 0, \forall s &lt; |\mathbf{l}’|-2(T -t)-1$, 
 because these variables correspond to states for which there are not enough time-steps left to complete the sequence.</p>
 
 <p>Here we can get another method to calculate $p(\mathbf{l} | \mathbf{x})$, by adding up all forward variables at time $T$, i.e.,</p>
@@ -575,7 +583,8 @@ in the prefix tree, and $p(\mathbf{p} \mid \mathbf{x})$ is the value for end nod
 \end{equation}</script>
 
 <p>Using \eqref{eq:alpha}, we get the recursion for $\gamma_t(\mathbf{p}_n)$ given $\gamma_{t-1}(\mathbf{p}_n)$,
-extending $\mathbf{p}^*$ to $\mathbf{p} = \mathbf{p}^* + k$ with label $k \in L$,</p>
+extending $\mathbf{p}^*$ to 
+$\mathbf{p} = \mathbf{p}^* + k$ with label $k \in L$,</p>
 
 <script type="math/tex; mode=display">% <![CDATA[
 

@@ -9,7 +9,7 @@
   <meta name="author" content="Wantee Wang">
 
   
-  <meta name="description" content="Fundamentals List of Symbols Formulas Layers in RNNLIB Forward Pass Backpropagating I used to think that, in order to get the proper gradient, we &hellip;">
+  <meta name="description" content="Fundamentals List of Symbols Formulas Layers in RNNLIB Forward Pass Backpropagating link name I used to think that, in order to get the proper &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -89,6 +89,14 @@
 
 
 <time class='entry-date' datetime='2015-02-05T21:08:17+08:00'><span class='date'><span class='date-month'>Feb</span> <span class='date-day'>5</span><span class='date-suffix'>th</span>, <span class='date-year'>2015</span></span> <span class='time'>9:08 pm</span></time>
+        <span class="printable">
+
+
+
+<a href="/assets/printables/2015-02-05-rnnlib-softmax-layer.pdf"> <img src="/images/printer.png" alt="printable version"> </a>
+
+</span>
+
         
       </p>
     
@@ -105,6 +113,8 @@
   <li><a href="#forward-pass">Forward Pass</a></li>
   <li><a href="#backpropagating">Backpropagating</a></li>
 </ul>
+
+<p><a href="http://wantee.github.io/assets/printables//blog/2015/02/05/rnnlib-softmax-layer">link name</a></p>
 
 <p>I used to think that, in order to get the proper gradient, we have to take derivative of 
 $\log$ of softmax with respect to weights. However,
@@ -244,7 +254,7 @@ we can write,</p>
 
 <script type="math/tex; mode=display">% <![CDATA[
 \begin{equation} 
-［
+\begin{split}
 \frac{\partial J}{\partial u_j} &= y_j(1-y_j)\frac{\partial J}{\partial y_j} +
 \sum_{k: k\neq j}{-y_k y_j \frac{\partial J}{\partial y_k}} \\
 &= y_j(\frac{\partial J}{\partial y_j} -y_j \frac{\partial J}{\partial y_j} 
