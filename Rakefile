@@ -22,6 +22,7 @@ blog_index_dir  = 'source'    # directory for your blog's index page (if you put
 deploy_dir      = "_deploy"   # deploy directory (for Github pages deployment)
 stash_dir       = "_stash"    # directory to stash posts for speedy generation
 posts_dir       = "_posts"    # directory for blog files
+printables_dir   = "assets/printables"# directory for printable version blog files
 themes_dir      = ".themes"   # directory for blog files
 new_post_ext    = "markdown"  # default new post file extension when using the new_post task
 new_page_ext    = "markdown"  # default new page file extension when using the new_page task
@@ -52,8 +53,21 @@ end
 # Working with Jekyll #
 #######################
 
+posts = FileList["#{source_dir}/#{posts_dir}/*.markdown"]
+pdfs = Array.new()
+
+posts.each do |post|
+  pdf = post.sub(/\/#{posts_dir}\//, "/#{printables_dir}/")
+  pdf = pdf.sub(/\.markdown$/, ".pdf")
+  pdfs.push(pdf)
+  file pdf => post do |t|
+    puts "Converting #{t.prerequisites.first} to #{t.name}"
+    gen_pdf("#{t.prerequisites.first}", "#{t.name}")
+  end
+end
+
 desc "Generate jekyll site"
-task :generate do
+task :generate => pdfs do
   raise "### You haven't set anything up yet. First run `rake install` to set up an Octopress theme." unless File.directory?(source_dir)
   puts "## Generating Site with Jekyll"
   system "compass compile --css-dir #{source_dir}/stylesheets"
@@ -397,6 +411,31 @@ def blog_url(user, project, source_dir)
   end
   url += "/#{project}" unless project == ''
   url
+end
+
+def gen_pdf(markdownfile, pdffile)
+  pdfdir = File.dirname(pdffile)
+  if ! File.exists?(pdfdir)
+    mkdir_p pdfdir
+  end
+
+  tmpfile="#{pdffile}.markdown"
+  File.open(tmpfile, 'w') do |post|
+    File.open(markdownfile, "r") do |file|  
+      while line=file.gets
+        line=line.gsub(/\$\$\s*\\begin{equation}/, '\\begin{equation}')
+        line=line.gsub(/\\end{equation}\s*\$\$/, '\\end{equation}')
+        line=line.gsub(/\\\*/, '*')
+        line=line.gsub(/\\\|/, '|')
+        line=line.gsub(/\\_/, '_')
+        post.puts line
+      end  
+    end
+  end 
+
+  system "pandoc #{tmpfile} -o #{pdffile}"
+
+  rm_rf tmpfile
 end
 
 desc "list tasks"

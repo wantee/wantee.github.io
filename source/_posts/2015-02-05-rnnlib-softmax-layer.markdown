@@ -108,7 +108,7 @@ $$\begin{equation} \label{eq:error_u}
 Using equation \eqref{eq:softmax_dev} to replace $\frac{\partial y_k}{\partial u_j}$, we get,
 
 $$\begin{equation} 
-［
+\begin{split}
 \frac{\partial J}{\partial u_j} &= y_j(1-y_j)\frac{\partial J}{\partial y_j} +
 \sum_{k: k\neq j}{-y_k y_j \frac{\partial J}{\partial y_k}} \\
 &= y_j(\frac{\partial J}{\partial y_j} -y_j \frac{\partial J}{\partial y_j} 

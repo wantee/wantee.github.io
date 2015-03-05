@@ -41,7 +41,7 @@ $$
 
 Where, $\mathbf{y}^{M}$ is the output of thinned network $M$.
 
-Let $\mathbb{M}^{\*}$ be the set of networks in which unit $j$ is active, then $\|\mathbb{M}^{\*}\| = p\|\mathbb{M}\|$. If we assume that the probability of $M$s are equal, i.e. $Pr(M) = \frac{1}{\|\mathbb{M}\|}$, and assume $\mathbf{y}^{M} = \mathbf{y}^{\mathcal{M}} $, we get,
+Let $\mathbb{M}^{\*}$ be the set of networks in which unit $j$ is active, then $\|\mathbb{M}^{\*}\| = p\|\mathbb{M}\|$. If we assume that the probability of $M$s are equal, i.e. $Pr(M) = \frac{1}{\|\mathbb{M}\|}$, and assume $\mathbf{y}^{M} = \mathbf{y}^{\mathcal{M}}$, we get,
 
 $$
 \mathbb{E}[\mathbf{y}_j] = p|\mathbb{M}| \frac{1}{|\mathbb{M}|} \mathbf{y}^{\mathcal{M}}_j = p\mathbf{y}^{\mathcal{M}}_j

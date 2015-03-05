@@ -49,7 +49,7 @@ Following the notations in the paper, we first list the symbols.
 | Symbol     | Meaning     |
 | ---------- |-------------|
 | $L$  | (finite) alphabet of labels  |
-| $L'$  | $L \cup \\{blank\\}$  |
+| $L'$  | $L \cup \{blank\}$  |
 | $\mathcal{X}$  | $(\mathbb{R}^m)^{*}$, $m$ dimensional input space  |  
 | $\mathcal{Z}$  | $L^{*}$, output space, set of all sequences over the $L$ |
 | $\mathcal{D_{X \times Z}}$      | underlying distribution of data  |
@@ -65,8 +65,8 @@ Following the notations in the paper, we first list the symbols.
 | $\mathbf{l}\_{a\mathord{:}b}$ | sub-sequence of $\mathbf{l}$ from $a$th to $b$th labels |
 | $\mathbf{l}'$ | modified label sequence, with blanks added to the beginning and the end and inserted between every pair of labels in $\mathbf{l}$ |
 | $\alpha\_t(s)$ | forward variable, the total probability of $\mathbf{l}\_{1:s}$ at time $t$ |
-| $\beta\_t(s) $ | backward variable, the total probability of $\mathbf{l}\_{s:\|\mathbf{l}'\|}$ at time $t$ |
-| $\tilde{\beta}\_t(s) $ | backward variable, the total probability of $\mathbf{l}\_{s:\|\mathbf{l}'\|}$ start at time $t+1$ |
+| $\beta\_t(s)$ | backward variable, the total probability of $\mathbf{l}\_{s:\|\mathbf{l}'\|}$ at time $t$ |
+| $\tilde{\beta}\_t(s)$ | backward variable, the total probability of $\mathbf{l}\_{s:\|\mathbf{l}'\|}$ start at time $t+1$ |
 | $O^{ML}(S,\mathcal{N}\_{w})$ | maximum likelihood objective function |
 | $\delta\_{kk'}$ | [Kronecker delta](http://en.wikipedia.org/wiki/Kronecker_delta) |
 
@@ -226,7 +226,7 @@ $$ \begin{equation} \label{eq:alpha}
                                 \end{array} \right.
 \end{equation}$$
 
-Note that $\alpha_t(s) = 0, \forall s < \|\mathbf{l}'\|−2(T −t)−1$, 
+Note that $\alpha_t(s) = 0, \forall s < \|\mathbf{l}'\|-2(T -t)-1$, 
 because these variables correspond to states for which there are not enough time-steps left to complete the sequence.
 
 Here we can get another method to calculate $p(\mathbf{l} \| \mathbf{x})$, by adding up all forward variables at time $T$, i.e.,
@@ -395,7 +395,8 @@ $$ \begin{equation}
 \end{equation}$$
 
 Using \eqref{eq:alpha}, we get the recursion for $\gamma\_t(\mathbf{p}\_n)$ given $\gamma\_{t-1}(\mathbf{p}\_n)$,
-extending $\mathbf{p}^\*$ to $\mathbf{p} = \mathbf{p}^\* + k$ with label $k \in L$,
+extending $\mathbf{p}^\*$ to 
+$\mathbf{p} = \mathbf{p}^\* + k$ with label $k \in L$,
 
 $$
 \begin{split} 

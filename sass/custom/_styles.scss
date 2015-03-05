@@ -24,3 +24,7 @@ ul#markdown-toc {
     margin-bottom: 6px;
   }
 }
+
+.printable {
+     img, a {border:none; outline: none; text-decoration: none;};
+}
