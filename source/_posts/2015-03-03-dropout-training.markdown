@@ -1,6 +1,7 @@
 ---
 layout: post
 title: "Dropout Training"
+author: Wantee Wang
 date: 2015-03-03 15:18:26 +0800
 comments: true
 categories: [Neural Network]

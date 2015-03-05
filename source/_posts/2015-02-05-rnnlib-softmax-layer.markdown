@@ -1,6 +1,7 @@
 ---
 layout: post
 title: "RNNLIB: Softmax Layer"
+author: Wantee Wang
 date: 2015-02-05 21:08:17 +0800
 comments: true
 categories: [Neural Network]

@@ -1,6 +1,10 @@
 <span class="printable">
 
-{% capture url %}assets/printables/{{ page.id | remove_first:'/blog/' | replace:'/','-' }}.pdf{% endcapture %}
+{% if index %}
+  {% capture url %}assets/printables/{{ post.url | url2filename }}.pdf{% endcapture %}
+{% else %}
+  {% capture url %}assets/printables/{{ page.id | url2filename }}.pdf{% endcapture %}
+{% endif %}
 
 <a href="{{ root_url }}/{{ url }}"> <img src="/images/printer.png" alt="printable version"> </a>
 

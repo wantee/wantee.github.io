@@ -66,6 +66,13 @@ posts.each do |post|
   end
 end
 
+desc "Generate pdfs"
+task :gen_pdf => pdfs do
+  pdfs.each do |pdf|
+    Rake::Task[pdf].execute
+  end
+end
+
 desc "Generate jekyll site"
 task :generate => pdfs do
   raise "### You haven't set anything up yet. First run `rake install` to set up an Octopress theme." unless File.directory?(source_dir)
@@ -126,6 +133,7 @@ task :new_post, :title do |t, args|
     post.puts "---"
     post.puts "layout: post"
     post.puts "title: \"#{title.gsub(/&/,'&amp;')}\""
+    post.puts "author: Wantee Wang"
     post.puts "date: #{Time.now.strftime('%Y-%m-%d %H:%M:%S %z')}"
     post.puts "comments: true"
     post.puts "categories: "
@@ -428,12 +436,17 @@ def gen_pdf(markdownfile, pdffile)
         line=line.gsub(/\\\*/, '*')
         line=line.gsub(/\\\|/, '|')
         line=line.gsub(/\\_/, '_')
+
+        line=line.gsub(/\* list element with functor item/, '')
+        line=line.gsub(/{:toc}/, '\tableofcontents')
+
+        line=line.sub(/^#(#*)/, '\1')
         post.puts line
       end  
     end
   end 
 
-  system "pandoc #{tmpfile} -o #{pdffile}"
+  system "pandoc -N #{tmpfile} -o #{pdffile}"
 
   rm_rf tmpfile
 end

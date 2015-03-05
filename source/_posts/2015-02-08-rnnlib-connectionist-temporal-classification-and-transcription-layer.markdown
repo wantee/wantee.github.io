@@ -1,6 +1,7 @@
 ---
 layout: post
 title: "RNNLIB: Connectionist Temporal Classification and Transcription Layer"
+author: Wantee Wang
 date: 2015-02-08 16:56:40 +0800
 comments: true
 categories: [Neural Network]
