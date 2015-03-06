@@ -62,7 +62,7 @@ posts.each do |post|
   pdfs.push(pdf)
   file pdf => post do |t|
     puts "Converting #{t.prerequisites.first} to #{t.name}"
-    gen_pdf("#{t.prerequisites.first}", "#{t.name}")
+    gen_pdf("#{t.prerequisites.first}", "#{t.name}", source_dir, posts_dir)
   end
 end
 
@@ -137,6 +137,8 @@ task :new_post, :title do |t, args|
     post.puts "date: #{Time.now.strftime('%Y-%m-%d %H:%M:%S %z')}"
     post.puts "comments: true"
     post.puts "categories: "
+    post.puts "header-includes:"
+    post.puts "   - \\usepackage{graphicx}"
     post.puts "---"
   end
 end
@@ -421,7 +423,7 @@ def blog_url(user, project, source_dir)
   url
 end
 
-def gen_pdf(markdownfile, pdffile)
+def gen_pdf(markdownfile, pdffile, source_dir, posts_dir)
   pdfdir = File.dirname(pdffile)
   if ! File.exists?(pdfdir)
     mkdir_p pdfdir
@@ -441,6 +443,31 @@ def gen_pdf(markdownfile, pdffile)
         line=line.gsub(/{:toc}/, '\tableofcontents')
 
         line=line.sub(/^#(#*)/, '\1')
+
+        if /{% img (?<markup>.*) %}/ =~ line
+          @img = get_img_label(markup)
+          line="\\begin{figure}[h]\\centering\\includegraphics[width=\\textwidth]{#{source_dir}/#{@img['src']}}\\caption{#{@img['title']}}\\label{#{@img['alt']}}\\end{figure}"
+        end
+
+        while /{% comment %} FOR-LATEX (?<markup>.*) {% endcomment %}/ =~ line
+          line = line.sub(/{% comment %} FOR-LATEX (.*?) {% endcomment %}/, markup)
+        end
+
+        while /{% post_link (?<markup>[^\s]+)(?<text>\s+.+)? %}/ =~ line
+          /^(?<year>\d+)-(?<month>\d+)-(?<day>\d+)-(?<title>.*)/ =~ markup
+
+          if ! text
+            File.open("#{source_dir}/#{posts_dir}/#{markup}.markdown", 'r') do |f|
+                while l = f.gets
+                  if /title: (?:"|')(?<text>.*)(?:"|')/ =~ l
+                    break
+                  end
+                end
+            end
+          end
+          line = line.sub(/{% post_link (.*?) %}/, "\\href{http://wantee.github.io/blog/#{year}/#{month}/#{day}/#{title}/}{#{text}}")
+        end
+
         post.puts line
       end  
     end
@@ -448,7 +475,26 @@ def gen_pdf(markdownfile, pdffile)
 
   system "pandoc -N #{tmpfile} -o #{pdffile}"
 
-  rm_rf tmpfile
+#  rm_rf tmpfile
+end
+
+# from image_tag plugin
+def get_img_label(markup)
+  @img = nil
+  attributes = ['class', 'src', 'width', 'height', 'title']
+
+  if markup =~ /(?<class>\S.*\s+)?(?<src>(?:https?:\/\/|\/|\S+\/)\S+)(?:\s+(?<width>\d+))?(?:\s+(?<height>\d+))?(?<title>\s+.+)?/i
+    @img = attributes.reduce({}) { |img, attr| img[attr] = $~[attr].strip if $~[attr]; img }
+    if /(?:"|')(?<title>[^"']+)?(?:"|')\s+(?:"|')(?<alt>[^"']+)?(?:"|')/ =~ @img['title']
+      @img['title']  = title
+      @img['alt']    = alt
+    else
+#@img['alt']    = @img['title'].gsub!(/"/, '&#34;') if @img['title']
+      @img['alt']    = @img['title']
+    end
+    @img['class'].gsub!(/"/, '') if @img['class']
+  end
+  @img
 end
 
 desc "list tasks"

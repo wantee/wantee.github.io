@@ -5,6 +5,8 @@ author: Wantee Wang
 date: 2015-03-03 15:18:26 +0800
 comments: true
 categories: [Neural Network]
+header-includes:
+   - \usepackage{graphicx}
 ---
 
 * list element with functor item
@@ -13,7 +15,7 @@ categories: [Neural Network]
 Dropout is a regularisation technique for reducing over-fitting in large neural nets. Hinton proposes the method in [this paper](http://arxiv.org/abs/1207.0580). 
 Most materials are from [Srivastava's page](http://www.cs.toronto.edu/~nitish/dropout/).
  
-It prevents overfitting and provides a way of approximately combining exponentially many different neural network architectures efficiently. The term “dropout” refers to dropping out units (hidden and visible) in a neural network.
+It prevents overfitting and provides a way of approximately combining exponentially many different neural network architectures efficiently. The term *dropout* refers to dropping out units (hidden and visible) in a neural network.
 
 ## The Method
 
@@ -22,13 +24,13 @@ There are 2 key points for dropout learning:
 * a) Dropping units while training; 
 * b) Scaling output to be matched between training and testing. 
 
-As shown in following figure, where $p$ is the dropout retention.
+As shown in following figure {% comment %} FOR-LATEX (\autoref{fig:dropout}) {% endcomment %}, where $p$ is the dropout retention.
 
-{% img center /images/posts/Dropout.png Dropout %}
+{% img center /images/posts/Dropout.png "Dropout" "fig:dropout" %}
 
 Units to be dropped is chosen in a random way. Note that dropping a unit out means temporarily removing it from the network, along with all its incoming and outgoing connections. Therefore we have to deal with it both during forward pass and backpropagation.
 
-Applying dropout to a neural network amounts to sampling a “thinned” network from it. A neural net with $n$ units, can be seen as a collection of $2^n$ possible thinned neural networks. For each presentation of each training case, a new thinned network is sampled and trained. 
+Applying dropout to a neural network amounts to sampling a *thinned* network from it. A neural net with $n$ units, can be seen as a collection of $2^n$ possible thinned neural networks. For each presentation of each training case, a new thinned network is sampled and trained. 
 
 At test time, the ideal way is to explicitly average the predictions from exponentially many thinned models, which is obviously not feasible. The intuitive way is using a single neural net without dropout at test time, however this needs some approximation. 
 

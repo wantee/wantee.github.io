@@ -5,6 +5,8 @@ author: Wantee Wang
 date: 2015-02-05 16:02:28 +0800
 comments: true
 categories: [Neural Network]
+header-includes:
+   - \usepackage{graphicx}
 ---
 
 RNNLIB is a recurrent neural network library for sequence learning problems,

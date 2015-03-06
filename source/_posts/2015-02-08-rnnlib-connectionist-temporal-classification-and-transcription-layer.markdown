@@ -5,6 +5,8 @@ author: Wantee Wang
 date: 2015-02-08 16:56:40 +0800
 comments: true
 categories: [Neural Network]
+header-includes:
+   - \usepackage{graphicx}
 ---
 
 * list element with functor item
@@ -257,9 +259,9 @@ $$ \begin{equation} \label{eq:beta}
 
 Note that $\beta\_t(s) = 0, \forall s > 2t$.
 
-Following figure illustrate the forward backward algorithm applied to the labelling 'CAT'(from the paper).
+Following figure {% comment %} FOR-LATEX (\autoref{fig:alpha-beta}) {% endcomment %} illustrate the forward backward algorithm applied to the labelling 'CAT'(from the paper).
  
-{% img center /images/posts/CTC-alpha-beta.png Alpha-Beta Algorithm %}
+{% img center /images/posts/CTC-alpha-beta.png "Alpha-Beta Algorithm" "fig:alpha-beta" %}
 
 ## The Implementation
 
@@ -269,7 +271,7 @@ so only need to implement the `calculate_errors()` method to calculate the $\fra
 In order to use \eqref{eq:grad} to get output error, first need to calculate the $\alpha$s and $\beta$s.
 Forward variables are got using \eqref{eq:alpha}. 
 
-But backward variables are in another form, given in Graves' [Dissertation](www6.in.tum.de/Main/Publications/Graves2008c.pdf).
+But backward variables are in another form, given in Graves' [Dissertation](http://www6.in.tum.de/Main/Publications/Graves2008c.pdf).
 Consider backward variable started from time $t+1$,
 
 $$\begin{equation} \label{eq:bwd_new}
@@ -351,9 +353,9 @@ By modifying the forward variables, this method can efficiently calculate the pr
 
 Prefix search decoding is a best-first search through the tree of labellings, 
 where the children of a given labelling are those that share it as a prefix. 
-At each step the search extends the labelling whose children have the largest cumulative probability (see below figure).
+At each step the search extends the labelling whose children have the largest cumulative probability (see below figure{% comment %} FOR-LATEX (\autoref{fig:prefix-search-decoding}) {% endcomment %}).
 
-{% img center /images/posts/CTC-prefix-decoding.png Prefix Search Decoding %} 
+{% img center /images/posts/CTC-prefix-decoding.png "Prefix Search Decoding"  "fig:prefix-search-decoding" %} 
 
 Each node either ends ($e$) or extends the prefix at its parent node. 
 The number above an extending node is the total probability of all labellings beginning with that prefix. 
