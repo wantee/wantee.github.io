@@ -378,7 +378,7 @@ $$\begin{equation}
 
 Then for a length $T$ input sequence $\mathbf{x}$, $p(\mathbf{p} \| \mathbf{x}) = \gamma\_T(\mathbf{p}\_n) + \gamma\_T(\mathbf{p}\_b)$.
 Also let $p(\mathbf{p}\dots \| \mathbf{x})$ be the cumulative probability of all labelling not equal to $\mathbf{p}$ 
-of which $$\mathbf{p}$$ is a prefix
+of which $\mathbf{p}$ is a prefix
 
 $$\begin{equation}
 p(\mathbf{p} \dotsc \mid \mathbf{x}) = \sum_{\mathbf{l} \neq \emptyset}{p(\mathbf{p} + \mathbf{l} \mid \mathbf{x})}
