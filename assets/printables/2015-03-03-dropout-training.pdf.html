@@ -9,7 +9,7 @@
   <meta name="author" content="Wantee Wang">
 
   
-  <meta name="description" content="The Method Implementation in Kaldi Dropout is a regularisation technique for reducing over-fitting in large neural nets. Hinton proposes the method &hellip;">
+  <meta name="description" content="\tableofcontents Dropout is a regularisation technique for reducing over-fitting in large neural nets. Hinton proposes the method in this paper. Most &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -18,7 +18,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
   
-  <link rel="canonical" href="http://wantee.github.io/blog/2015/03/03/dropout-training/">
+  <link rel="canonical" href="http://wantee.github.io/assets/printables/2015-03-03-dropout-training.pdf.html">
   <link href="/favicon.png" rel="icon">
   <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
   <link href="/stylesheets/data-table.css" media="screen, projection" rel="stylesheet" type="text/css">
@@ -95,7 +95,7 @@
   
 
 
-<a href="/assets/printables/2015-03-03-dropout-training.pdf"> <img src="/images/printer.png" alt="printable version"> </a>
+<a href="/assets/printables/.pdf"> <img src="/images/printer.png" alt="printable version"> </a>
 
 </span>
 
@@ -105,17 +105,14 @@
   </header>
 
 
-<div class="entry-content"><ul id="markdown-toc">
-  <li><a href="#the-method">The Method</a></li>
-  <li><a href="#implementation-in-kaldi">Implementation in Kaldi</a></li>
-</ul>
+<div class="entry-content"><p>\tableofcontents</p>
 
 <p>Dropout is a regularisation technique for reducing over-fitting in large neural nets. Hinton proposes the method in <a href="http://arxiv.org/abs/1207.0580">this paper</a>. 
 Most materials are from <a href="http://www.cs.toronto.edu/~nitish/dropout/">Srivastava’s page</a>.</p>
 
 <p>It prevents overfitting and provides a way of approximately combining exponentially many different neural network architectures efficiently. The term <em>dropout</em> refers to dropping out units (hidden and visible) in a neural network.</p>
 
-<h2 id="the-method">The Method</h2>
+<h1 id="the-method">The Method</h1>
 
 <p>There are 2 key points for dropout learning: </p>
 
@@ -124,9 +121,9 @@ Most materials are from <a href="http://www.cs.toronto.edu/~nitish/dropout/">Sri
   <li>b) Scaling output to be matched between training and testing. </li>
 </ul>
 
-<p>As shown in following figure , where $p$ is the dropout retention.</p>
+<p>As shown in following figure (\autoref{fig:dropout}), where $p$ is the dropout retention.</p>
 
-<p><img class="center" src="/images/posts/Dropout.png" title="Dropout" alt="fig:dropout" /></p>
+<p>\begin{figure}[h]\centering\includegraphics[width=\textwidth]{source//images/posts/Dropout.png}\caption{Dropout}\label{fig:dropout}\end{figure}</p>
 
 <p>Units to be dropped is chosen in a random way. Note that dropping a unit out means temporarily removing it from the network, along with all its incoming and outgoing connections. Therefore we have to deal with it both during forward pass and backpropagation.</p>
 
@@ -144,18 +141,30 @@ Most materials are from <a href="http://www.cs.toronto.edu/~nitish/dropout/">Sri
 
 <p>Where, $\mathbf{y}^{M}$ is the output of thinned network $M$.</p>
 
-<p>Let $\mathbb{M}^{*}$ be the set of networks in which unit $j$ is active, then $|\mathbb{M}^{*}| = p|\mathbb{M}|$. If we assume that the probability of $M$s are equal, i.e. $Pr(M) = \frac{1}{|\mathbb{M}|}$, and assume $\mathbf{y}^{M} = \mathbf{y}^{\mathcal{M}}$, we get,</p>
+<table>
+  <tbody>
+    <tr>
+      <td>Let $\mathbb{M}^{*}$ be the set of networks in which unit $j$ is active, then $</td>
+      <td>\mathbb{M}^{*}</td>
+      <td>= p</td>
+      <td>\mathbb{M}</td>
+      <td>$. If we assume that the probability of $M$s are equal, i.e. $Pr(M) = \frac{1}{</td>
+      <td>\mathbb{M}</td>
+      <td>}$, and assume $\mathbf{y}^{M} = \mathbf{y}^{\mathcal{M}}$, we get,</td>
+    </tr>
+  </tbody>
+</table>
 
 <script type="math/tex; mode=display">
 \mathbb{E}[\mathbf{y}_j] = p|\mathbb{M}| \frac{1}{|\mathbb{M}|} \mathbf{y}^{\mathcal{M}}_j = p\mathbf{y}^{\mathcal{M}}_j
 </script>
 
 <p>At this point, there are two method to match the training output and testing output.
-First one, by scaling down the weight used at test time, i.e. $\mathbf{w}’_{ji} = p\mathbf{w}_{ji}$, we can achieve the goal. This is the way used in the above paper and shown in the figure.</p>
+First one, by scaling down the weight used at test time, i.e. $\mathbf{w}’<em>{ji} = p\mathbf{w}</em>{ji}$, we can achieve the goal. This is the way used in the above paper and shown in the figure.</p>
 
 <p>The second way is to scale up the output at training time to the same magnitude as test time, i.e. $\mathbf{y}’_{j} = \frac{1}{p}\mathbf{y}_j$.</p>
 
-<h2 id="implementation-in-kaldi">Implementation in Kaldi</h2>
+<h1 id="implementation-in-kaldi">Implementation in Kaldi</h1>
 
 <p>Both Karel’s and Dan’s implementation have the Dropout codes, with some differences.</p>
 
@@ -197,7 +206,7 @@ q \alpha + (1-q)\beta = 1
 
 <span class="categories">
   
-    <a class='category' href='/blog/categories/neural-network/'>neural network</a>
+    <a class='category' href='/blog/categories/neural-network/'>Neural Network</a>
   
 </span>
 
@@ -206,7 +215,7 @@ q \alpha + (1-q)\beta = 1
     
       <div class="sharing">
   
-  <a href="//twitter.com/share" class="twitter-share-button" data-url="http://wantee.github.io/blog/2015/03/03/dropout-training/" data-via="" data-counturl="http://wantee.github.io/blog/2015/03/03/dropout-training/" >Tweet</a>
+  <a href="//twitter.com/share" class="twitter-share-button" data-url="http://wantee.github.io/assets/printables/2015-03-03-dropout-training.pdf.html" data-via="" data-counturl="http://wantee.github.io/assets/printables/2015-03-03-dropout-training.pdf.html" >Tweet</a>
   
   
   
@@ -214,8 +223,6 @@ q \alpha + (1-q)\beta = 1
 
     
     <p class="meta">
-      
-        <a class="basic-alignment left" href="/blog/2015/02/08/rnnlib-connectionist-temporal-classification-and-transcription-layer/" title="Previous Post: RNNLIB: Connectionist Temporal Classification and Transcription Layer">&laquo; RNNLIB: Connectionist Temporal Classification and Transcription Layer</a>
       
       
     </p>
@@ -308,8 +315,8 @@ q \alpha + (1-q)\beta = 1
       
         
         // var disqus_developer = 1;
-        var disqus_identifier = 'http://wantee.github.io/blog/2015/03/03/dropout-training/';
-        var disqus_url = 'http://wantee.github.io/blog/2015/03/03/dropout-training/';
+        var disqus_identifier = 'http://wantee.github.io/assets/printables/2015-03-03-dropout-training.pdf.html';
+        var disqus_url = 'http://wantee.github.io/assets/printables/2015-03-03-dropout-training.pdf.html';
         var disqus_script = 'embed.js';
       
     (function () {

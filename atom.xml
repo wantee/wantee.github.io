@@ -4,7 +4,7 @@
   <title><![CDATA[Formula Coding]]></title>
   <link href="http://wantee.github.io/atom.xml" rel="self"/>
   <link href="http://wantee.github.io/"/>
-  <updated>2015-03-05T23:35:33+08:00</updated>
+  <updated>2015-03-06T19:33:05+08:00</updated>
   <id>http://wantee.github.io/</id>
   <author>
     <name><![CDATA[Wantee Wang]]></name>
@@ -26,7 +26,7 @@
 <p>Dropout is a regularisation technique for reducing over-fitting in large neural nets. Hinton proposes the method in <a href="http://arxiv.org/abs/1207.0580">this paper</a>. 
 Most materials are from <a href="http://www.cs.toronto.edu/~nitish/dropout/">Srivastava’s page</a>.</p>
 
-<p>It prevents overfitting and provides a way of approximately combining exponentially many different neural network architectures efficiently. The term “dropout” refers to dropping out units (hidden and visible) in a neural network.</p>
+<p>It prevents overfitting and provides a way of approximately combining exponentially many different neural network architectures efficiently. The term <em>dropout</em> refers to dropping out units (hidden and visible) in a neural network.</p>
 
 <h2 id="the-method">The Method</h2>
 
@@ -37,13 +37,13 @@ Most materials are from <a href="http://www.cs.toronto.edu/~nitish/dropout/">Sri
   <li>b) Scaling output to be matched between training and testing. </li>
 </ul>
 
-<p>As shown in following figure, where $p$ is the dropout retention.</p>
+<p>As shown in following figure , where $p$ is the dropout retention.</p>
 
-<p><img class="center" src="http://wantee.github.io/images/posts/Dropout.png" title="Dropout" /></p>
+<p><img class="center" src="http://wantee.github.io/images/posts/Dropout.png" title="Dropout" alt="fig:dropout" /></p>
 
 <p>Units to be dropped is chosen in a random way. Note that dropping a unit out means temporarily removing it from the network, along with all its incoming and outgoing connections. Therefore we have to deal with it both during forward pass and backpropagation.</p>
 
-<p>Applying dropout to a neural network amounts to sampling a “thinned” network from it. A neural net with $n$ units, can be seen as a collection of $2^n$ possible thinned neural networks. For each presentation of each training case, a new thinned network is sampled and trained. </p>
+<p>Applying dropout to a neural network amounts to sampling a <em>thinned</em> network from it. A neural net with $n$ units, can be seen as a collection of $2^n$ possible thinned neural networks. For each presentation of each training case, a new thinned network is sampled and trained. </p>
 
 <p>At test time, the ideal way is to explicitly average the predictions from exponentially many thinned models, which is obviously not feasible. The intuitive way is using a single neural net without dropout at test time, however this needs some approximation. </p>
 
@@ -437,9 +437,9 @@ because these variables correspond to states for which there are not enough time
 
 <p>Note that $\beta_t(s) = 0, \forall s &gt; 2t$.</p>
 
-<p>Following figure illustrate the forward backward algorithm applied to the labelling ‘CAT’(from the paper).</p>
+<p>Following figure  illustrate the forward backward algorithm applied to the labelling ‘CAT’(from the paper).</p>
 
-<p><img class="center" src="http://wantee.github.io/images/posts/CTC-alpha-beta.png" title="Alpha-Beta Algorithm" /></p>
+<p><img class="center" src="http://wantee.github.io/images/posts/CTC-alpha-beta.png" title="Alpha-Beta Algorithm" alt="fig:alpha-beta" /></p>
 
 <h2 id="the-implementation">The Implementation</h2>
 
@@ -449,7 +449,7 @@ so only need to implement the <code>calculate_errors()</code> method to calculat
 In order to use \eqref{eq:grad} to get output error, first need to calculate the $\alpha$s and $\beta$s.
 Forward variables are got using \eqref{eq:alpha}. </p>
 
-<p>But backward variables are in another form, given in Graves’ <a href="www6.in.tum.de/Main/Publications/Graves2008c.pdf">Dissertation</a>.
+<p>But backward variables are in another form, given in Graves’ <a href="http://www6.in.tum.de/Main/Publications/Graves2008c.pdf">Dissertation</a>.
 Consider backward variable started from time $t+1$,</p>
 
 <script type="math/tex; mode=display">\begin{equation} \label{eq:bwd_new}
@@ -535,7 +535,7 @@ But it can lead to errors, because that the map $\mathcal{B}$ is a many-to-one m
 where the children of a given labelling are those that share it as a prefix. 
 At each step the search extends the labelling whose children have the largest cumulative probability (see below figure).</p>
 
-<p><img class="center" src="http://wantee.github.io/images/posts/CTC-prefix-decoding.png" title="Prefix Search Decoding" /> </p>
+<p><img class="center" src="http://wantee.github.io/images/posts/CTC-prefix-decoding.png" title="Prefix Search Decoding" alt="fig:prefix-search-decoding" /> </p>
 
 <p>Each node either ends ($e$) or extends the prefix at its parent node. 
 The number above an extending node is the total probability of all labellings beginning with that prefix. 

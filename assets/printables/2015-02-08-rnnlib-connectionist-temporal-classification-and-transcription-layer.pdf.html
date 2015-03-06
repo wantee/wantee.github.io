@@ -9,7 +9,8 @@
   <meta name="author" content="Wantee Wang">
 
   
-  <meta name="description" content="The Name The Theory List of Symbols Training Procedure The CTC Forward-Backward Algorithm The Implementation Decoding Best Path Decoding Prefix &hellip;">
+  <meta name="description" content="\tableofcontents CTC is the core concept make it possible to transcribe unsegmented sequence data.
+RNNLIB implements it in a single layer called &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -18,7 +19,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
   
-  <link rel="canonical" href="http://wantee.github.io/blog/2015/02/08/rnnlib-connectionist-temporal-classification-and-transcription-layer/">
+  <link rel="canonical" href="http://wantee.github.io/assets/printables/2015-02-08-rnnlib-connectionist-temporal-classification-and-transcription-layer.pdf.html">
   <link href="/favicon.png" rel="icon">
   <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
   <link href="/stylesheets/data-table.css" media="screen, projection" rel="stylesheet" type="text/css">
@@ -95,7 +96,7 @@
   
 
 
-<a href="/assets/printables/2015-02-08-rnnlib-connectionist-temporal-classification-and-transcription-layer.pdf"> <img src="/images/printer.png" alt="printable version"> </a>
+<a href="/assets/printables/.pdf"> <img src="/images/printer.png" alt="printable version"> </a>
 
 </span>
 
@@ -105,21 +106,7 @@
   </header>
 
 
-<div class="entry-content"><ul id="markdown-toc">
-  <li><a href="#the-name">The Name</a></li>
-  <li><a href="#the-theory">The Theory</a>    <ul>
-      <li><a href="#list-of-symbols">List of Symbols</a></li>
-      <li><a href="#training-procedure">Training Procedure</a></li>
-      <li><a href="#the-ctc-forward-backward-algorithm">The CTC Forward-Backward Algorithm</a></li>
-    </ul>
-  </li>
-  <li><a href="#the-implementation">The Implementation</a></li>
-  <li><a href="#decoding">Decoding</a>    <ul>
-      <li><a href="#best-path-decoding">Best Path Decoding</a></li>
-      <li><a href="#prefix-search-decoding">Prefix Search Decoding</a></li>
-    </ul>
-  </li>
-</ul>
+<div class="entry-content"><p>\tableofcontents</p>
 
 <p>CTC is the core concept make it possible to transcribe unsegmented sequence data.
 RNNLIB implements it in a single layer called Transcription Layer.
@@ -130,7 +117,7 @@ We go into this particular layer in this post, the main reference is the Graves�
 and construct a new objective function based on the map.
 This map do not need a precise alignment, thus greatly simplify the task and reduce human expert involvement. </p>
 
-<h2 id="the-name">The Name</h2>
+<h1 id="the-name">The Name</h1>
 
 <p>“Connectionist” is the adjective form of “connectionism”, 
 <a href="http://en.wikipedia.org/wiki/Connectionism">Connectionism</a> is a terminology in cognitive science,
@@ -152,9 +139,9 @@ With this, we do not have to label every time step in training data set.</p>
 indicating that with CTC we can directly transcribe input sequence(e.g. acoustic signal)
 into output sequence(e.g. words).</p>
 
-<h2 id="the-theory">The Theory</h2>
+<h1 id="the-theory">The Theory</h1>
 
-<h3 id="list-of-symbols">List of Symbols</h3>
+<h2 id="list-of-symbols">List of Symbols</h2>
 
 <p>Following the notations in the paper, we first list the symbols.</p>
 
@@ -163,113 +150,157 @@ into output sequence(e.g. words).</p>
     <tr>
       <th>Symbol</th>
       <th>Meaning</th>
+      <th> </th>
+      <th> </th>
     </tr>
   </thead>
   <tbody>
     <tr>
       <td>$L$</td>
       <td>(finite) alphabet of labels</td>
+      <td> </td>
+      <td> </td>
     </tr>
     <tr>
       <td>$L’$</td>
       <td>$L \cup {blank}$</td>
+      <td> </td>
+      <td> </td>
     </tr>
     <tr>
       <td>$\mathcal{X}$</td>
       <td>$(\mathbb{R}^m)^{*}$, $m$ dimensional input space</td>
+      <td> </td>
+      <td> </td>
     </tr>
     <tr>
       <td>$\mathcal{Z}$</td>
       <td>$L^{*}$, output space, set of all sequences over the $L$</td>
+      <td> </td>
+      <td> </td>
     </tr>
     <tr>
       <td>$\mathcal{D_{X \times Z}}$</td>
       <td>underlying distribution of data</td>
+      <td> </td>
+      <td> </td>
     </tr>
     <tr>
       <td>$S$</td>
       <td>set of training examples supposed to be drawn from $\mathcal{D_{X \times Z}}$</td>
+      <td> </td>
+      <td> </td>
     </tr>
     <tr>
       <td>($\mathbf{x},\mathbf{z})$</td>
       <td>example in $S$, $\mathbf{x} = (x_1, x_2, \dotsc, x_T)$, $\mathbf{z} = (z_1, z_2, \dotsc, z_U)$ and $U \leq T$</td>
+      <td> </td>
+      <td> </td>
     </tr>
     <tr>
       <td>$h:\mathcal{X} \mapsto \mathcal{Z}$</td>
       <td>temporal classifier to be trained</td>
+      <td> </td>
+      <td> </td>
     </tr>
     <tr>
       <td>$\mathcal{N}_{w}:(R^{m})^{T} \mapsto (R^n)^{T}$</td>
       <td>RNN, with $m$ inputs, $n$ outputs and weight vector $w$, as a continuous map</td>
+      <td> </td>
+      <td> </td>
     </tr>
     <tr>
       <td>$\mathbf{y} = \mathcal{N}_{w}$</td>
       <td>sequence of RNN output</td>
+      <td> </td>
+      <td> </td>
     </tr>
     <tr>
       <td>$y_{k}^{t}$</td>
       <td>the activation of output unit $k$ at time $t$</td>
+      <td> </td>
+      <td> </td>
     </tr>
     <tr>
       <td>$\pi$</td>
       <td><em>path</em>, element of $L’^{T}$</td>
+      <td> </td>
+      <td> </td>
     </tr>
     <tr>
       <td>$\mathbf{l} \in L^{\leq T}$</td>
       <td>label sequence or <em>labelling</em></td>
+      <td> </td>
+      <td> </td>
     </tr>
     <tr>
       <td>$\mathcal{B}:L’^{T} \mapsto L^{\leq T}$</td>
       <td>map from path to labelling</td>
+      <td> </td>
+      <td> </td>
     </tr>
     <tr>
       <td>$\mathbf{l}_{a\mathord{:}b}$</td>
       <td>sub-sequence of $\mathbf{l}$ from $a$th to $b$th labels</td>
+      <td> </td>
+      <td> </td>
     </tr>
     <tr>
       <td>$\mathbf{l}’$</td>
       <td>modified label sequence, with blanks added to the beginning and the end and inserted between every pair of labels in $\mathbf{l}$</td>
+      <td> </td>
+      <td> </td>
     </tr>
     <tr>
       <td>$\alpha_t(s)$</td>
       <td>forward variable, the total probability of $\mathbf{l}_{1:s}$ at time $t$</td>
+      <td> </td>
+      <td> </td>
     </tr>
     <tr>
       <td>$\beta_t(s)$</td>
-      <td>backward variable, the total probability of $\mathbf{l}_{s:|\mathbf{l}’|}$ at time $t$</td>
+      <td>backward variable, the total probability of $\mathbf{l}_{s:</td>
+      <td>\mathbf{l}’</td>
+      <td>}$ at time $t$</td>
     </tr>
     <tr>
       <td>$\tilde{\beta}_t(s)$</td>
-      <td>backward variable, the total probability of $\mathbf{l}_{s:|\mathbf{l}’|}$ start at time $t+1$</td>
+      <td>backward variable, the total probability of $\mathbf{l}_{s:</td>
+      <td>\mathbf{l}’</td>
+      <td>}$ start at time $t+1$</td>
     </tr>
     <tr>
       <td>$O^{ML}(S,\mathcal{N}_{w})$</td>
       <td>maximum likelihood objective function</td>
+      <td> </td>
+      <td> </td>
     </tr>
     <tr>
       <td>$\delta_{kk’}$</td>
       <td><a href="http://en.wikipedia.org/wiki/Kronecker_delta">Kronecker delta</a></td>
+      <td> </td>
+      <td> </td>
     </tr>
   </tbody>
 </table>
 
-<h3 id="training-procedure">Training Procedure</h3>
+<h2 id="training-procedure">Training Procedure</h2>
 
 <p>The goal is to use $S$ to train a temporal classifier $h$ to classify previously unseen input sequences in a way that minimises the ML objective function:</p>
 
-<script type="math/tex; mode=display">\begin{equation} \label{eq:obj_ml}
-O^{ML}(S,\mathcal{N}_{w}) = - \sum_{(\mathbf{x},\mathbf{z})\in S}{\ln(p(\mathbf{z}|\mathbf{x}))}
-\end{equation}</script>
+<p>\begin{equation} \label{eq:obj_ml}
+O^{ML}(S,\mathcal{N}<em>{w}) = - \sum</em>{(\mathbf{x},\mathbf{z})\in S}{\ln(p(\mathbf{z}|\mathbf{x}))}
+\end{equation}</p>
 
 <p>To train the network with gradient descent, 
 we need to differentiate \eqref{eq:obj_ml} with respect to the network outputs. 
 Since the training examples are independent we can consider them separately:</p>
 
-<script type="math/tex; mode=display">\begin{equation} \label{eq:obj}
-\frac{\partial O^{ML}(\{(\mathbf{x},\mathbf{z}\},\mathcal{N}_{w})}{\partial y_k^t} 
+<p>\begin{equation} \label{eq:obj}
+\frac{\partial O^{ML}({(\mathbf{x},\mathbf{z}},\mathcal{N}_{w})}{\partial y_k^t} 
     = - \frac{\partial \ln(p(\mathbf{z}|\mathbf{x}))}{\partial y_k^t}
     = - \frac{1}{p(\mathbf{z}|\mathbf{x})} \frac{\partial p(\mathbf{z}|\mathbf{x})}{\partial y^t_k}
-\end{equation}</script>
+\end{equation}</p>
 
 <p>Another thing we have to consider is how to map from network outputs to labellings.
 Use $\mathcal{B}$ to denote such a map. Given a path, we simply removing all blanks 
@@ -277,53 +308,67 @@ and repeated labels and the remaining labels form a labelling(e.g. $\mathcal{B}(
 
 <p>Then we can define the conditional probability of a labelling,</p>
 
-<script type="math/tex; mode=display">\begin{equation} \label{eq:labelling}
+<p>\begin{equation} \label{eq:labelling}
 p(\mathbf{l}|\mathbf{x}) = \sum_{\pi \in \mathcal{B}^{-1}(\mathbf{l})}{p(\pi|\mathbf{x})}
-\end{equation}</script>
+\end{equation}</p>
 
-<p>where, $p(\pi|\mathbf{x})$ is the conditional probability of a path given $\mathbf{x}$, and is defined as:</p>
+<table>
+  <tbody>
+    <tr>
+      <td>where, $p(\pi</td>
+      <td>\mathbf{x})$ is the conditional probability of a path given $\mathbf{x}$, and is defined as:</td>
+    </tr>
+  </tbody>
+</table>
 
-<script type="math/tex; mode=display">\begin{equation} \label{eq:path}
-p(\pi|\mathbf{x}) = \prod_{t=1}^{T}{y_{\pi_t}^{t}},\forall \pi \in L'^{T}
-\end{equation}</script>
+<p>\begin{equation} \label{eq:path}
+p(\pi|\mathbf{x}) = \prod<em>{t=1}^{T}{y</em>{\pi_t}^{t}},\forall \pi \in L’^{T}
+\end{equation}</p>
 
 <p>To calculate \eqref{eq:obj}, we first define the forward and backward variable,</p>
 
-<script type="math/tex; mode=display">\begin{equation} \label{eq:fwd}
-\alpha_t(s) = \sum_{\pi \in L^{T}:\mathcal{B}(\pi_{1\mathord{:}t})=\mathbf{l}_{1\mathord{:}s}}
-   {\prod_{t'=1}^{t}{y^{t'}_{\pi_{t'}}}}
-\end{equation}</script>
+<p>\begin{equation} \label{eq:fwd}
+\alpha_t(s) = \sum<em>{\pi \in L^{T}:\mathcal{B}(\pi</em>{1\mathord{:}t})=\mathbf{l}<em>{1\mathord{:}s}}
+   {\prod</em>{t’=1}^{t}{y^{t’}<em>{\pi</em>{t’}}}}
+\end{equation}</p>
 
-<script type="math/tex; mode=display">\begin{equation} \label{eq:bwd}
-\beta_t(s) = \sum_{\pi \in L^{T}:\mathcal{B}(\pi_{t\mathord{:}T})=\mathbf{l}_{s\mathord{:} |\mathbf{l}'|}}
-   {\prod_{t'=t}^{T}{y^{t'}_{\pi_{t'}}}}
-\end{equation}</script>
+<p>\begin{equation} \label{eq:bwd}
+\beta_t(s) = \sum<em>{\pi \in L^{T}:\mathcal{B}(\pi</em>{t\mathord{:}T})=\mathbf{l}<em>{s\mathord{:} |\mathbf{l}’|}}
+   {\prod</em>{t’=t}^{T}{y^{t’}<em>{\pi</em>{t’}}}}
+\end{equation}</p>
 
 <p>Note that the product of the forward and backward variables at a given $s$ and $t$ is the probability of all the paths corresponding to $\mathbf{l}$ that go through the symbol $s$ at time $t$, i.e.,</p>
 
-<script type="math/tex; mode=display">\begin{equation} \label{eq:fwd_bwd_ori}
-\alpha_t(s)\beta_t(s) = \sum_{\pi \in \mathcal{B}^{-1}(\mathbf{l}):\pi_{t}=\mathbf{l}'_{s}}
-   {y^{t}_{\mathbf{l}'_{s}}\prod_{t=1}^{T}{y^{t}_{\pi_{t}}}}
-\end{equation}</script>
+<p>\begin{equation} \label{eq:fwd_bwd_ori}
+\alpha_t(s)\beta_t(s) = \sum<em>{\pi \in \mathcal{B}^{-1}(\mathbf{l}):\pi</em>{t}=\mathbf{l}’<em>{s}}
+   {y^{t}</em>{\mathbf{l}’<em>{s}}\prod</em>{t=1}^{T}{y^{t}<em>{\pi</em>{t}}}}
+\end{equation}</p>
 
 <p>Rearranging and substituting in from \eqref{eq:path} gives,</p>
 
-<script type="math/tex; mode=display">\begin{equation} \label{eq:fwd_bwd}
-\frac{\alpha_t(s)\beta_t(s)}{y^{t}_{\mathbf{l}'_{s}}} = \sum_{\pi \in \mathcal{B}^{-1}(\mathbf{l}):\pi_{t}=\mathbf{l}'_{s}}
+<p>\begin{equation} \label{eq:fwd_bwd}
+\frac{\alpha_t(s)\beta_t(s)}{y^{t}<em>{\mathbf{l}’</em>{s}}} = \sum<em>{\pi \in \mathcal{B}^{-1}(\mathbf{l}):\pi</em>{t}=\mathbf{l}’_{s}}
    {p(\pi|\mathbf{x})}
-\end{equation}</script>
+\end{equation}</p>
 
-<p>For any $t$, we can therefore sum over all $s$ to get $p(\mathbf{l} | \mathbf{x})$:</p>
+<table>
+  <tbody>
+    <tr>
+      <td>For any $t$, we can therefore sum over all $s$ to get $p(\mathbf{l}</td>
+      <td>\mathbf{x})$:</td>
+    </tr>
+  </tbody>
+</table>
 
-<script type="math/tex; mode=display">\begin{equation} \label{eq:labelling_fwd_bwd}
-p(\mathbf{l}|\mathbf{x}) = \sum_{s=1}^{|\mathbf{l}'|}\frac{\alpha_t(s)\beta_t(s)}{y^{t}_{\mathbf{l}'_{s}}}
-\end{equation}</script>
+<p>\begin{equation} \label{eq:labelling_fwd_bwd}
+p(\mathbf{l}|\mathbf{x}) = \sum<em>{s=1}^{|\mathbf{l}’|}\frac{\alpha_t(s)\beta_t(s)}{y^{t}</em>{\mathbf{l}’_{s}}}
+\end{equation}</p>
 
 <p>On the other hand, combining \eqref{eq:labelling} and \eqref{eq:path},</p>
 
-<script type="math/tex; mode=display">\begin{equation} \label{eq:labelling_all}
-p(\mathbf{l}|\mathbf{x}) = \sum_{\pi \in \mathcal{B}^{-1}(\mathbf{l})}{\prod_{t=1}^{T}{y_{\pi_t}^{t}}}
-\end{equation}</script>
+<p>\begin{equation} \label{eq:labelling_all}
+p(\mathbf{l}|\mathbf{x}) = \sum<em>{\pi \in \mathcal{B}^{-1}(\mathbf{l})}{\prod</em>{t=1}^{T}{y_{\pi_t}^{t}}}
+\end{equation}</p>
 
 <p>Thus to differentiate this with respect to $y_k^t$ , 
 we need only consider those paths going through label $k$ at time $t$
@@ -332,54 +377,71 @@ Noting that the same label (or blank) may be repeated several times for a single
 we define the set of positions where label $k$ occurs as $lab(\mathbf{l},k) = \{s : \mathbf{l}’_s = k\}$, 
 which may be empty. We then differentiate \eqref{eq:labelling_all} to get,</p>
 
-<script type="math/tex; mode=display">% <![CDATA[
-\begin{equation} \label{eq:labelling_drv}
+<p>\begin{equation} \label{eq:labelling_drv}
 \begin{split} 
 \frac{\partial p(\mathbf{l}|\mathbf{x})}{\partial y_k^t} 
-  &= \sum_{s \in lab(\mathbf{l}, k)}{\frac{\partial p(\pi|\mathbf{x})}{\partial y_k^t}} \\
-  &= \sum_{s \in lab(\mathbf{l}, k)}{\frac{\partial \prod_{t'=1}^{T}{y_{\pi_{t'}}^{t'}}}{\partial y_k^t}} \\
-  &= \sum_{s \in lab(\mathbf{l}, k)}{\frac{\partial y_k^t\prod_{t' \neq t}{y_{\pi_{t'}}^{t'}}}{\partial y_k^t}} \\
-  &= \sum_{s \in lab(\mathbf{l}, k)}{\prod_{t' \neq t}{y_{\pi_{t'}}^{t'}}} \\
-  &= \frac{1}{ {y^t_k}^2 } \sum_{s \in lab(\mathbf{l}, k)}{\alpha_t(s)\beta_t(s)}
+  &amp;= \sum<em>{s \in lab(\mathbf{l}, k)}{\frac{\partial p(\pi|\mathbf{x})}{\partial y_k^t}} <br />
+  &amp;= \sum</em>{s \in lab(\mathbf{l}, k)}{\frac{\partial \prod<em>{t’=1}^{T}{y</em>{\pi<em>{t’}}^{t’}}}{\partial y_k^t}} <br />
+  &amp;= \sum</em>{s \in lab(\mathbf{l}, k)}{\frac{\partial y_k^t\prod<em>{t’ \neq t}{y</em>{\pi<em>{t’}}^{t’}}}{\partial y_k^t}} <br />
+  &amp;= \sum</em>{s \in lab(\mathbf{l}, k)}{\prod<em>{t’ \neq t}{y</em>{\pi<em>{t’}}^{t’}}} <br />
+  &amp;= \frac{1}{ {y^t_k}^2 } \sum</em>{s \in lab(\mathbf{l}, k)}{\alpha_t(s)\beta_t(s)}
 \end{split} 
-\end{equation} %]]></script>
+\end{equation}</p>
 
 <p>At this point, we can set $\mathbf{l} = \mathbf{z}$ and substituting into \eqref{eq:obj}, then get the final gradient,</p>
 
-<script type="math/tex; mode=display">\begin{equation} \label{eq:grad}
-\frac{\partial O^{ML}(\{(\mathbf{x},\mathbf{z}\},\mathcal{N}_{w})}{\partial y_k^t} 
-    = - \frac{1}{p(\mathbf{z}|\mathbf{x})} \frac{1}{ {y^t_k}^2 } \sum_{s \in lab(\mathbf{l}, k)}{\alpha_t(s)\beta_t(s)}
-\end{equation}</script>
+<p>\begin{equation} \label{eq:grad}
+\frac{\partial O^{ML}({(\mathbf{x},\mathbf{z}},\mathcal{N}<em>{w})}{\partial y_k^t} 
+    = - \frac{1}{p(\mathbf{z}|\mathbf{x})} \frac{1}{ {y^t_k}^2 } \sum</em>{s \in lab(\mathbf{l}, k)}{\alpha_t(s)\beta_t(s)}
+\end{equation}</p>
 
-<p>where, $p(\mathbf{z}|\mathbf{x})$ can be calculated from \eqref{eq:labelling_fwd_bwd}.</p>
+<table>
+  <tbody>
+    <tr>
+      <td>where, $p(\mathbf{z}</td>
+      <td>\mathbf{x})$ can be calculated from \eqref{eq:labelling_fwd_bwd}.</td>
+    </tr>
+  </tbody>
+</table>
 
 <p>Next, we can give the gradient for the unnormalised output $u_k^t$. Recall that derivative of softmax function is, </p>
 
-<script type="math/tex; mode=display">\begin{equation} \label{eq:err_softmax}
-\frac{\partial y^t_{k'}}{\partial u_k^t} = y^t_{k'}\delta_{kk'} - y^t_{k'}y^t_k
-\end{equation}</script>
+<p>\begin{equation} \label{eq:err_softmax}
+\frac{\partial y^t<em>{k’}}{\partial u_k^t} = y^t</em>{k’}\delta<em>{kk’} - y^t</em>{k’}y^t_k
+\end{equation}</p>
 
 <p>Then we get,</p>
 
-<script type="math/tex; mode=display">% <![CDATA[
-\begin{equation} \label{eq:error_u}
+<p>\begin{equation} \label{eq:error_u}
 \begin{split} 
 \frac{\partial O}{\partial u_k^t} 
-  &= \sum_{k'}{\frac{\partial O}{\partial y^t_{k'}}\frac{\partial y^t_{k'}}{\partial u^t_k}} \\
-  &= \sum_{k'}{((y^t_{k'}\delta_{kk'} - y^t_{k'}y^t_k) (-\frac{1}{p(\mathbf{z}|\mathbf{x})} \frac{1}{ {y^t_{k'}}^2 } 
-                \sum_{s \in lab(\mathbf{l}, k')}{\alpha_t(s)\beta_t(s)}))} \\
-  &= \sum_{k'}{(\frac{1}{p(\mathbf{z}|\mathbf{x})} \frac{y^t_{k}}{ {y^t_{k'}} } 
-                \sum_{s \in lab(\mathbf{l}, k')}{\alpha_t(s)\beta_t(s)})} - \frac{1}{p(\mathbf{z}|\mathbf{x})} \frac{1}{ {y^t_k} } 
-                \sum_{s \in lab(\mathbf{l}, k)}{\alpha_t(s)\beta_t(s)}\\  
-  &= y^t_k - \frac{1}{p(\mathbf{z}|\mathbf{x})} \frac{1}{ {y^t_k} } 
-                \sum_{s \in lab(\mathbf{l}, k)}{\alpha_t(s)\beta_t(s)}\\                               
+  &amp;= \sum<em>{k’}{\frac{\partial O}{\partial y^t</em>{k’}}\frac{\partial y^t<em>{k’}}{\partial u^t_k}} <br />
+  &amp;= \sum</em>{k’}{((y^t<em>{k’}\delta</em>{kk’} - y^t<em>{k’}y^t_k) (-\frac{1}{p(\mathbf{z}|\mathbf{x})} \frac{1}{ {y^t</em>{k’}}^2 } 
+                \sum<em>{s \in lab(\mathbf{l}, k’)}{\alpha_t(s)\beta_t(s)}))} <br />
+  &amp;= \sum</em>{k’}{(\frac{1}{p(\mathbf{z}|\mathbf{x})} \frac{y^t<em>{k}}{ {y^t</em>{k’}} } 
+                \sum<em>{s \in lab(\mathbf{l}, k’)}{\alpha_t(s)\beta_t(s)})} - \frac{1}{p(\mathbf{z}|\mathbf{x})} \frac{1}{ {y^t_k} } 
+                \sum</em>{s \in lab(\mathbf{l}, k)}{\alpha_t(s)\beta_t(s)}\<br />
+  &amp;= y^t_k - \frac{1}{p(\mathbf{z}|\mathbf{x})} \frac{1}{ {y^t_k} } 
+                \sum_{s \in lab(\mathbf{l}, k)}{\alpha_t(s)\beta_t(s)}\                             <br />
 \end{split} 
-\end{equation} %]]></script>
+\end{equation}</p>
 
-<p>we write the last step by noting that $\sum_{k’}\sum_{s \in lab(\mathbf{l}, k’)}{(\cdot)} \equiv \sum_{s=1}^{|\mathbf{l}’|}{(\cdot)}$,
-then, using \eqref{eq:labelling_fwd_bwd}, the $p(\mathbf{z}|\mathbf{x})$ is canceled out.</p>
+<table>
+  <tbody>
+    <tr>
+      <td>we write the last step by noting that $\sum<em>{k’}\sum</em>{s \in lab(\mathbf{l}, k’)}{(\cdot)} \equiv \sum_{s=1}^{</td>
+      <td>\mathbf{l}’</td>
+      <td>}{(\cdot)}$,</td>
+    </tr>
+    <tr>
+      <td>then, using \eqref{eq:labelling_fwd_bwd}, the $p(\mathbf{z}</td>
+      <td>\mathbf{x})$ is canceled out.</td>
+      <td> </td>
+    </tr>
+  </tbody>
+</table>
 
-<h3 id="the-ctc-forward-backward-algorithm">The CTC Forward-Backward Algorithm</h3>
+<h2 id="the-ctc-forward-backward-algorithm">The CTC Forward-Backward Algorithm</h2>
 
 <p>The last thing we have to do is calculating the forward and backward variables. We now show that by define a recursive from, 
 these variables can be calculated efficiently.</p>
@@ -404,22 +466,28 @@ We allow all prefixes to start with either a blank ($b$) or the first symbol in 
 
 <p>and recursion</p>
 
-<script type="math/tex; mode=display">% <![CDATA[
- \begin{equation} \label{eq:alpha}
-    \alpha_t(s) = \left\{\begin{array}{ll}
-                                    y_{\mathbf{l}'_s}^t(\alpha_{t-1}(s) + \alpha_{t-1}(s-1)) & \mathbf{l}'_s = b\, \text{or} \, \mathbf{l}'_{s-2} = \mathbf{l}'_s\\
-                                    y_{\mathbf{l}'_s}^t(\alpha_{t-1}(s) + \alpha_{t-1}(s-1) + \alpha_{t-1}(s-2)) & otherwise
+<p>\begin{equation} \label{eq:alpha}
+    \alpha_t(s) = \left{\begin{array}{ll}
+                                    y<em>{\mathbf{l}’_s}^t(\alpha</em>{t-1}(s) + \alpha<em>{t-1}(s-1)) &amp; \mathbf{l}’_s = b\, \text{or} \, \mathbf{l}’</em>{s-2} = \mathbf{l}’<em>s<br />
+                                    y</em>{\mathbf{l}’<em>s}^t(\alpha</em>{t-1}(s) + \alpha<em>{t-1}(s-1) + \alpha</em>{t-1}(s-2)) &amp; otherwise
                                 \end{array} \right.
-\end{equation} %]]></script>
+\end{equation}</p>
 
 <p>Note that $\alpha_t(s) = 0, \forall s &lt; |\mathbf{l}’|-2(T -t)-1$, 
 because these variables correspond to states for which there are not enough time-steps left to complete the sequence.</p>
 
-<p>Here we can get another method to calculate $p(\mathbf{l} | \mathbf{x})$, by adding up all forward variables at time $T$, i.e.,</p>
+<table>
+  <tbody>
+    <tr>
+      <td>Here we can get another method to calculate $p(\mathbf{l}</td>
+      <td>\mathbf{x})$, by adding up all forward variables at time $T$, i.e.,</td>
+    </tr>
+  </tbody>
+</table>
 
-<script type="math/tex; mode=display"> \begin{equation} \label{eq:porb}
-    p(\mathbf{l} | \mathbf{x}) = \alpha_T(|\mathbf{l}'|) + \alpha_T(|\mathbf{l}'| - 1)
-\end{equation}</script>
+<p>\begin{equation} \label{eq:porb}
+    p(\mathbf{l} | \mathbf{x}) = \alpha_T(|\mathbf{l}’|) + \alpha_T(|\mathbf{l}’| - 1)
+\end{equation}</p>
 
 <p>Similarly, the backward variables can be initalisd as,</p>
 
@@ -434,23 +502,22 @@ because these variables correspond to states for which there are not enough time
 
 <p>and recursion</p>
 
-<script type="math/tex; mode=display">% <![CDATA[
- \begin{equation} \label{eq:beta}
-    \beta_t(s) = \left\{\begin{array}{ll}
-                y_{\mathbf{l}'_s}^t(\beta_{t+1}(s) + \beta_{t+1}(s+1)) & \mathbf{l}'_s = b\, \text{or} \, \mathbf{l}'_{s+2} = \mathbf{l}'_s\\
-                y_{\mathbf{l}'_s}^t(\beta_{t+1}(s) + \beta_{t+1}(s+1) + \beta_{t+1}(s+2)) & otherwise
+<p>\begin{equation} \label{eq:beta}
+    \beta_t(s) = \left{\begin{array}{ll}
+                y<em>{\mathbf{l}’_s}^t(\beta</em>{t+1}(s) + \beta<em>{t+1}(s+1)) &amp; \mathbf{l}’_s = b\, \text{or} \, \mathbf{l}’</em>{s+2} = \mathbf{l}’<em>s<br />
+                y</em>{\mathbf{l}’<em>s}^t(\beta</em>{t+1}(s) + \beta<em>{t+1}(s+1) + \beta</em>{t+1}(s+2)) &amp; otherwise
                   \end{array} \right.
-\end{equation} %]]></script>
+\end{equation}</p>
 
 <p>Note that $\beta_t(s) = 0, \forall s &gt; 2t$.</p>
 
-<p>Following figure  illustrate the forward backward algorithm applied to the labelling ‘CAT’(from the paper).</p>
+<p>Following figure (\autoref{fig:alpha-beta}) illustrate the forward backward algorithm applied to the labelling ‘CAT’(from the paper).</p>
 
-<p><img class="center" src="/images/posts/CTC-alpha-beta.png" title="Alpha-Beta Algorithm" alt="fig:alpha-beta" /></p>
+<p>\begin{figure}[h]\centering\includegraphics[width=\textwidth]{source//images/posts/CTC-alpha-beta.png}\caption{Alpha-Beta Algorithm}\label{fig:alpha-beta}\end{figure}</p>
 
-<h2 id="the-implementation">The Implementation</h2>
+<h1 id="the-implementation">The Implementation</h1>
 
-<p>The <code>TranscriptionLayer</code> class inherits the <code>SoftmaxLayer</code> class(see <a href="/blog/2015/02/05/rnnlib-softmax-layer/">this post</a>).
+<p>The <code>TranscriptionLayer</code> class inherits the <code>SoftmaxLayer</code> class(see \href{http://wantee.github.io/blog/2015/02/05/rnnlib-softmax-layer/}{ this post}).
 The <code>feed_forward()</code> and <code>feed_back()</code> methods are the general softmax function, 
 so only need to implement the <code>calculate_errors()</code> method to calculate the $\frac{\partial O}{\partial y_k^t}$.
 In order to use \eqref{eq:grad} to get output error, first need to calculate the $\alpha$s and $\beta$s.
@@ -459,16 +526,16 @@ Forward variables are got using \eqref{eq:alpha}. </p>
 <p>But backward variables are in another form, given in Graves’ <a href="http://www6.in.tum.de/Main/Publications/Graves2008c.pdf">Dissertation</a>.
 Consider backward variable started from time $t+1$,</p>
 
-<script type="math/tex; mode=display">\begin{equation} \label{eq:bwd_new}
-\tilde\beta_t(s) = \sum_{\pi \in L^{T}:\mathcal{B}(\pi_{t\mathord{:}T})=\mathbf{l}_{s\mathord{:} |\mathbf{l}'|}}
-   {\prod_{t'=t+1}^{T}{y^{t'}_{\pi_{t'}}}}
-\end{equation}</script>
+<p>\begin{equation} \label{eq:bwd_new}
+\tilde\beta_t(s) = \sum<em>{\pi \in L^{T}:\mathcal{B}(\pi</em>{t\mathord{:}T})=\mathbf{l}<em>{s\mathord{:} |\mathbf{l}’|}}
+   {\prod</em>{t’=t+1}^{T}{y^{t’}<em>{\pi</em>{t’}}}}
+\end{equation}</p>
 
 <p>Noting that, $\beta$ and $\tilde\beta$ has a simple relationship:</p>
 
-<script type="math/tex; mode=display">\begin{equation} \label{eq:bwd_relaion}
-\beta_t(s) = y_{\pi_{t}}^t\tilde\beta_t(s)
-\end{equation}</script>
+<p>\begin{equation} \label{eq:bwd_relaion}
+\beta_t(s) = y<em>{\pi</em>{t}}^t\tilde\beta_t(s)
+\end{equation}</p>
 
 <p>Thus, we can get recursion formula for $\tilde\beta$ by substituting \eqref{eq:bwd_relaion} into \eqref{eq:beta},</p>
 
@@ -481,68 +548,81 @@ Consider backward variable started from time $t+1$,</p>
 \end{split} 
  %]]></script>
 
-<script type="math/tex; mode=display">% <![CDATA[
- \begin{equation} \label{eq:beta_new}
-    \tilde\beta_t(s) = \left\{\begin{array}{ll}
-                y_{\mathbf{l}'_s}^{t+1}\tilde\beta_{t+1}(s) + y_{\mathbf{l}'_{s+1}}^{t+1}\tilde\beta_{t+1}(s+1) & \mathbf{l}'_s = b\, \text{or} \, \mathbf{l}'_{s+2} = \mathbf{l}'_s\\
-                y_{\mathbf{l}'_s}^{t+1}\tilde\beta_{t+1}(s) + y_{\mathbf{l}'_{s+1}}^{t+1}\tilde\beta_{t+1}(s+1) + y_{\mathbf{l}'_{s+2}}^{t+1}\tilde\beta_{t+1}(s+2) & otherwise
+<p>\begin{equation} \label{eq:beta_new}
+    \tilde\beta_t(s) = \left{\begin{array}{ll}
+                y<em>{\mathbf{l}’_s}^{t+1}\tilde\beta</em>{t+1}(s) + y<em>{\mathbf{l}’</em>{s+1}}^{t+1}\tilde\beta<em>{t+1}(s+1) &amp; \mathbf{l}’_s = b\, \text{or} \, \mathbf{l}’</em>{s+2} = \mathbf{l}’<em>s<br />
+                y</em>{\mathbf{l}’<em>s}^{t+1}\tilde\beta</em>{t+1}(s) + y<em>{\mathbf{l}’</em>{s+1}}^{t+1}\tilde\beta<em>{t+1}(s+1) + y</em>{\mathbf{l}’<em>{s+2}}^{t+1}\tilde\beta</em>{t+1}(s+2) &amp; otherwise
                 \end{array} \right.
-\end{equation} %]]></script>
+\end{equation}</p>
 
-<p>Noting that, if $\mathbf{l}’_s \neq blank$, then $\mathbf{l}’_{s+1}$ must be $blank$.</p>
+<p>Noting that, if $\mathbf{l}’<em>s \neq blank$, then $\mathbf{l}’</em>{s+1}$ must be $blank$.</p>
 
 <p>And the gradient for output \eqref{eq:grad} becomes,</p>
 
-<script type="math/tex; mode=display">\begin{equation} \label{eq:grad_new}
-\frac{\partial O^{ML}(\{(\mathbf{x},\mathbf{z}\},\mathcal{N}_{w})}{\partial y_k^t} 
-    = - \frac{1}{p(\mathbf{z}|\mathbf{x})} \frac{1}{ y^t_k } \sum_{s \in lab(\mathbf{l}, k)}{\alpha_t(s)\tilde\beta_t(s)}
-\end{equation}</script>
+<p>\begin{equation} \label{eq:grad_new}
+\frac{\partial O^{ML}({(\mathbf{x},\mathbf{z}},\mathcal{N}<em>{w})}{\partial y_k^t} 
+    = - \frac{1}{p(\mathbf{z}|\mathbf{x})} \frac{1}{ y^t_k } \sum</em>{s \in lab(\mathbf{l}, k)}{\alpha_t(s)\tilde\beta_t(s)}
+\end{equation}</p>
 
 <p>where,</p>
 
-<script type="math/tex; mode=display">\begin{equation}
-p(\mathbf{z}|\mathbf{x}) = \sum_{s=1}^{|\mathbf{z}'|}{\alpha_t(s)\tilde\beta_t(s)}
-\end{equation}</script>
+<p>\begin{equation}
+p(\mathbf{z}|\mathbf{x}) = \sum_{s=1}^{|\mathbf{z}’|}{\alpha_t(s)\tilde\beta_t(s)}
+\end{equation}</p>
 
-<p>Actually, the RNNLIB code computes $p(\mathbf{z}|\mathbf{x})$ using \eqref{eq:porb}.</p>
+<table>
+  <tbody>
+    <tr>
+      <td>Actually, the RNNLIB code computes $p(\mathbf{z}</td>
+      <td>\mathbf{x})$ using \eqref{eq:porb}.</td>
+    </tr>
+  </tbody>
+</table>
 
 <p>To wrap up, CTC using a forward-backward algorithm to efficiently compute the RNN output errors, 
 corresponding to a new ML objective function. With these errors, 
 we can use any traditional gradient methods to train the network.</p>
 
-<h2 id="decoding">Decoding</h2>
+<h1 id="decoding">Decoding</h1>
 
 <p>Once the network is trained, we would use it to transcribe some unknown input sequence $\mathbf{x}$.
 <em>Decoding</em> is referred to the task of finding the best labelling $\mathbf{l}^*$,</p>
 
-<script type="math/tex; mode=display">\begin{equation}
-\mathbf{l}^* = \mathop{\arg\!\max}\limits_{\mathbf{l}}{\,p(\mathbf{l}|\mathbf{x})}
-\end{equation}</script>
+<p>\begin{equation}
+\mathbf{l}^* = \mathop{\arg!\max}\limits_{\mathbf{l}}{\,p(\mathbf{l}|\mathbf{x})}
+\end{equation}</p>
 
 <p>There are two approximate algorithms.</p>
 
-<h3 id="best-path-decoding">Best Path Decoding</h3>
+<h2 id="best-path-decoding">Best Path Decoding</h2>
 
 <p>This method assumes that the most probable path corresponding to the most probable labelling,</p>
 
-<script type="math/tex; mode=display">\begin{equation}
+<p>\begin{equation}
 \mathbf{l}^* \approx \mathcal{B}(\pi^*)
-\end{equation}</script>
+\end{equation}</p>
 
-<p>where $\pi^* = \mathop{\arg\!\max}\limits_{\pi}{\,p(\pi|\mathbf{x})}$.</p>
+<table>
+  <tbody>
+    <tr>
+      <td>where $\pi^* = \mathop{\arg\!\max}\limits_{\pi}{\,p(\pi</td>
+      <td>\mathbf{x})}$.</td>
+    </tr>
+  </tbody>
+</table>
 
 <p>This is trivial to compute, simply by concatenating the most active outputs at every time step.
 But it can lead to errors, because that the map $\mathcal{B}$ is a many-to-one map.</p>
 
-<h3 id="prefix-search-decoding">Prefix Search Decoding</h3>
+<h2 id="prefix-search-decoding">Prefix Search Decoding</h2>
 
 <p>By modifying the forward variables, this method can efficiently calculate the probabilities of successive extensions of labelling prefixes.</p>
 
 <p>Prefix search decoding is a best-first search through the tree of labellings, 
 where the children of a given labelling are those that share it as a prefix. 
-At each step the search extends the labelling whose children have the largest cumulative probability (see below figure).</p>
+At each step the search extends the labelling whose children have the largest cumulative probability (see below figure(\autoref{fig:prefix-search-decoding})).</p>
 
-<p><img class="center" src="/images/posts/CTC-prefix-decoding.png" title="Prefix Search Decoding" alt="fig:prefix-search-decoding" /> </p>
+<p>\begin{figure}[h]\centering\includegraphics[width=\textwidth]{source//images/posts/CTC-prefix-decoding.png}\caption{Prefix Search Decoding}\label{fig:prefix-search-decoding}\end{figure}</p>
 
 <p>Each node either ends ($e$) or extends the prefix at its parent node. 
 The number above an extending node is the total probability of all labellings beginning with that prefix. 
@@ -555,38 +635,38 @@ Let $\gamma_t(\mathbf{p}_n)$ be the probability of the network outputting prefix
 by time $t$ such that a non-blank label is output at $t$. Similarly, let $\gamma_t(\mathbf{p}_b)$ be the
 probability of the network outputting prefix $\mathbf{p}$ by time $t$ such that the blank label is output at $t$. i.e.</p>
 
-<script type="math/tex; mode=display">\begin{equation}
-\gamma_t(\mathbf{p}_n) = p(\pi_{1\mathord{:}t} : \mathcal{B}(\pi_{1\mathord{:}t}) = \mathbf{p}, \pi_t = \mathbf{p}_{ | \mathbf{p} | } \mid \mathbf{x})
-\end{equation}</script>
+<p>\begin{equation}
+\gamma_t(\mathbf{p}<em>n) = p(\pi</em>{1\mathord{:}t} : \mathcal{B}(\pi<em>{1\mathord{:}t}) = \mathbf{p}, \pi_t = \mathbf{p}</em>{ | \mathbf{p} | } \mid \mathbf{x})
+\end{equation}</p>
 
-<script type="math/tex; mode=display">\begin{equation}
-\gamma_t(\mathbf{p}_b) = p(\pi_{1\mathord{:}t} : \mathcal{B}(\pi_{1\mathord{:}t}) = \mathbf{p}, \pi_t = blank \mid \mathbf{x})
-\end{equation}</script>
+<p>\begin{equation}
+\gamma_t(\mathbf{p}<em>b) = p(\pi</em>{1\mathord{:}t} : \mathcal{B}(\pi_{1\mathord{:}t}) = \mathbf{p}, \pi_t = blank \mid \mathbf{x})
+\end{equation}</p>
 
 <p>Then for a length $T$ input sequence $\mathbf{x}$, $p(\mathbf{p} | \mathbf{x}) = \gamma_T(\mathbf{p}_n) + \gamma_T(\mathbf{p}_b)$.
 Also let $p(\mathbf{p}\dots | \mathbf{x})$ be the cumulative probability of all labelling not equal to $\mathbf{p}$ 
 of which <script type="math/tex">\mathbf{p}</script> is a prefix</p>
 
-<script type="math/tex; mode=display">\begin{equation}
+<p>\begin{equation}
 p(\mathbf{p} \dotsc \mid \mathbf{x}) = \sum_{\mathbf{l} \neq \emptyset}{p(\mathbf{p} + \mathbf{l} \mid \mathbf{x})}
-\end{equation}</script>
+\end{equation}</p>
 
 <p>where $\emptyset$ is the empty sequence. $p(\mathbf{p} \dotsc \mid \mathbf{x})$ is the value for extending node
 in the prefix tree, and $p(\mathbf{p} \mid \mathbf{x})$ is the value for end node.</p>
 
 <p>In fact, by definition, relation between $\gamma$ and $\alpha$ is,</p>
 
-<script type="math/tex; mode=display"> \begin{equation}
+<p>\begin{equation}
     \gamma_t(\mathbf{p}_n) = \alpha_t(2 | \mathbf{p} |)
-\end{equation}</script>
+\end{equation}</p>
 
-<script type="math/tex; mode=display"> \begin{equation}
+<p>\begin{equation}
     \gamma_t(\mathbf{p}_b) = \alpha_t(2 | \mathbf{p} | + 1)
-\end{equation}</script>
+\end{equation}</p>
 
-<p>Using \eqref{eq:alpha}, we get the recursion for $\gamma_t(\mathbf{p}_n)$ given $\gamma_{t-1}(\mathbf{p}_n)$,
-extending $\mathbf{p}^*$ to 
-$\mathbf{p} = \mathbf{p}^* + k$ with label $k \in L$,</p>
+<p>Using \eqref{eq:alpha}, we get the recursion for $\gamma_t(\mathbf{p}<em>n)$ given $\gamma</em>{t-1}(\mathbf{p}_n)$,
+extending $\mathbf{p}^<em>$ to 
+$\mathbf{p} = \mathbf{p}^</em> + k$ with label $k \in L$,</p>
 
 <script type="math/tex; mode=display">% <![CDATA[
 
@@ -599,27 +679,26 @@ $\mathbf{p} = \mathbf{p}^* + k$ with label $k \in L$,</p>
 \end{split} 
  %]]></script>
 
-<script type="math/tex; mode=display">% <![CDATA[
- \begin{equation}
-    \gamma_t(\mathbf{p}_n) = \left\{\begin{array}{ll}
-                y_k^t(\gamma_{t-1}(\mathbf{p}^*_b) + \gamma_{t-1}(\mathbf{p}_n)) & \mathbf{p}^* \,\,\text{ends in} \,\, k \\
-                y_k^t(\gamma_{t-1}(\mathbf{p}^*_b) + \gamma_{t-1}(\mathbf{p}^*_n) + \gamma_{t-1}(\mathbf{p}_n))  & otherwise
+<p>\begin{equation}
+    \gamma_t(\mathbf{p}<em>n) = \left{\begin{array}{ll}
+                y_k^t(\gamma</em>{t-1}(\mathbf{p}^<em>_b) + \gamma_{t-1}(\mathbf{p}_n)) &amp; \mathbf{p}^</em> \,\,\text{ends in} \,\, k <br />
+                y_k^t(\gamma<em>{t-1}(\mathbf{p}^*_b) + \gamma</em>{t-1}(\mathbf{p}^*<em>n) + \gamma</em>{t-1}(\mathbf{p}_n))  &amp; otherwise
                 \end{array} \right.
-\end{equation} %]]></script>
+\end{equation}</p>
 
-<script type="math/tex; mode=display"> \begin{equation}
-    \gamma_t(\mathbf{p}_b) = y_b^t(\gamma_{t-1}(\mathbf{p}_b) + \gamma_{t-1}(\mathbf{p}_n))
-\end{equation}</script>
+<p>\begin{equation}
+    \gamma_t(\mathbf{p}<em>b) = y_b^t(\gamma</em>{t-1}(\mathbf{p}<em>b) + \gamma</em>{t-1}(\mathbf{p}_n))
+\end{equation}</p>
 
 <p>And calculating the path probabilities,</p>
 
-<script type="math/tex; mode=display"> \begin{equation}
-    p(\mathbf{p} \mid \mathbf{x}) = \gamma_{T}(\mathbf{p}_b) + \gamma_{T}(\mathbf{p}_n)
-\end{equation}</script>
+<p>\begin{equation}
+    p(\mathbf{p} \mid \mathbf{x}) = \gamma<em>{T}(\mathbf{p}_b) + \gamma</em>{T}(\mathbf{p}_n)
+\end{equation}</p>
 
-<script type="math/tex; mode=display"> \begin{equation}
-    p(\mathbf{p}\dotsc \mid \mathbf{x}) = \gamma_1(\mathbf{p}_n) + \sum_{t=2}^{T}{(\gamma_{t}(\mathbf{p}_n) - y^t_k \gamma_{t-1}(\mathbf{p}_n))} - p(\mathbf{p} \mid \mathbf{x})
-\end{equation}</script>
+<p>\begin{equation}
+    p(\mathbf{p}\dotsc \mid \mathbf{x}) = \gamma_1(\mathbf{p}<em>n) + \sum</em>{t=2}^{T}{(\gamma<em>{t}(\mathbf{p}_n) - y^t_k \gamma</em>{t-1}(\mathbf{p}_n))} - p(\mathbf{p} \mid \mathbf{x})
+\end{equation}</p>
 
 <p>The extension procedure start from $\mathbf{p}^* = \emptyset$, with initialisation,</p>
 
@@ -666,7 +745,7 @@ then apply the above algorithm to each section individually and concatenate thes
 
 <span class="categories">
   
-    <a class='category' href='/blog/categories/neural-network/'>neural network</a>
+    <a class='category' href='/blog/categories/neural-network/'>Neural Network</a>
   
 </span>
 
@@ -675,7 +754,7 @@ then apply the above algorithm to each section individually and concatenate thes
     
       <div class="sharing">
   
-  <a href="//twitter.com/share" class="twitter-share-button" data-url="http://wantee.github.io/blog/2015/02/08/rnnlib-connectionist-temporal-classification-and-transcription-layer/" data-via="" data-counturl="http://wantee.github.io/blog/2015/02/08/rnnlib-connectionist-temporal-classification-and-transcription-layer/" >Tweet</a>
+  <a href="//twitter.com/share" class="twitter-share-button" data-url="http://wantee.github.io/assets/printables/2015-02-08-rnnlib-connectionist-temporal-classification-and-transcription-layer.pdf.html" data-via="" data-counturl="http://wantee.github.io/assets/printables/2015-02-08-rnnlib-connectionist-temporal-classification-and-transcription-layer.pdf.html" >Tweet</a>
   
   
   
@@ -684,10 +763,6 @@ then apply the above algorithm to each section individually and concatenate thes
     
     <p class="meta">
       
-        <a class="basic-alignment left" href="/blog/2015/02/05/rnnlib-softmax-layer/" title="Previous Post: RNNLIB: Softmax Layer">&laquo; RNNLIB: Softmax Layer</a>
-      
-      
-        <a class="basic-alignment right" href="/blog/2015/03/03/dropout-training/" title="Next Post: Dropout Training">Dropout Training &raquo;</a>
       
     </p>
   </footer>
@@ -779,8 +854,8 @@ then apply the above algorithm to each section individually and concatenate thes
       
         
         // var disqus_developer = 1;
-        var disqus_identifier = 'http://wantee.github.io/blog/2015/02/08/rnnlib-connectionist-temporal-classification-and-transcription-layer/';
-        var disqus_url = 'http://wantee.github.io/blog/2015/02/08/rnnlib-connectionist-temporal-classification-and-transcription-layer/';
+        var disqus_identifier = 'http://wantee.github.io/assets/printables/2015-02-08-rnnlib-connectionist-temporal-classification-and-transcription-layer.pdf.html';
+        var disqus_url = 'http://wantee.github.io/assets/printables/2015-02-08-rnnlib-connectionist-temporal-classification-and-transcription-layer.pdf.html';
         var disqus_script = 'embed.js';
       
     (function () {
