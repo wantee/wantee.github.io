@@ -1,0 +1,11 @@
+\begin{tikzpicture}
+    \node (J) at ( 0,  0) {$J$}; 
+    \node (netk) at ( 0, -2) {$net^o_k$};
+    \node (wkj) at ( 0, -4) {$w_{kj}$};
+
+    \begin{scope}[every path/.style={->}]
+       \draw (J) -- node [left] {$\frac{\partial J}{\partial net^o_k}$} (netk);
+       \draw (netk) -- node [left] {$\frac{\partial net^o_k}{\partial w_{kj}}$} (wkj);
+    \end{scope}  
+\end{tikzpicture}
+

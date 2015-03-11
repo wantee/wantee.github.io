@@ -1,0 +1,29 @@
+\begin{tikzpicture}
+    \node (yj) at ( 0, 0) {$y_j(t)$};
+    \node (sj) at ( 0, -2) {$net^s_j(t)$};
+    \node (netj) at ( -4, -4) {$net^h_j(t)$};
+    \node (netrj) at ( 4, -4) {$net^r_j(t)$};
+    \node (wji) at ( 0, -9) {$w_{ji}$};
+    
+    \node (y1) at ( 0, -6.5) {$y_1(t-1)$};
+    \node (y1m) at ( 2, -6.5) {$\cdots$};
+    \node (ym) at ( 4, -6.5) {$y_m(t-1)$};
+    \node (ymh) at ( 6, -6.5) {$\cdots$};
+    \node (yh) at ( 8, -6.5) {$y_H(t-1)$};
+    
+    \begin{scope}[every path/.style={->}]
+       \draw (yj) -- node [left] {$\frac{\partial y_j(t)}{\partial net^s_j(t)}$} (sj);
+       \draw (sj) -- node [above=.5em, left] {$\frac{\partial net^s_j(t)}{\partial net^h_j(t)}$} (netj);
+       \draw (netj) -- node [left] {$\frac{\partial net^h_j(t)}{\partial w_{ji}}$} (wji);
+       
+       \draw (sj) -- node [above=.5em, right] {$\frac{\partial net^s_j(t)}{\partial net^r_j(t)}$} (netrj);
+       \draw (netrj) -- node [above=.5em, left] {$\frac{\partial net^r_j(t)}{\partial y_1(t-1)}$} (y1);
+       \draw (netrj) -- node [left] {$\frac{\partial net^r_j(t)}{\partial y_m(t-1)}$} (ym);
+       \draw (netrj) -- node [above=.5em, right] {$\frac{\partial net^r_j(t)}{\partial y_H(t-1)}$} (yh);
+
+       \draw[dashed] (y1) -- node [solid, near start, left] {$\frac{\partial y_1(t-1)}{\partial w_{ji}}$}  (wji);
+       \draw[dashed] (ym) -- node [solid, left] {$\frac{\partial y_m(t-1)}{\partial w_{ji}}$}  (wji);
+       \draw[dashed] (yh) -- node [solid, below=.7em, right] {$\frac{\partial y_H(t-1)}{\partial w_{ji}}$}  (wji);
+    \end{scope} 
+\end{tikzpicture}
+

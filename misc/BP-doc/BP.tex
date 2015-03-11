@@ -1,0 +1,525 @@
+% XeLaTeX can use any Mac OS X font. See the setromanfont command below.
+% Input to XeLaTeX is full Unicode, so Unicode characters can be typed directly into the source.
+
+% The next lines tell TeXShop to typeset with xelatex, and to open and save the source with Unicode encoding.
+
+%!TEX TS-program = xelatex
+%!TEX encoding = UTF-8 Unicode
+
+\documentclass[12pt]{article}
+\usepackage{geometry}                % See geometry.pdf to learn the layout options. There are lots.
+\geometry{letterpaper}                   % ... or a4paper or a5paper or ... 
+%\geometry{landscape}                % Activate for for rotated page geometry
+%\usepackage[parfill]{parskip}    % Activate to begin paragraphs with an empty line rather than an indent
+\usepackage{graphicx}
+\usepackage{amssymb}
+\usepackage[linesnumberedhidden,ruled,boxed]{algorithm2e}
+
+\usepackage{amsmath}
+\usepackage{bm}
+\usepackage{esdiff}
+\usepackage{indentfirst}
+\usepackage[hidelinks]{hyperref}
+\usepackage[all]{hypcap}
+
+\usepackage{vhistory}
+
+%\usepackage{standalone}
+\usepackage{tikz}
+
+\usepackage{natbib}
+
+\newcommand{\pluseq}{\mathrel{+}=}
+
+\numberwithin{equation}{section}
+
+\hypersetup{
+    pdfinfo={
+        Title={Note on Learning Neural Network},
+        Author={Wang Jian},
+        Subject={BP algorithm}
+    }
+}
+
+\title{Note on Learning Neural Network}
+\author{Wang Jian}
+\date{Version \vhCurrentVersion\ from \vhCurrentDate}
+
+\begin{document}
+\maketitle
+\begin{versionhistory}
+  \vhEntry{0.1}{12/14/2014}{Wang Jian}{Basic backpropagation}
+  \vhEntry{0.2}{01/11/2015}{Wang Jian}{RTRL for RNN}
+   \vhEntry{0.3}{03/11/2015}{Wang Jian}{BPTT for RNN}
+\end{versionhistory}
+
+\tableofcontents
+\newpage
+
+\section{Preliminary}
+\subsection{Non-linear function}
+\subsubsection{Sigmoid}
+\begin{equation}
+    \sigma(x) = \frac{1}{1 + e^{-x}}
+\end{equation}
+\begin{equation} \label{eq:sigmoid_diff}
+    \frac{d\sigma(x)}{dx} = \sigma(x)(1 - \sigma(x)) 
+\end{equation}
+
+\subsubsection{Hyperbolic tangent}
+\begin{equation}
+    \tanh(x) = \frac{e^x-e^{-x}}{e^x + e^{-x}}
+\end{equation}
+\begin{equation}
+    \frac{d\tanh(x)}{dx} = 1 - \tanh^2(x)
+\end{equation}
+
+\subsubsection{Softmax}
+\begin{equation} \label{eq:softmax}
+    S_i(\bm{z}) = \frac{e^{z_i}}{\sum_k{e^{z_k}} }
+\end{equation}
+\begin{equation} \label{eq:softmax_diff}
+    \frac{\partial\log(S_i(\bm{z}))}{\partial z_j} = \delta_{ij} - S_i({\bm{z}}) 
+\end{equation}
+where $\delta_{ij}$ is  Kronecker delta, 
+$$
+    \delta_{ij} = \left\{\begin{array}{rl}
+                                    1 & i = j \\
+                                    0 & i \neq j 
+                                \end{array} \right.
+$$
+
+\subsection{Cross entropy}
+\begin{equation} \label{eq:cross_ent}
+    J(\bm{w}) = -\sum_k{t_k}{\log z_k}
+\end{equation}
+
+\subsection{Gradient descent}
+In order to find a local minimum of a convex function, we can iteratively update the parameters using the following equation,
+\begin{equation} \label{eq:gd}
+    \Delta\bm{w} = -\alpha\frac{\partial J}{\partial \bm{w}}
+\end{equation}
+where, $\alpha$ is the learning rate, controlling step size of every iteration.
+
+\subsubsection{Batch Gradient Descent}
+For data set with many examples, we can apply \autoref{eq:gd} by simply adding up all examples,
+\begin{equation} \label{eq:bgd}
+    \Delta\bm{w} = -\alpha\sum_r\frac{\partial J^{r}}{\partial \bm{w}}
+\end{equation}
+where, $r$ runs through all examples in data set. The algorithm for BGD is shown in \autoref{alg:bgd}.
+
+\begin{algorithm}[H] 
+  \caption{Batch Gradient Descent} \label{alg:bgd}
+  \KwIn{$N$: number of iterations, $R$: number of examples}
+  
+  \For{$n = 1:N$} {
+    $\Delta\bm{w} = 0$ \\
+    \For{$r = 1:R$} {
+       $\Delta\bm{w} \pluseq -\alpha\frac{\partial J^{r}}{\partial \bm{w}}$ 
+    }
+    $\bm{w} \pluseq \Delta\bm{w}$
+  }
+\end{algorithm}
+
+\subsubsection{Stochastic Gradient Descent}
+BGD have to run through all the samples to do a single update, for large data set this may cause problems.
+To make the updating faster, we can do the update with every one example, which leads to the SGD algorithm, shown in \autoref{alg:sgd}.
+
+\begin{algorithm}[H] 
+  \caption{Stochastic Gradient Descent} \label{alg:sgd}
+  \KwIn{$N$: number of iterations, $R$: set of examples}
+  
+  \For{$n = 1:N$} {
+    \For{$r = UniqRandom(R)$} {
+       $\Delta\bm{w} = -\alpha\frac{\partial J^{r}}{\partial \bm{w}}$ \\
+       $\bm{w} \pluseq \Delta\bm{w}$
+    }
+  }
+\end{algorithm}
+where the $UniqRandom$ function randomly and not repeatedly chooses one example from data set. 
+
+SGD often converges much faster compared to BGD but the error function is not as well minimised as in the case of BGD. 
+To compromise, we can use a method called Mini-Batch SGD, which uses a small subset instead the whole training set to do the update, shown in \autoref{alg:mini}.
+
+\begin{algorithm}[H] 
+  \caption{Mini-Batch Stochastic Gradient Descent} \label{alg:mini}
+  \KwIn{$N$: number of iterations, $B$: set of mini-batch, $R$: set of examples}
+  
+  \For{$n = 1:N$} {
+     \For{$B = UniqRandomSet(R)$} {
+       $\Delta\bm{w} = 0$ \\
+       \For{$r = UniqRandom(B)$} {
+         $\Delta\bm{w} \pluseq -\alpha\frac{\partial J^{r}}{\partial \bm{w}}$ \\
+       }
+       $\bm{w} \pluseq \Delta\bm{w}$
+    }
+  }
+\end{algorithm}
+
+As we can see, batch gradient descent is deterministic, which means that every time you run BGD for a given training set, 
+you will get the same optimum in the same number of iterations.  
+Stochastic gradient descent is, however, stochastic.  Because you are no longer using your entire training set a once, 
+and instead picking one or more examples at a time in some likely random fashion, 
+each time you tun SGD you will obtain a different optimum and a unique cost vs. iteration history.
+
+\subsection{The Multivariable Chain Rule}
+Multivariable Chain Rules allow us to differentiate with respect to any of the variables involved.
+One can use the \textit{variable-dependence diagram} as a simple way to apply this Chain Rule. 
+we can compute the derivatives by 
+simply adding up all paths starting at the dependent variables and ending at the independent variables, 
+multiplying derivatives along each path.
+
+For example, suppose that we have $x=f_1(u)$, $x=f_2(v)$,$y=f_3(u)$,$y=f_4(v)$,$z=f_5(x)$ and $z=f_6(y)$,
+\autoref{fig:chain_rule} shows the diagram,
+\begin{figure}[ht]
+\begin{center}
+  %\includestandalone{chain_rule}
+  \input{figs/chain_rule}
+  
+  \caption{Variable-dependence diagram}
+  \label{fig:chain_rule}
+\end{center}
+\end{figure}
+
+Then we can get the derivatives,
+$$
+    \frac{\partial z}{\partial u} = \frac{\partial z}{\partial x}\frac{\partial x}{\partial u} +  \frac{\partial z}{\partial y}\frac{\partial y}{\partial u}
+$$
+$$
+    \frac{\partial z}{\partial v} = \frac{\partial z}{\partial x}\frac{\partial x}{\partial v} +  \frac{\partial z}{\partial y}\frac{\partial y}{\partial v}
+$$
+
+\subsection{Network architecture}
+For the network discussed in this paper, the \textit{activation function} of input and hidden layer is sigmoid or hyperbolic tangent,
+the activation function of output layer is softmax, and the \textit{loss function} is cross entropy.
+
+The target vector is 1-of-V coding, i.e.
+$$
+    t_k = \left\{\begin{array}{rl}
+                                    1 & k = k_0 \\
+                                    0 & k \neq k_0 
+                                \end{array} \right.
+$$
+then the loss function \eqref{eq:cross_ent} becomes:
+\begin{equation}  \label{eq:loss}
+    J(\bm{w}) = -\sum_k t_k\log z_k = -\log z_{k_0}
+\end{equation}
+
+Throughout this paper, $x_i$ denotes the input, $y_j$ denotes hidden layer activation,
+$z_k$ denotes output layer activation. Moreover, $I$ is the input layer size ant $\mathcal{I}$ is the set of indices for input layer, 
+$H$ is the hidden layer size and $\mathcal{H}$ is the set of indices for hidden layer,
+$O$ is the output layer size  and $\mathcal{O}$ is the set of indices for output layer. 
+To simplify notations, whenever involving summation, $i$, $j$ and $k$ always
+runs through the proper set.
+
+\section{Feed-forward Network} \label{sec:ffnn}
+A \textit{Feed-forward Neural Network}\cite{duda2012pattern} is an artificial neural network where connections between the units do not form a directed cycle. 
+\subsection{Forward pass}
+Input layer to hidden layer:
+\begin{equation}
+    net^h_j = \sum_i{w_{ji}x_i}
+\end{equation}
+\begin{equation} \label{eq:hidden_ac}
+    y_j = \sigma(net^h_j)
+\end{equation}
+
+Hidden layer to output layer:
+\begin{equation} \label{eq:ff_netk}
+    net^o_k = \sum_j{w_{kj}y_j}
+\end{equation}
+\begin{equation} \label{eq:output_ac}
+    z_k = S_k(\bm{net^o})
+\end{equation}
+
+\subsection{Backpropagation}
+\subsubsection{Weight between hidden layer and output layer} 
+The variable-dependence diagram for differentiating $J$ w.r.t. $w_{kj}$ is shown in \autoref{fig:chain_rule_output},
+\begin{figure}[ht]
+\begin{center}
+  \input{figs/chain_rule_output}
+  
+  \caption{Variable-dependence diagram for $w_{kj}$}
+  \label{fig:chain_rule_output}
+\end{center}
+\end{figure}
+
+So the derivative of $w_{kj}$ is
+\begin{equation}
+    \frac{\partial J}{\partial w_{kj}} = \frac{\partial J}{\partial net^o_k}\frac{\partial net^o_k}{\partial w_{kj}}
+\end{equation}
+for the first term on the right side:
+\begin{align} \label{eq:output_diff}
+    \frac{\partial J}{\partial net^o_k} &= \frac{\partial( -\log z_{k_0})}{\partial net^o_k}  =   \frac{\partial( -\log S_{k_0}({\bm{net^o}}) )}{\partial net^o_k}     
+                                                                                                                                         && \text{substituting \eqref{eq:loss} and \eqref{eq:output_ac}} \nonumber \\
+                                                   &= \delta_{kk_0} - S_{k_0}({\bm{net^o}})                       && \text{from \eqref{eq:softmax_diff}} \nonumber \\
+                                                   &= \delta_{kk_0} - z_{k_0}                                             && \text{from \eqref{eq:output_ac}}
+\end{align}
+and the second term can be deduced by differentiating \eqref{eq:ff_netk} :
+\begin{equation}
+    \frac{\partial net^o_k}{\partial w_{kj}} = y_j
+\end{equation}
+
+We can define the \textit{error} of output layer is
+\begin{equation} \label{eq:output_err}
+    e_k \equiv \delta_{kk_0} - z_{k_0}
+\end{equation}
+then, we get
+\begin{equation}\label{eq:output_grad}
+    \frac{\partial J}{\partial w_{kj}} = e_k y_j
+\end{equation}
+
+
+\subsubsection{Weight between input layer and hidden layer}
+\autoref{fig:chain_rule_hidden} shows the variable-dependence diagram for differentiating $J$ w.r.t. $w_{ji}$,
+\begin{figure}[ht]
+\begin{center}
+  \input{figs/chain_rule_hidden}
+  
+  \caption{Variable-dependence diagram for $w_{ji}$}
+  \label{fig:chain_rule_hidden}
+\end{center}
+\end{figure}
+
+The derivative of $w_{ji}$ is
+\begin{equation} \label{eq:hidden_diff_w}
+    \frac{\partial J}{\partial w_{ji}} = \frac{\partial J}{\partial y_j}\frac{\partial y_j}{\partial w_{ji}} 
+                                             = \frac{\partial J}{\partial y_j}\frac{\partial y_j}{\partial net^h_j}\frac{\partial net^h_j}{\partial w_{ji}}
+\end{equation}
+where, $\frac{\partial J}{\partial y_j}$ is
+\begin{align} \label{eq:hidden_diff}
+    \frac{\partial J}{\partial y_j} &= \sum_k{\frac{\partial J}{\partial net^o_k}\frac{\partial net^o_k}{\partial y_j}}   && \nonumber \\
+                                               &=   \sum_k{(\delta_{kk_0} - z_{k_0})\frac{\partial net^o_k}{\partial y_j}}     && \text{substituting \eqref{eq:output_diff}} \nonumber \\
+                                               &=   \sum_k{(\delta_{kk_0} - z_{k_0})w_{kj}}    && \text{take partial derivative} \nonumber \\
+                                               &=   \sum_k{e_k w_{kj}}   &&\text{substituting \eqref{eq:output_err}} 
+\end{align}
+make use of \eqref{eq:sigmoid_diff} and \eqref{eq:hidden_ac}
+\begin{equation} \label{eq:hidden_diff_net}
+   \frac{\partial y_j}{\partial net^h_j} = \sigma'(net^h_j) =  y_j(1 - y_j)
+\end{equation}
+and
+\begin{equation} \label{eq:hidden_net_diff_w}
+   \frac{\partial net^h_j}{\partial w_{ji}} = x_i
+\end{equation}
+
+Similarly, we define the error of hidden layer is
+\begin{equation}
+    e_j \equiv \sigma'(net^h_j) \sum_k{e_k w_{kj}}
+\end{equation}
+so that the gradient of $w_{ji}$ takes the same form as $w_{kj}$,
+\begin{equation}
+    \frac{\partial J}{\partial w_{ji}} = e_j x_i 
+\end{equation}
+
+Thus, for the non-output layer, calculating weight update involves: a) the input $x_i$; b) the derivative of output $\sigma'(net^h_j)$; 
+and c) the error back propagating from upper layer $\sum_k{e_k w_{kj}} $.  
+
+\section{Recurrent Neural Network}
+\textit{Recurrent Neural Network}\cite{mikolov2012statistical} is a neural network where connections between hidden layer units form directed cycle. 
+\subsection{Forward pass}
+Input layer to hidden layer:
+\begin{equation}
+    net^h_j(t) = \sum_i{w_{ji}x_i(t)}
+\end{equation}
+
+Hidden layer to hidden layer:
+\begin{equation} \label{eq:rnn_hidden_net}
+    net^r_j(t) = \sum_{s \in \mathcal{S}}{w_{js}y_s(t - 1)}
+\end{equation}
+where we denote the new set of indices for hidden-to-hidden weights as $\mathcal{S}$.
+
+Hidden layer activiation:
+\begin{equation} 
+    net^s_j(t) = net^h_j(t) + net^r_j(t)
+\end{equation}
+\begin{equation} \label{eq:rnn_hidden_ac}
+    y_j(t) = \sigma(net^s_j(t))
+\end{equation}
+
+Hidden layer to output layer:
+\begin{equation} \label{eq:rnn_ff_netk}
+    net^o_k(t) = \sum_j{w_{kj}y_j(t)}
+\end{equation}
+\begin{equation} \label{eq:rnn_output_ac}
+    z_k(t) = S_k(\bm{net^o}(t))
+\end{equation}
+
+\subsection{Backpropagation}
+Gradient for $w_{kj}$ is essentially the  same as Feed-forward Network, i.e.
+\begin{equation}
+    \frac{\partial J}{\partial w_{kj}} = e_ky_j
+\end{equation}
+
+For $w_{ji}$ and $w_{js}$, there are several methods to calculate their gradients.
+
+\subsubsection{Real-Time Recurrent Learning}
+RTRL\cite{williams1989learning} computes the derivatives in an online way, thus the name "Real-Time".
+Because of the recurrent term \eqref{eq:rnn_hidden_net}, variations in $w_{ji}$ give rise to variations in the error function through variations in the all $y_j$s.
+
+The variable-dependence diagram for differentiating $J$ w.r.t. $w_{ji}$ is shown in \autoref{fig:chain_rule_rtrl_J_y},
+\begin{figure}[ht]
+\begin{center}
+  \input{figs/chain_rule_rtrl_J_y}
+  
+  \caption{Variable-dependence diagram for $w_{ji}$ of RTRL. Dashed line denotes a path which may through several variables.}
+  \label{fig:chain_rule_rtrl_J_y}
+\end{center}
+\end{figure}
+
+We can write the derivative of $J$ w.r.t. $w_{ji}$, 
+\begin{equation}
+    \frac{\partial J}{\partial w_{ji}} = \sum_k{\frac{\partial J}{\partial net^o_k} \sum_{l \in \mathcal{S}}{\frac{\partial net^o_k}{\partial y_l(t)} \frac{\partial y_l(t)}{\partial w_{ji}}}}
+\end{equation}
+
+As for feed-forward network, $\frac{\partial J}{\partial net^o_k} = e_k$ and $\frac{\partial net^o_k}{\partial y_l(t)} = w_{kl}$.
+For the $\frac{\partial y_l(t)}{\partial w_{ji}}$ part, the variable-dependence diagram is shown in \autoref{fig:chain_rule_rtrl_y_w},
+\begin{figure}[ht]
+\begin{center}
+  \input{figs/chain_rule_rtrl_y_w}
+  
+  \caption{Variable-dependence diagram for $\frac{\partial y_l(t)}{\partial w_{ji}}$ part of RTRL, where $l = j$.}
+  \label{fig:chain_rule_rtrl_y_w}
+\end{center}
+\end{figure}
+
+\autoref{fig:chain_rule_rtrl_y_w} shows the situation where $l = j$. The diagram of $l \neq j$ does not have the left-most path from $net^s_j(t)$ to $w_{ji}$.
+Therefore, the derivative of $y_l(t)$ w.r.t. $w_{ji}$ is,
+\begin{equation}
+    \frac{\partial y_l(t)}{\partial w_{ji}} = \delta_{lj}\frac{\partial y_l(t)}{\partial net^s_l(t)} \frac{\partial net^s_l(t)}{\partial net^h_l(t)}\frac{\partial net^h_l(t)}{\partial w_{ji}} 
+                                                           + \frac{\partial y_l(t)}{\partial net^s_l(t)} \frac{\partial net^s_l(t)}{\partial net^r_l(t)} 
+                                                              \sum_{m \in \mathcal{S}} \frac{\partial net^r_l(t)}{\partial y_m(t-1)} \frac{\partial y_m(t-1)}{\partial w_{ji}}
+\end{equation}
+Note that, $\frac{\partial net^s_l(t)}{net^h_l(t)} = \frac{\partial net^s_l(t)}{net^r_l(t)} = 1$, 
+so the first term of right side is the same as \eqref{eq:hidden_diff_net} and \eqref{eq:hidden_net_diff_w},
+\begin{equation} \label{eq:rnn_hidden_diff_w_i}
+    \frac{\partial y_l(t)}{\partial net^s_l(t)} \frac{\partial net^s_l(t)}{\partial net^h_l(t)}\frac{\partial net^h_l(t)}{\partial w_{ji}} = \sigma'(net^s_l(t))x_i(t)
+\end{equation}
+However, the second term involves recurrent variable,
+\begin{equation} \label{eq:rnn_hidden_diff_w_h}
+   \frac{\partial y_l(t)}{\partial net^s_l(t)} \frac{\partial net^s_l(t)}{\partial net^r_l(t)} 
+    \sum_{m \in \mathcal{S}} \frac{\partial net^r_l(t)}{\partial y_m(t-1)} \frac{\partial y_m(t-1)}{\partial w_{ji}}  
+             = \sigma'(net^s_l(t))\sum_{m \in \mathcal{S}} w_{jm} \frac{\partial y_m(t-1)}{\partial w_{ji}}
+\end{equation}
+
+thus, combining  \eqref{eq:rnn_hidden_diff_w_i} and \eqref{eq:rnn_hidden_diff_w_h}, we get,
+\begin{equation}
+    \frac{\partial y_l(t)}{\partial w_{ji}} = \sigma'(net^s_l(t))(\delta_{lj}x_i(t) + \sum_{m \in \mathcal{S}} w_{jm} \frac{\partial y_m(t-1)}{\partial w_{ji}})
+\end{equation}
+
+Put all together, we get the final result,
+\begin{equation} \label{eq:rnn_wji}
+    \frac{\partial J}{\partial w_{ji}} = \sum_k{e_k \sum_{l \in \mathcal{S}} { w_{kl} \sigma'(net^s_l(t))(\delta_{lj}x_i(t) + \sum_{m \in \mathcal{S}} w_{jm} \frac{\partial y_m(t-1)}{\partial w_{ji}})}}
+\end{equation}
+
+The hidden to hidden layer weights $w_{js}$ is similar with $w_{ji}$, but the variable-dependence diagram for $\frac{\partial y_l(t)}{\partial w_{js}}$ 
+also does not have the left-most $net^h_j$-through path in \autoref{fig:chain_rule_rtrl_y_w}. i.e.,
+\begin{equation}
+    \frac{\partial y_l(t)}{\partial w_{js}} =  \frac{\partial y_l(t)}{\partial net^s_l(t)} \frac{\partial net^s_l(t)}{\partial net^r_l(t)} 
+                                                               \frac{\partial net^r_l(t)}{\partial w_{js}}
+\end{equation}
+
+Next, From \eqref{eq:rnn_hidden_net} we can get $\frac{\partial net^r_l(t)}{\partial w_{js}}$,
+\begin{equation}
+    \frac{\partial net^r_l(t)}{\partial w_{js}} = \delta_{lj} y_s(t-1) +
+                                                               \sum_{m \in \mathcal{S}} {w_{jm}\frac{\partial y_m(t-1)}{\partial w_{js}}}
+\end{equation}
+
+Therefore, we get the derivative of $w_{js}$,
+\begin{equation} \label{eq:rnn_wjs}
+    \frac{\partial J}{\partial w_{js}} = \sum_k{e_k \sum_{l \in \mathcal{S}} { w_{kl} \sigma'(net^s_l(t))(\delta_{lj}y_s(t-1) 
+                                                      + \sum_{m \in \mathcal{S}} w_{jm} \frac{\partial y_m(t-1)}{\partial w_{js}})}}
+\end{equation}
+
+Following \cite{williams1989learning}, we can combine \eqref{eq:rnn_wji} and \eqref{eq:rnn_wjs}, if we define
+$$
+    p_n(t) = \left\{\begin{array}{ll}
+                                    x_n(t) &  n \in \mathcal{I}  \\
+                                    y_n(t-1) &  n \in \mathcal{S} 
+                          \end{array} \right.
+$$
+where $n \in \mathcal{I} \cup \mathcal{S}$, then we can get a unified form of result
+\footnote{The result in the original paper \cite{williams1989learning} seems simpler than ours, 
+this is because the network in their paper does not have a output layer.},
+\begin{equation}
+    \frac{\partial J}{\partial w_{jn}} = \sum_k{e_k \sum_{l \in \mathcal{S}} { w_{kl} \sigma'(net^s_l(t))(\delta_{lj}p_n(t) 
+                                                      + \sum_{m \in \mathcal{S}} w_{jm} \frac{\partial y_m(t-1)}{\partial w_{jn}})}}
+\end{equation}
+
+\subsubsection{Backpropagation Through Time}
+BPTT\cite{Williams90anefficient} can be derived by unfolding the temporal operation of a network into a 
+multilayer feedforward network that grows by one layer on each time step. In detail, in every time step, we
+performs followings sequentially，as shown in \autoref{fig:bptt},
+\begin{enumerate}
+\item In the forward pass, we add one hidden layer, connecting from input layer and hidden layer for time $t-1$,
+         then compute the activation of the new layer as activation of time $t$;
+\item In the backpropagation, we compute the derivatives using BP through the whole network at time $t$, 
+         fixing all weights the same, then update the weights simultaneously.
+\end{enumerate}
+Note that each hidden layer in the unfolded network corresponds a single time step, thus when we
+propagate errors through layers, we are actually ``backpropagating through time".
+
+\begin{figure}[ht]
+\begin{center}
+  \input{figs/bptt}
+  
+  \caption{RNN unfolded as a feed-forward NN, here 3 time steps back in time. 
+                Dashed and dotted arrows indicate how the gradients are propagated}
+  \label{fig:bptt}
+\end{center}
+\end{figure}
+
+The unfold network is simply a feed-forward network, thus we can directly use the results obtained in \autoref{sec:ffnn}.
+ At time $t_0$, we first compute the errors for each layer,
+\begin{equation}
+      e_j(t) = \left\{\begin{array}{ll}
+                                    \sum_k{e_k(t) w_{kj}} &  t=t_0  \\
+                                    \sum_{l \in \mathcal{S}}{e_l(t + 1) w_{lj}} &  t < t_0 
+                          \end{array} \right.
+\end{equation}
+
+Gradient of $w_{kj}$ is the same as \eqref{eq:output_grad}.
+For $w_{ji}(t)$, denoting the weight comes out from $x_i(t)$, we have
+\begin{equation}
+    \frac{\partial J}{\partial w_{ji}(t)} = x_i(t)e_j(t)
+\end{equation}
+
+Because that we'd like to update the weights simultaneously in one time step, we add up all $t_0$-layer gradients to compute the $\Delta\bm{w}$,
+\begin{equation}\label{eq:bptt_delta_wji}
+   \Delta w_{ji}(t_0) = -\alpha\sum_{t'=1}^{t_0}\frac{\partial J}{\partial w_{ji}(t')} = -\alpha\sum_{t'=1}^{t_0}x_i(t')e_j(t')
+\end{equation}
+
+Similarly, the updating value of $w_{js}$ is 
+\begin{equation}\label{eq:bptt_delta_wjs}
+   \Delta w_{js}(t_0) = -\alpha\sum_{t'=1}^{t_0}\frac{\partial J}{\partial w_{js}(t')} = -\alpha\sum_{t'=1}^{t_0}y_s(t'-1)e_j(t')
+\end{equation}
+
+It is easy to see that back propagate for the whole time history for every time step is too complexity, and the error gradients quickly vanish or explode).
+So several steps of unfolding are sufficient, which leads to the \emph{Truncated BPTT}. Suppose we only unfold for $T$ time step, 
+then \eqref{eq:bptt_delta_wji} and \eqref{eq:bptt_delta_wjs} become
+\begin{equation}
+   \Delta w_{ji}(t_0) = -\alpha\sum_{t'=t_0-T}^{t_0}x_i(t')e_j(t')
+\end{equation}
+
+and
+
+\begin{equation}
+   \Delta w_{js}(t_0) =  -\alpha\sum_{t'=t_0-T}^{t_0}y_s(t'-1)e_j(t')
+\end{equation}
+
+
+As the on-line update would lead to large computational complexity, we can update the weights in mini-batches. 
+The flow of gradients is illustrated in \autoref{fig:bptt_block}.
+
+\begin{figure}[ht]
+\begin{center}
+  \input{figs/bptt_block}
+  
+  \caption{Mini-Batch BPTT training, with mini-batch size 3 and 2 time steps back}
+  \label{fig:bptt_block}
+\end{center}
+\end{figure}
+
+
+\bibliographystyle{plain}
+\bibliography{BP}
+
+\end{document} 

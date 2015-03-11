@@ -1,0 +1,17 @@
+\begin{tikzpicture}
+    \node (z) at ( 0,  0) {$z$}; 
+    \node (x) at (-2, -2) {$x$};
+    \node (y) at ( 2, -2) {$y$};
+    \node (u) at ( -1.5, -4) {$u$};
+    \node (v) at ( 1.5, -4) {$v$};
+
+    \begin{scope}[every path/.style={->}]
+       \draw (u) -- node [left] {$\frac{\partial x}{\partial u}$} (x);
+       \draw (u) -- node [near end, above] {$\frac{\partial y}{\partial u}$} (y); 
+       \draw (v) -- node [near end, above] {$\frac{\partial x}{\partial v}$} (x);
+       \draw (v) -- node [right] {$\frac{\partial y}{\partial v}$} (y); 
+       \draw (x) -- node [left] {$\frac{\partial z}{\partial x}$} (z);
+       \draw (y) -- node [right] {$\frac{\partial z}{\partial y}$} (z);
+    \end{scope}  
+\end{tikzpicture}
+

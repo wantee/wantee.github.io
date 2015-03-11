@@ -23,10 +23,13 @@ deploy_dir      = "_deploy"   # deploy directory (for Github pages deployment)
 stash_dir       = "_stash"    # directory to stash posts for speedy generation
 posts_dir       = "_posts"    # directory for blog files
 printables_dir   = "assets/printables"# directory for printable version blog files
+miscs_dir   = "assets/miscs"# directory for printable version blog files
 themes_dir      = ".themes"   # directory for blog files
 new_post_ext    = "markdown"  # default new post file extension when using the new_post task
 new_page_ext    = "markdown"  # default new page file extension when using the new_page task
 server_port     = "4000"      # port for preview server eg. localhost:4000
+
+blog_url = "http://wantee.github.io"
 
 if (/cygwin|mswin|mingw|bccwin|wince|emx/ =~ RUBY_PLATFORM) != nil
   puts '## Set the codepage to 65001 for Windows machines'
@@ -71,6 +74,82 @@ task :gen_pdf => pdfs do
   pdfs.each do |pdf|
     Rake::Task[pdf].execute
   end
+end
+
+bp_dir = "misc/BP-doc/"
+bp = "#{source_dir}/#{posts_dir}/2015-03-11-note-on-learning-neural-network.markdown"
+desc "Generate BP-doc"
+file bp => ["#{bp_dir}/BP.toc", "#{bp_dir}/BP.hst"] do |t|
+  version = 0.1
+  File.open("#{bp_dir}/BP.hst", 'r') do |f|
+    while line = f.gets
+      if /\\def\s+\\vhCurrentVersion\s+{(?<version>.*?)}/ =~ line
+        break
+      end
+    end
+  end
+  puts version
+  if ! File.exists?("#{source_dir}/#{miscs_dir}/")
+    mkdir_p "#{source_dir}/#{miscs_dir}/"
+  end
+  bp_dst = "#{miscs_dir}/BP-#{version}.pdf"
+  system("cp #{bp_dir}/BP.pdf #{source_dir}/#{bp_dst}")
+
+  contents = ""
+  File.open("#{bp_dir}/BP.toc", 'r') do |f|
+    while line = f.gets
+      if /{\\numberline {(?<num>.*?)}(?<title>.*?)}/ =~ line
+        if /\\contentsline {section}/ =~ line
+          contents = "#{contents}* #{num} #{title}\n"
+        end
+        if /\\contentsline {subsection}/ =~ line
+          contents = "#{contents}  * #{num} #{title}\n"
+        end
+        if /\\contentsline {subsubsection}/ =~ line
+          contents = "#{contents}    * #{num} #{title}\n"
+        end
+      end
+    end
+  end
+
+  File.open("#{bp_dir}/markdown.tmp", 'w') do |tmp|
+    File.open("#{bp}", 'r') do |f|
+      skip = false
+      while line = f.gets
+        if /{% comment %} FOR-TOC {% endcomment %}/ =~ line
+          tmp.puts line
+          tmp.puts contents
+          skip = true
+          next
+        end
+
+        if /{% comment %} FOR-TOC-END {% endcomment %}/ =~ line
+          skip = false
+        end
+
+        if skip
+          next
+        end
+
+        if /{% comment %} FOR-PDFLINK {% endcomment %}(.*?){% comment %} FOR-PDFLINK-END {% endcomment %}/ =~ line
+          line = line.sub(/{% comment %} FOR-PDFLINK {% endcomment %}(.*?){% comment %} FOR-PDFLINK-END {% endcomment %}/, 
+                  "{% comment %} FOR-PDFLINK {% endcomment %}#{blog_url}/#{bp_dst}{% comment %} FOR-PDFLINK-END {% endcomment %}")
+        end
+        tmp.puts line
+      end
+    end
+  end
+  system("mv #{bp_dir}/markdown.tmp #{bp}")
+end
+
+desc "Generate BP-doc toc"
+file "#{bp_dir}/BP.toc" => "#{bp_dir}/BP.tex" do
+  system("cd #{bp_dir}; make > /dev/null")
+end
+
+desc "Generate BP-doc hst"
+file "#{bp_dir}/BP.hst" => "#{bp_dir}/BP.tex" do
+  system("cd #{bp_dir}; make > /dev/null")
 end
 
 desc "Generate jekyll site"
@@ -471,6 +550,8 @@ def gen_pdf(markdownfile, pdffile, source_dir, posts_dir)
           line = line.sub(/{% comment %} FOR-LATEX (.*?) {% endcomment %}/, markup)
         end
 
+        line = line.gsub(/{% comment %} (.*?) {% endcomment %}/, "")
+
         while /{% post_link (?<markup>[^\s]+)(?<text>\s+.+)? %}/ =~ line
           /^(?<year>\d+)-(?<month>\d+)-(?<day>\d+)-(?<title>.*)/ =~ markup
 
@@ -483,7 +564,7 @@ def gen_pdf(markdownfile, pdffile, source_dir, posts_dir)
                 end
             end
           end
-          line = line.sub(/{% post_link (.*?) %}/, "\\href{http://wantee.github.io/blog/#{year}/#{month}/#{day}/#{title}/}{#{text}}")
+          line = line.sub(/{% post_link (.*?) %}/, "\\href{#{blog_url}/blog/#{year}/#{month}/#{day}/#{title}/}{#{text}}")
         end
 
         post.puts line

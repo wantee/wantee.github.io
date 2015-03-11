@@ -15,3 +15,16 @@ Gemfile.lock
 
 *~
 source/assets/printables/
+source/assets/miscs/
+
+*.aux
+*.hst
+*.log
+*.out
+*.synctex.gz
+*.toc
+*.ver
+*.bbl
+*.blg
+*.xdv
+

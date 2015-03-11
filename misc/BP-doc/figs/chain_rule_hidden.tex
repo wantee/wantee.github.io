@@ -1,0 +1,25 @@
+\begin{tikzpicture}
+    \node (J) at ( 0,  0) {$J$}; 
+    \node (netk1) at ( -4, -2.5) {$net^o_1$};
+    \node (netk1k) at ( -2, -2.5) {$\cdots$};
+    \node (netk) at ( 0, -2.5) {$net^o_k$};
+    \node (netkkn) at ( 2, -2.5) {$\cdots$};
+    \node (netkn) at ( 4, -2.5) {$net^o_O$};
+    \node (yj) at ( 0, -5) {$y_j$};
+    \node (netj) at ( 0, -7) {$net^h_j$};
+    \node (wji) at ( 0, -9) {$w_{ji}$};
+    
+    \begin{scope}[every path/.style={->}]
+       \draw (J) -- node [above=.5em, left] {$\frac{\partial J}{\partial net^o_1}$} (netk1);
+       \draw (J) -- node [left] {$\frac{\partial J}{\partial net^o_k}$} (netk);
+       \draw (J) -- node [above=.5em, right] {$\frac{\partial J}{\partial net^o_O}$} (netkn);
+       
+       \draw (netk1) -- node [below=.6em, left] {$\frac{\partial net^o_1}{\partial y_j}$} (yj);
+       \draw (netk) -- node [left] {$\frac{\partial net^o_k}{\partial y_j}$} (yj);
+       \draw (netkn) -- node [below=.6em, right] {$\frac{\partial net^o_O}{\partial y_j}$} (yj);
+       
+       \draw (yj) -- node [left] {$\frac{\partial y_j}{\partial net^h_j}$} (netj);
+       \draw (netj) -- node [left] {$\frac{\partial net^h_j}{\partial w_{ji}}$} (wji);
+    \end{scope}  
+\end{tikzpicture}
+

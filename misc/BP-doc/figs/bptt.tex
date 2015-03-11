@@ -1,0 +1,76 @@
+\begin{tikzpicture}
+    \begin{scope}[every path/.style={thick, >=latex, ->}]
+       \pgfmathsetmacro{\ts}{3} % time steps
+      
+       \pgfmathsetmacro{\hht}{2}  % hidden layer height
+       \pgfmathsetmacro{\iht}{4} % input and output layer height
+       \pgfmathsetmacro{\wid}{0.5} % layer width
+       
+       \pgfmathsetmacro{\ihd}{0.5} % distance between input and hidden layer
+       \pgfmathsetmacro{\tw}{2} % width between time steps
+       
+       \pgfmathsetmacro{\th}{\hht + \ihd + \iht / 2 - \hht / 2} % height between time steps
+       
+       \pgfmathsetmacro{\ar}{\wid * 1.5} % length of input and output arrow
+       \pgfmathsetmacro{\iap}{4 / 5} % position of input arrow
+       \pgfmathsetmacro{\oa}{8} % num of output arrow
+       \pgfmathsetmacro{\oad}{\iht / \oa} % distance between output arrow
+       
+       \pgfmathsetmacro{\wtd}{.2} % distances between weight lines
+        
+       \foreach \t in {1,...,\ts} {
+         \pgfmathsetmacro{\x}{\t*(\wid + \tw)}
+         \pgfmathsetmacro{\h}{\t*\th}
+         
+         \draw (\x, \h) rectangle +(\wid, \hht);
+         \pgfmathsetmacro{\y}{\ts - \t + 1}
+         
+         \pgfmathparse{(\y==0)?1:0}
+         \ifdim\pgfmathresult pt>0pt {%
+           \path (\x, \h) --  +(\wid, 0) node[midway, below] {$y(t)$};
+         } \else {%
+           \path (\x, \h) --  +(\wid, 0) node[midway, below] {$y(t-\pgfmathprintnumber{\y})$};
+         } %
+         \fi
+         
+         \pgfmathsetmacro{\h}{\t*\th + \hht + \ihd}
+         \draw (\x, \h) rectangle +(\wid, \iht);
+         \pgfmathsetmacro{\y}{\ts - \t}
+         
+         \pgfmathparse{(\y==0)?1:0}
+         \ifdim\pgfmathresult pt>0pt {%
+           \path (\x, {\h + \iht}) --  +(\wid, 0) node[midway, above] {$x(t)$};
+         } \else {%
+           \path (\x, {\h + \iht}) --  +(\wid, 0) node[midway, above] {$x(t-\pgfmathprintnumber{\y})$};
+         } %
+         \fi
+         \draw ({\x - \ar}, {\h + (\iap * \iht)}) -- +(\ar, 0);
+
+         \draw ({\x + \wid}, {\h + \iht / 2}) -- node[midway, above]{$w_{ji}$} +(\tw, 0);
+         \draw ({\x + \wid + \tw}, {\h + \iht / 2 - \wtd}) [dashed] -- +(-\tw, 0);
+         \draw ({\x + \wid}, {\t*\th + \hht / 2}) -- node[midway, left]{$w_{js}$} +(\tw, {\hht / 2 + \ihd + (\iht / 2 - \hht / 2) + \hht / 4});
+         \draw ({\x + \wid + \tw}, {\t*\th + \hht / 2 + \hht / 2 + \ihd + (\iht / 2 - \hht / 2) + \hht / 4 - \wtd}) [dashdotted] -- ({\x + \wid}, {\t*\th + \hht / 2 - \wtd});
+       }
+       
+        \pgfmathsetmacro{\x}{(\ts + 1)*(\wid + \tw)}
+        \pgfmathsetmacro{\h}{(\ts + 1)*\th}
+        \draw (\x, \h) rectangle +(\wid, \hht);
+        \path (\x, \h) --  +(\wid, 0) node[midway, below] {$y(t)$};
+        
+        \pgfmathsetmacro{\x}{(\ts + 1)*(\wid + \tw) + \wid}
+        \pgfmathsetmacro{\h}{(\ts + 1)*\th + \hht / 2}
+        \draw (\x, \h) -- +(\tw, 0) node[midway, above] {$w_{kj}$};
+        \draw ({\x + \tw}, {\h - \wtd}) [dotted] -- +(-\tw, 0);
+         
+        \pgfmathsetmacro{\x}{(\ts + 1)*(\wid + \tw) + \wid + \tw}
+        \pgfmathsetmacro{\h}{(\ts + 1)*\th + \hht / 2 - \iht / 2}
+        \draw (\x, \h) rectangle +(\wid, \iht);
+        \path (\x, {\h + \iht}) --  +(\wid, 0) node[midway, above] {$z(t)$};
+        
+        \pgfmathsetmacro{\x}{(\ts + 1)*(\wid + \tw) + \wid + \tw + \wid}
+        \foreach \i in {1,...,\oa} {
+          \draw (\x, {\h + 0.5 * \oad + (\i - 1) * \oad}) -- +(\ar, 0);
+        }
+    \end{scope}  
+\end{tikzpicture}
+
