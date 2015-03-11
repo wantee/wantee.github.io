@@ -7,6 +7,7 @@ comments: true
 categories: [Neural Network]
 header-includes:
    - \usepackage{graphicx}
+   - \usepackage[all]{hypcap}
 ---
 
 RNNLIB is a recurrent neural network library for sequence learning problems,

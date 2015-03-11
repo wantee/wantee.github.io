@@ -7,6 +7,7 @@ comments: true
 categories: [Neural Network]
 header-includes:
    - \usepackage{graphicx}
+   - \usepackage[all]{hypcap}
 ---
 
 * list element with functor item

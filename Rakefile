@@ -139,6 +139,7 @@ task :new_post, :title do |t, args|
     post.puts "categories: "
     post.puts "header-includes:"
     post.puts "   - \\usepackage{graphicx}"
+    post.puts "   - \\usepackage[all]{hypcap}"
     post.puts "---"
   end
 end
@@ -430,9 +431,26 @@ def gen_pdf(markdownfile, pdffile, source_dir, posts_dir)
   end
 
   tmpfile="#{pdffile}.markdown"
+  comment = false
   File.open(tmpfile, 'w') do |post|
     File.open(markdownfile, "r") do |file|  
-      while line=file.gets
+      while line = file.gets
+        line = line.strip
+
+        if /^{% comment %}$/ =~ line
+          comment = true
+          next
+        end
+
+        if /^{% endcomment %}$/ =~ line
+          comment = false
+          next
+        end
+
+        if comment
+          next
+        end
+
         line=line.gsub(/\$\$\s*\\begin{equation}/, '\\begin{equation}')
         line=line.gsub(/\\end{equation}\s*\$\$/, '\\end{equation}')
         line=line.gsub(/\\\*/, '*')
