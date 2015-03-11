@@ -9,7 +9,7 @@
   <meta name="author" content="Wantee Wang">
 
   
-  <meta name="description" content="The Method Implementation in Kaldi Dropout is a regularisation technique for reducing over-fitting in large neural nets. Hinton proposes the method &hellip;">
+  <meta name="description" content="In Mini-Batch Learning, we update the parameter $\mathbf{w}$ every $b$ examples. There are two ways to do the update. First, using the summation of &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -76,6 +76,60 @@
     <div id="content">
       <div class="blog-index">
   
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2015/03/10/mini-batch-gradient-descent/">Mini-Batch Gradient Descent</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+<time class='entry-date' datetime='2015-03-10T21:44:23+08:00'><span class='date'><span class='date-month'>Mar</span> <span class='date-day'>10</span><span class='date-suffix'>th</span>, <span class='date-year'>2015</span></span> <span class='time'>9:44 pm</span></time>
+        <span class="printable">
+
+
+  
+
+
+<a href="/assets/printables/2015-03-10-mini-batch-gradient-descent.pdf"> <img src="/images/printer.png" alt="printable version"> </a>
+
+</span>
+
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>In Mini-Batch Learning, we update the parameter $\mathbf{w}$ every $b$ examples. There are two ways to do the update.</p>
+
+<p>First, using the summation of all examples in the mini-batch, i.e.,</p>
+
+<script type="math/tex; mode=display">\begin{equation}\label{eq:sum}
+  \Delta\mathbf{w} = - \alpha_1 \sum_{i=l}^{l+b-1}{\nabla E^{(i)}}
+\end{equation}</script>
+
+<p>Second, using the average of all examples in the mini-batch, i.e.,</p>
+
+<script type="math/tex; mode=display">\begin{equation}\label{eq:avg}
+  \Delta\mathbf{w} = - \alpha_2 \frac{1}{b} \sum_{i=l}^{l+b-1}{\nabla E^{(i)}}
+\end{equation}</script>
+
+<p>From \eqref{eq:sum} and \eqref{eq:avg}, we can see that by simply scaling the learning rate, i.e. $\alpha_1 = \frac{1}{b} \alpha_2$, these two method can be equivalent. </p>
+
+</div>
+  
+  
+
+
+    </article>
   
   
     <article>
@@ -1052,6 +1106,10 @@ i.e. without any human expertise.</p>
     <section>
   <h1>Recent Posts</h1>
   <ul id="recent_posts">
+    
+      <li class="post">
+        <a href="/blog/2015/03/10/mini-batch-gradient-descent/">Mini-Batch Gradient Descent</a>
+      </li>
     
       <li class="post">
         <a href="/blog/2015/03/03/dropout-training/">Dropout Training</a>

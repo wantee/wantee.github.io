@@ -4,7 +4,7 @@
   <title><![CDATA[Formula Coding]]></title>
   <link href="http://wantee.github.io/atom.xml" rel="self"/>
   <link href="http://wantee.github.io/"/>
-  <updated>2015-03-06T19:44:44+08:00</updated>
+  <updated>2015-03-11T12:16:05+08:00</updated>
   <id>http://wantee.github.io/</id>
   <author>
     <name><![CDATA[Wantee Wang]]></name>
@@ -12,6 +12,30 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[Mini-Batch Gradient Descent]]></title>
+    <link href="http://wantee.github.io/blog/2015/03/10/mini-batch-gradient-descent/"/>
+    <updated>2015-03-10T21:44:23+08:00</updated>
+    <id>http://wantee.github.io/blog/2015/03/10/mini-batch-gradient-descent</id>
+    <content type="html"><![CDATA[<p>In Mini-Batch Learning, we update the parameter $\mathbf{w}$ every $b$ examples. There are two ways to do the update.</p>
+
+<p>First, using the summation of all examples in the mini-batch, i.e.,</p>
+
+<script type="math/tex; mode=display">\begin{equation}\label{eq:sum}
+  \Delta\mathbf{w} = - \alpha_1 \sum_{i=l}^{l+b-1}{\nabla E^{(i)}}
+\end{equation}</script>
+
+<p>Second, using the average of all examples in the mini-batch, i.e.,</p>
+
+<script type="math/tex; mode=display">\begin{equation}\label{eq:avg}
+  \Delta\mathbf{w} = - \alpha_2 \frac{1}{b} \sum_{i=l}^{l+b-1}{\nabla E^{(i)}}
+\end{equation}</script>
+
+<p>From \eqref{eq:sum} and \eqref{eq:avg}, we can see that by simply scaling the learning rate, i.e. $\alpha_1 = \frac{1}{b} \alpha_2$, these two method can be equivalent. </p>
+
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[Dropout Training]]></title>

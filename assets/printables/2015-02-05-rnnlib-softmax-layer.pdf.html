@@ -9,7 +9,8 @@
   <meta name="author" content="Wantee Wang">
 
   
-  <meta name="description" content="\tableofcontents I used to think that, in order to get the proper gradient, we have to take derivative of $\log$ of softmax with respect to weights. &hellip;">
+  <meta name="description" content="\tableofcontents I used to think that, in order to get the proper gradient, we have to take derivative of
+$\log$ of softmax with respect to weights. &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -107,9 +108,9 @@
 
 <div class="entry-content"><p>\tableofcontents</p>
 
-<p>I used to think that, in order to get the proper gradient, we have to take derivative of 
+<p>I used to think that, in order to get the proper gradient, we have to take derivative of
 $\log$ of softmax with respect to weights. However,
-the RNNLIB shows that we can actually factorize the network into single layers. In this post, 
+the RNNLIB shows that we can actually factorize the network into single layers. In this post,
 we look into the Softmax Layer.</p>
 
 <h1 id="fundamentals">Fundamentals</h1>
@@ -154,12 +155,12 @@ S_i(\mathbf{u}) = \frac{e^{u_i}}{\sum_k{e^{u_k}}} = y_i
 <p>the derivative of softmax is,</p>
 
 <p>\begin{equation} \label{eq:softmax_dev}
-    \frac{\partial S_i(\mathbf{u})}{\partial u_j} =
-    \frac{\partial y_i}{\partial u_j} = 
-          \left{\begin{array}{ll}
-                        y_i(1-y_i) &amp; i = j <br />
-                        -y_iy_j &amp; i \neq j 
-                \end{array} \right.
+\frac{\partial S_i(\mathbf{u})}{\partial u_j} =
+\frac{\partial y_i}{\partial u_j} =
+\left{\begin{array}{ll}
+y_i(1-y_i) &amp; i = j <br />
+-y_iy_j &amp; i \neq j
+\end{array} \right.
 \end{equation}</p>
 
 <h2 id="layers-in-rnnlib">Layers in RNNLIB</h2>
@@ -197,42 +198,42 @@ Their relations with terms in math are shown in following table,</p>
 
 <h1 id="forward-pass">Forward Pass</h1>
 
-<p>Forward pass computes $y_k$ from $u_k$ using equation 
-\eqref{eq:softmax}. There is a trick in the code, 
+<p>Forward pass computes $y_k$ from $u_k$ using equation
+\eqref{eq:softmax}. There is a trick in the code,
 we can call it the <em>safe</em> softmax.</p>
 
 <p>To understand it, consider dividing both numerator and denominator
-by $e^c$ in equation \eqref{eq:softmax}, </p>
+by $e^c$ in equation \eqref{eq:softmax},</p>
 
 <p>\begin{equation}
-S_i(\mathbf{u}) 
-= \frac{\frac{e^{u_i}}{e^{c}}}{\frac{\sum_k{e^{u_k}}}{e^c}} 
-= \frac{e^{u_i - c}}{\sum_k{e^{u_k - c}}} 
-= S_i(\hat{\mathbf{u}})<br />
-\end{equation} </p>
+S_i(\mathbf{u})
+= \frac{\frac{e^{u_i}}{e^{c}}}{\frac{\sum_k{e^{u_k}}}{e^c}}
+= \frac{e^{u_i - c}}{\sum_k{e^{u_k - c}}}
+= S_i(\hat{\mathbf{u}})
+\end{equation}</p>
 
-<p>thus, in order to avoid overflow when calculating exponentials<sup id="fnref:1"><a href="#fn:1" class="footnote">1</a></sup>, 
+<p>thus, in order to avoid overflow when calculating exponentials<sup id="fnref:1"><a href="#fn:1" class="footnote">1</a></sup>,
 we can replace $u_k$ with $\hat{u}<em>k=u_k-c$. Typically, $c$ is set to $u</em>{max}$.</p>
 
 <p>In RNNLIB, <script type="math/tex">c=\frac{u_{max}+u_{min}}{2}</script>.</p>
 
 <h1 id="backpropagating">Backpropagating</h1>
 
-<p>Backpropagation computes $\frac{\partial J}{\partial u_k}$ 
+<p>Backpropagation computes $\frac{\partial J}{\partial u_k}$
 from $\frac{\partial J}{\partial y_k}$.</p>
 
 <p>In RNNLIB, the result is</p>
 
 <p>\begin{equation} \label{eq:error_u_res}
-\frac{\partial J}{\partial u_j} = y_j (\frac{\partial J}{\partial y_j} 
+\frac{\partial J}{\partial u_j} = y_j (\frac{\partial J}{\partial y_j}
 - \langle \mathbf{y}, \frac{\partial J}{\partial \mathbf{y}} \rangle)
 \end{equation}</p>
 
 <p>where, $\langle \cdot \, , \cdot \rangle$ denotes inner product.</p>
 
-<p>To get the above equation, we first notice that variations in 
-$u_j$ give rise to variations in the error function $J$ 
-through variations in all $y_k$s. 
+<p>To get the above equation, we first notice that variations in
+$u_j$ give rise to variations in the error function $J$
+through variations in all $y_k$s.
 Thus, according to the <a href="https://www.math.hmc.edu/calculus/tutorials/multichainrule/">Multivariable Chain Rules</a>,
 we can write,</p>
 
@@ -242,11 +243,11 @@ we can write,</p>
 
 <p>Using equation \eqref{eq:softmax_dev} to replace $\frac{\partial y_k}{\partial u_j}$, we get,</p>
 
-<p>\begin{equation} 
+<p>\begin{equation}
 \begin{split}
 \frac{\partial J}{\partial u_j} &amp;= y_j(1-y_j)\frac{\partial J}{\partial y_j} +
 \sum<em>{k: k\neq j}{-y_k y_j \frac{\partial J}{\partial y_k}} <br />
-&amp;= y_j(\frac{\partial J}{\partial y_j} -y_j \frac{\partial J}{\partial y_j} 
+&amp;= y_j(\frac{\partial J}{\partial y_j} -y_j \frac{\partial J}{\partial y_j}
 + \sum</em>{k: k\neq j}{-y_k \frac{\partial J}{\partial y_k}}) <br />
 &amp;= y_j(\frac{\partial J}{\partial y_j} - \sum_{k}{y_k \frac{\partial J}{\partial y_k}}) <br />
 &amp;= y_j(\frac{\partial J}{\partial y_j} - \langle \mathbf{y}, \frac{\partial J}{\partial \mathbf{y}} \rangle)
@@ -257,12 +258,12 @@ we can write,</p>
 
 <p>In this way, softmax operation can be implemented to be a standalone layer.</p>
 
+<p>Underflow is no problem, because that rounds off to zero, which is a well-behaved floating point number.
+otherwise, it will be Infinity or NaN. see <a href="http://lingpipe-blog.com/2009/03/17/softmax-without-overflow/">this article</a> for details.</p>
 <div class="footnotes">
   <ol>
     <li id="fn:1">
-      <p>Strictly speaking, this converts overflow into underflow. 
-  Underflow is no problem, because that rounds off to zero, which is a well-behaved floating point number.
-  otherwise, it will be Infinity or NaN. see <a href="http://lingpipe-blog.com/2009/03/17/softmax-without-overflow/">this article</a> for details. <a href="#fnref:1" class="reversefootnote">&#8617;</a></p>
+      <p>Strictly speaking, this converts overflow into underflow. <a href="#fnref:1" class="reversefootnote">&#8617;</a></p>
     </li>
   </ol>
 </div>
@@ -322,6 +323,10 @@ we can write,</p>
     <section>
   <h1>Recent Posts</h1>
   <ul id="recent_posts">
+    
+      <li class="post">
+        <a href="/blog/2015/03/10/mini-batch-gradient-descent/">Mini-Batch Gradient Descent</a>
+      </li>
     
       <li class="post">
         <a href="/blog/2015/03/03/dropout-training/">Dropout Training</a>

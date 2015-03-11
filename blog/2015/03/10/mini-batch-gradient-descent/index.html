@@ -5,13 +5,11 @@
 <!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
 <head>
   <meta charset="utf-8">
-  <title>Blog Archive - Formula Coding</title>
+  <title>Mini-Batch Gradient Descent - Formula Coding</title>
   <meta name="author" content="Wantee Wang">
 
   
-  <meta name="description" content="Blog Archive 2015 Mini-Batch Gradient Descent
-Mar 10 2015 posted in gradient descent Dropout Training
-Mar 03 2015 posted in neural network RNNLIB: &hellip;">
+  <meta name="description" content="In Mini-Batch Learning, we update the parameter $\mathbf{w}$ every $b$ examples. There are two ways to do the update. First, using the summation of &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -20,7 +18,7 @@ Mar 03 2015 posted in neural network RNNLIB: &hellip;">
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
   
-  <link rel="canonical" href="http://wantee.github.io/blog/archives/">
+  <link rel="canonical" href="http://wantee.github.io/blog/2015/03/10/mini-batch-gradient-descent/">
   <link href="/favicon.png" rel="icon">
   <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
   <link href="/stylesheets/data-table.css" media="screen, projection" rel="stylesheet" type="text/css">
@@ -77,92 +75,102 @@ Mar 03 2015 posted in neural network RNNLIB: &hellip;">
   <div id="main">
     <div id="content">
       <div>
-<article role="article">
+<article class="hentry" role="article">
   
   <header>
-    <h1 class="entry-title">Blog Archive</h1>
+    
+      <h1 class="entry-title">Mini-Batch Gradient Descent</h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+<time class='entry-date' datetime='2015-03-10T21:44:23+08:00'><span class='date'><span class='date-month'>Mar</span> <span class='date-day'>10</span><span class='date-suffix'>th</span>, <span class='date-year'>2015</span></span> <span class='time'>9:44 pm</span></time>
+        <span class="printable">
+
+
+  
+
+
+<a href="/assets/printables/2015-03-10-mini-batch-gradient-descent.pdf"> <img src="/images/printer.png" alt="printable version"> </a>
+
+</span>
+
+        
+      </p>
     
   </header>
-  
-  <div id="blog-archives">
 
 
+<div class="entry-content"><p>In Mini-Batch Learning, we update the parameter $\mathbf{w}$ every $b$ examples. There are two ways to do the update.</p>
 
-  
-  <h2>2015</h2>
+<p>First, using the summation of all examples in the mini-batch, i.e.,</p>
 
-<article>
-  
-<h1><a href="/blog/2015/03/10/mini-batch-gradient-descent/">Mini-Batch Gradient Descent</a></h1>
-<time datetime="2015-03-10T21:44:23+08:00" pubdate><span class='month'>Mar</span> <span class='day'>10</span> <span class='year'>2015</span></time>
+<script type="math/tex; mode=display">\begin{equation}\label{eq:sum}
+  \Delta\mathbf{w} = - \alpha_1 \sum_{i=l}^{l+b-1}{\nabla E^{(i)}}
+\end{equation}</script>
 
-<footer>
-  <span class="categories">posted in <a class='category' href='/blog/categories/gradient-descent/'>gradient descent</a></span>
-</footer>
+<p>Second, using the average of all examples in the mini-batch, i.e.,</p>
 
+<script type="math/tex; mode=display">\begin{equation}\label{eq:avg}
+  \Delta\mathbf{w} = - \alpha_2 \frac{1}{b} \sum_{i=l}^{l+b-1}{\nabla E^{(i)}}
+\end{equation}</script>
 
-</article>
-
-
-
-<article>
-  
-<h1><a href="/blog/2015/03/03/dropout-training/">Dropout Training</a></h1>
-<time datetime="2015-03-03T15:18:26+08:00" pubdate><span class='month'>Mar</span> <span class='day'>03</span> <span class='year'>2015</span></time>
-
-<footer>
-  <span class="categories">posted in <a class='category' href='/blog/categories/neural-network/'>neural network</a></span>
-</footer>
-
-
-</article>
-
-
-
-<article>
-  
-<h1><a href="/blog/2015/02/08/rnnlib-connectionist-temporal-classification-and-transcription-layer/">RNNLIB: Connectionist Temporal Classification and Transcription Layer</a></h1>
-<time datetime="2015-02-08T16:56:40+08:00" pubdate><span class='month'>Feb</span> <span class='day'>08</span> <span class='year'>2015</span></time>
-
-<footer>
-  <span class="categories">posted in <a class='category' href='/blog/categories/neural-network/'>neural network</a></span>
-</footer>
-
-
-</article>
-
-
-
-<article>
-  
-<h1><a href="/blog/2015/02/05/rnnlib-softmax-layer/">RNNLIB: Softmax Layer</a></h1>
-<time datetime="2015-02-05T21:08:17+08:00" pubdate><span class='month'>Feb</span> <span class='day'>05</span> <span class='year'>2015</span></time>
-
-<footer>
-  <span class="categories">posted in <a class='category' href='/blog/categories/neural-network/'>neural network</a></span>
-</footer>
-
-
-</article>
-
-
-
-<article>
-  
-<h1><a href="/blog/2015/02/05/rnnlib-introduction/">RNNLIB: Introduction</a></h1>
-<time datetime="2015-02-05T16:02:28+08:00" pubdate><span class='month'>Feb</span> <span class='day'>05</span> <span class='year'>2015</span></time>
-
-<footer>
-  <span class="categories">posted in <a class='category' href='/blog/categories/neural-network/'>neural network</a></span>
-</footer>
-
-
-</article>
+<p>From \eqref{eq:sum} and \eqref{eq:avg}, we can see that by simply scaling the learning rate, i.e. $\alpha_1 = \frac{1}{b} \alpha_2$, these two method can be equivalent. </p>
 
 </div>
 
+
+  <footer>
+    <p class="meta">
+      
   
+
+<span class="byline author vcard">Posted by <span class="fn">Wantee Wang</span></span>
+
+      
+
+
+
+
+<time class='entry-date' datetime='2015-03-10T21:44:23+08:00'><span class='date'><span class='date-month'>Mar</span> <span class='date-day'>10</span><span class='date-suffix'>th</span>, <span class='date-year'>2015</span></span> <span class='time'>9:44 pm</span></time>
+      
+
+<span class="categories">
+  
+    <a class='category' href='/blog/categories/gradient-descent/'>gradient descent</a>
+  
+</span>
+
+
+    </p>
+    
+      <div class="sharing">
+  
+  <a href="//twitter.com/share" class="twitter-share-button" data-url="http://wantee.github.io/blog/2015/03/10/mini-batch-gradient-descent/" data-via="" data-counturl="http://wantee.github.io/blog/2015/03/10/mini-batch-gradient-descent/" >Tweet</a>
+  
+  
+  
+</div>
+
+    
+    <p class="meta">
+      
+        <a class="basic-alignment left" href="/blog/2015/03/03/dropout-training/" title="Previous Post: Dropout Training">&laquo; Dropout Training</a>
+      
+      
+    </p>
+  </footer>
 </article>
+
+  <section>
+    <h1>Comments</h1>
+    <div id="disqus_thread" aria-live="polite"><noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+</div>
+  </section>
 
 </div>
 
@@ -247,7 +255,10 @@ Mar 03 2015 posted in neural network RNNLIB: &hellip;">
       var disqus_shortname = 'wantee';
       
         
-        var disqus_script = 'count.js';
+        // var disqus_developer = 1;
+        var disqus_identifier = 'http://wantee.github.io/blog/2015/03/10/mini-batch-gradient-descent/';
+        var disqus_url = 'http://wantee.github.io/blog/2015/03/10/mini-batch-gradient-descent/';
+        var disqus_script = 'embed.js';
       
     (function () {
       var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;

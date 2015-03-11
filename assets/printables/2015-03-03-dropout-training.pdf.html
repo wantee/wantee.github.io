@@ -9,7 +9,8 @@
   <meta name="author" content="Wantee Wang">
 
   
-  <meta name="description" content="\tableofcontents Dropout is a regularisation technique for reducing over-fitting in large neural nets. Hinton proposes the method in this paper. Most &hellip;">
+  <meta name="description" content="\tableofcontents Dropout is a regularisation technique for reducing over-fitting in large neural nets. Hinton proposes the method in this paper.
+Most &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -107,18 +108,18 @@
 
 <div class="entry-content"><p>\tableofcontents</p>
 
-<p>Dropout is a regularisation technique for reducing over-fitting in large neural nets. Hinton proposes the method in <a href="http://arxiv.org/abs/1207.0580">this paper</a>. 
+<p>Dropout is a regularisation technique for reducing over-fitting in large neural nets. Hinton proposes the method in <a href="http://arxiv.org/abs/1207.0580">this paper</a>.
 Most materials are from <a href="http://www.cs.toronto.edu/~nitish/dropout/">Srivastava’s page</a>.</p>
 
 <p>It prevents overfitting and provides a way of approximately combining exponentially many different neural network architectures efficiently. The term <em>dropout</em> refers to dropping out units (hidden and visible) in a neural network.</p>
 
 <h1 id="the-method">The Method</h1>
 
-<p>There are 2 key points for dropout learning: </p>
+<p>There are 2 key points for dropout learning:</p>
 
 <ul>
-  <li>a) Dropping units while training; </li>
-  <li>b) Scaling output to be matched between training and testing. </li>
+  <li>a) Dropping units while training;</li>
+  <li>b) Scaling output to be matched between training and testing.</li>
 </ul>
 
 <p>As shown in following figure (\autoref{fig:dropout}), where $p$ is the dropout retention.</p>
@@ -127,13 +128,13 @@ Most materials are from <a href="http://www.cs.toronto.edu/~nitish/dropout/">Sri
 
 <p>Units to be dropped is chosen in a random way. Note that dropping a unit out means temporarily removing it from the network, along with all its incoming and outgoing connections. Therefore we have to deal with it both during forward pass and backpropagation.</p>
 
-<p>Applying dropout to a neural network amounts to sampling a <em>thinned</em> network from it. A neural net with $n$ units, can be seen as a collection of $2^n$ possible thinned neural networks. For each presentation of each training case, a new thinned network is sampled and trained. </p>
+<p>Applying dropout to a neural network amounts to sampling a <em>thinned</em> network from it. A neural net with $n$ units, can be seen as a collection of $2^n$ possible thinned neural networks. For each presentation of each training case, a new thinned network is sampled and trained.</p>
 
-<p>At test time, the ideal way is to explicitly average the predictions from exponentially many thinned models, which is obviously not feasible. The intuitive way is using a single neural net without dropout at test time, however this needs some approximation. </p>
+<p>At test time, the ideal way is to explicitly average the predictions from exponentially many thinned models, which is obviously not feasible. The intuitive way is using a single neural net without dropout at test time, however this needs some approximation.</p>
 
 <p>The goal is that for any hidden unit the expected output (under the distribution used to drop units at training time) is the same as the actual output at test time.</p>
 
-<p>Let $\mathbb{M}$ be the set of all thinned networks, and $\mathcal{M}$ be the network without dropout used in test time, i.e. the network containing all units. Note that, weights for all networks in $\mathbb{M}$ are shared and are equal to the ones in $\mathcal{M}$. Thus the expected output of a unit $j$ is </p>
+<p>Let $\mathbb{M}$ be the set of all thinned networks, and $\mathcal{M}$ be the network without dropout used in test time, i.e. the network containing all units. Note that, weights for all networks in $\mathbb{M}$ are shared and are equal to the ones in $\mathcal{M}$. Thus the expected output of a unit $j$ is</p>
 
 <script type="math/tex; mode=display">
 \mathbb{E}[\mathbf{y}_j] = \sum_{M \in \mathbb{M}}{Pr(M)\mathbf{y}^{M}_j}
@@ -242,6 +243,10 @@ q \alpha + (1-q)\beta = 1
     <section>
   <h1>Recent Posts</h1>
   <ul id="recent_posts">
+    
+      <li class="post">
+        <a href="/blog/2015/03/10/mini-batch-gradient-descent/">Mini-Batch Gradient Descent</a>
+      </li>
     
       <li class="post">
         <a href="/blog/2015/03/03/dropout-training/">Dropout Training</a>
