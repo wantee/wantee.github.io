@@ -65,7 +65,7 @@ posts.each do |post|
   pdfs.push(pdf)
   file pdf => post do |t|
     puts "Converting #{t.prerequisites.first} to #{t.name}"
-    gen_pdf("#{t.prerequisites.first}", "#{t.name}", source_dir, posts_dir)
+    gen_pdf("#{t.prerequisites.first}", "#{t.name}", source_dir, posts_dir, blog_url)
   end
 end
 
@@ -445,7 +445,7 @@ task :setup_github_pages, :repo do |t, args|
       end
     end
   end
-  url = blog_url(user, project, source_dir)
+  url = post_url(user, project, source_dir)
   jekyll_config = IO.read('_config.yml')
   jekyll_config.sub!(/^url:.*$/, "url: #{url}")
   File.open('_config.yml', 'w') do |f|
@@ -492,7 +492,7 @@ def ask(message, valid_options)
   answer
 end
 
-def blog_url(user, project, source_dir)
+def post_url(user, project, source_dir)
   cname = "#{source_dir}/CNAME"
   url = if File.exists?(cname)
     "http://#{IO.read(cname).strip}"
@@ -503,11 +503,15 @@ def blog_url(user, project, source_dir)
   url
 end
 
-def gen_pdf(markdownfile, pdffile, source_dir, posts_dir)
+def gen_pdf(markdownfile, pdffile, source_dir, posts_dir, blog_url)
   pdfdir = File.dirname(pdffile)
   if ! File.exists?(pdfdir)
     mkdir_p pdfdir
   end
+
+  obib="#{source_dir}/_bibliography/references"
+  bib="#{pdfdir}/references"
+  has_bib=false
 
   tmpfile="#{pdffile}.markdown"
   comment = false
@@ -567,14 +571,58 @@ def gen_pdf(markdownfile, pdffile, source_dir, posts_dir)
           line = line.sub(/{% post_link (.*?) %}/, "\\href{#{blog_url}/blog/#{year}/#{month}/#{day}/#{title}/}{#{text}}")
         end
 
+        if /##*\s*References/ =~ line
+          next
+        end
+
+        if /{% bibliography .*? %}/ =~ line
+          line="\\bibliographystyle{unsrt}\\bibliography{#{bib}}"
+          has_bib=true
+
+          gen_bib("#{obib}.bib", "#{bib}.bib")
+        end
+
+        while /{% cite\s+(?<citation>.*?)\s+%}/ =~ line
+          citation=citation.sub(/\s+/, ',')
+          line=line.sub(/{% cite\s+(.*?)\s+%}/, "\\cite{#{citation}}")
+        end
+
         post.puts line
       end  
     end
   end 
 
-  system "pandoc -N #{tmpfile} -o #{pdffile}"
+  if has_bib
+    texfile=pdffile.sub(/.pdf$/, '.tex')
+    base=pdffile.sub(/.pdf$/, '')
+    pkgfile="#{pdfdir}/header.tex"
+    system "echo \"\\usepackage[sort&compress, numbers]{natbib}\" > #{pkgfile}"
 
-#  rm_rf tmpfile
+    system "pandoc -s --include-in-header=#{pkgfile} #{tmpfile} -o #{texfile} "
+	system "xelatex -output-directory=#{pdfdir} -no-pdf --interaction=nonstopmode #{base} >/dev/null"
+	system "bibtex #{base} >/dev/null"
+	system "xelatex -output-directory=#{pdfdir} -no-pdf --interaction=nonstopmode #{base} >/dev/null"
+	system "xelatex -output-directory=#{pdfdir} --interaction=nonstopmode #{base} >/dev/null"
+
+    system "rm -rf #{pkgfile}"
+    system "rm -rf #{bib}"
+	system "rm -rf #{pdfdir}/*.aux"
+	system "rm -rf #{pdfdir}/*.log"
+	system "rm -rf #{pdfdir}/*.lot"
+	system "rm -rf #{pdfdir}/*.out"
+	system "rm -rf #{pdfdir}/*.toc"
+	system "rm -rf #{pdfdir}/*.blg"
+	system "rm -rf #{pdfdir}/*.bbl"
+	system "rm -rf #{pdfdir}/*.lof"
+	system "rm -rf #{pdfdir}/*.xdv"
+	system "rm -rf #{pdfdir}/*.hst"
+	system "rm -rf #{pdfdir}/*.ver"
+	system "rm -rf #{pdfdir}/*.synctex.gz"
+  else
+    system "pandoc --latex-engine=xelatex -N #{tmpfile} -o #{pdffile}"
+  end
+
+  system "rm -rf #{tmpfile}"
 end
 
 # from image_tag plugin
@@ -594,6 +642,20 @@ def get_img_label(markup)
     @img['class'].gsub!(/"/, '') if @img['class']
   end
   @img
+end
+
+def gen_bib(obib, bib)
+  File.open(obib, 'r') do |f|
+    File.open(bib, 'w') do |o|
+      while l = f.gets
+        if /<a\s+href="?(?<url>.*?)"?\s*>(?<text>.*?)<\/a>/ =~ l
+          l = l.sub(/<a\s+href=(.*?)>(.*?)<\/a>/, "\\href{#{url}}{#{text}}")
+        end
+
+        o.puts l
+      end
+    end
+  end
 end
 
 desc "list tasks"

@@ -100,3 +100,25 @@ google_analytics_tracking_id: "UA-58316654-2"
 
 # Facebook Like
 facebook_like: false
+
+# Jekyll scholar
+scholar:
+  style: apa
+  locale: en
+
+  sort_by: none
+  order: ascending
+
+  source: ./_bibliography
+  bibliography: references.bib
+  bibliography_template: "{{reference}}"
+
+  replace_strings: true
+  join_strings:    true
+
+  details_dir:    bibliography
+  details_layout: bibtex.html
+  details_link:   Details
+
+  query: "@*"
+
