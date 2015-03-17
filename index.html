@@ -9,7 +9,8 @@
   <meta name="author" content="Wantee Wang">
 
   
-  <meta name="description" content="This is a paper about back-propagation algorithm for Neural Network. The table of contents is 1 Preliminary 1.1 Non-linear function 1.1.1 Sigmoid 1.1 &hellip;">
+  <meta name="description" content="
+">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -76,6 +77,368 @@
     <div id="content">
       <div class="blog-index">
   
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2015/03/14/feature-extraction-for-asr-delta/">Feature Extraction for ASR: Delta</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+<time class='entry-date' datetime='2015-03-14T16:57:00+08:00'><span class='date'><span class='date-month'>Mar</span> <span class='date-day'>14</span><span class='date-suffix'>th</span>, <span class='date-year'>2015</span></span> <span class='time'>4:57 pm</span></time>
+        <span class="printable">
+
+
+  
+
+
+<a href="/assets/printables/2015-03-14-feature-extraction-for-asr-delta.pdf"> <img src="/images/printer.png" alt="printable version"> </a>
+
+</span>
+
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content">
+</div>
+  
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2015/03/14/feature-extraction-for-asr-pitch/">Feature Extraction for ASR: Pitch</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+<time class='entry-date' datetime='2015-03-14T16:55:51+08:00'><span class='date'><span class='date-month'>Mar</span> <span class='date-day'>14</span><span class='date-suffix'>th</span>, <span class='date-year'>2015</span></span> <span class='time'>4:55 pm</span></time>
+        <span class="printable">
+
+
+  
+
+
+<a href="/assets/printables/2015-03-14-feature-extraction-for-asr-pitch.pdf"> <img src="/images/printer.png" alt="printable version"> </a>
+
+</span>
+
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content">
+</div>
+  
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2015/03/14/feature-extraction-for-asr-plp/">Feature Extraction for ASR: PLP</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+<time class='entry-date' datetime='2015-03-14T16:55:15+08:00'><span class='date'><span class='date-month'>Mar</span> <span class='date-day'>14</span><span class='date-suffix'>th</span>, <span class='date-year'>2015</span></span> <span class='time'>4:55 pm</span></time>
+        <span class="printable">
+
+
+  
+
+
+<a href="/assets/printables/2015-03-14-feature-extraction-for-asr-plp.pdf"> <img src="/images/printer.png" alt="printable version"> </a>
+
+</span>
+
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content">
+</div>
+  
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2015/03/14/feature-extraction-for-asr-mfcc/">Feature Extraction for ASR: MFCC</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+<time class='entry-date' datetime='2015-03-14T16:55:12+08:00'><span class='date'><span class='date-month'>Mar</span> <span class='date-day'>14</span><span class='date-suffix'>th</span>, <span class='date-year'>2015</span></span> <span class='time'>4:55 pm</span></time>
+        <span class="printable">
+
+
+  
+
+
+<a href="/assets/printables/2015-03-14-feature-extraction-for-asr-mfcc.pdf"> <img src="/images/printer.png" alt="printable version"> </a>
+
+</span>
+
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>Mel-frequency cepstral coefficients (MFCCs) is a popular feature used in Speech Recognition system. It is based on a concept called cepstrum.</p>
+
+<p>The crucial observation leading to the cepstrum terminology is thatnthe log spectrum can be treated as a waveform and subjected to further Fourier analysis.
+The term <em><u>ceps</u>trum</em> is coined by swapping the order of the letters in the word <em><u>spec</u>trum</em>. Likewise, the name of the independent variable of the cepstrum is known as a <em><u>quef</u>rency</em>.</p>
+
+<p>There are a couple of slightly different <a href="http://dsp.stackexchange.com/questions/13/what-is-the-difference-between-a-fourier-transform-and-a-cosine-transform">definitions</a>. Originally cepstrum<a href="#oppenheim1968homomorphic">(Oppenheim &amp; Schafer, 1968)</a> transform was defined as </p>
+
+<blockquote>
+  <p>Fourier transform -&gt; complex logarithm -&gt; inverse Fourier transform. </p>
+</blockquote>
+
+<p>The motivation is in its ability to separate convolved signals (human speech is often modelled as the convolution of an excitation and a vocal tract).</p>
+
+<p>MFCC has been found to perform well in speech recognition systems is to apply a non-linear filter bank in frequency domain (the mel binning). The particular algorithm<a href="#davis1980comparison">(Davis &amp; Mermelstein, 1980)</a> is defined as</p>
+
+<blockquote>
+  <p>Fourier transform -&gt; square of magnitude -&gt; mel filter bank -&gt; real logarithm -&gt; discrete cosine transform.</p>
+</blockquote>
+
+<p>Here DCT can be selected as the second transform, because for real-valued input, the real part of the DFT is a kind of DCT. The reason why DCT is preferred is that the output is approximately decorrelated. Decorrelated features can be modelled efficiently as a Gaussian distribution with a diagonal covariance matrix.</p>
+
+<p><a href="http://dsp.stackexchange.com/questions/31/how-do-i-interpret-the-dct-step-in-the-mfcc-extraction-process">Another reason</a> is that DCT can be thought as a compression step. Typically with MFCCs, you will take the DCT and then keep only the first few coefficients. This is basically the same reason that the DCT is used in JPEG compression. DCTs are chosen because their boundary conditions work better on these types of signals.</p>
+
+<p>Let’s contrast the DCT with the Fourier transform. The Fourier transform is made up of sinusoids that have an integer number of cycles. This means, all of the Fourier basis functions start and end at the same value – they do not do a good job of representing signals that start and end at different values. Remember that the Fourier transform assumes a periodic extension: If you imagine your signal on a sheet of paper, the Fourier transform wants to roll that sheet into a cylinder so that the left and right sides meet.</p>
+
+<p>Think of a spectrum that is shaped roughly like a line with negative slope (which is pretty typical). The Fourier transform will have to use a lot of different coefficients to fit this shape. On the other hand, the DCT has cosines with half-integer numbers of cycles. There is, for example, a DCT basis function that looks vaguely like that line with negative slope. It does not assume a period extension (instead, an even extension), so it will do a better job of fitting that shape.</p>
+
+<p>So, let’s put this together. Once you’ve computed the Mel-frequency spectrum, you have a representation of the spectrum that is sensitive in a way similar to how human hearing works. Some aspects of this shape are more relevant than others. Usually, the larger more overarching spectral shape is more important than the noisy fine details in the spectrum. You can imagine drawing a smooth line to follow the spectral shape, and that the smooth line you draw might tell you just about as much about the signal.</p>
+
+<p>When you take the DCT and discard the higher coefficients, you are taking this spectral shape, and only keeping the parts that are more important for representing this smooth shape. If you used the Fourier transform, it wouldn’t do such a good job of keeping the important information in the low coefficients.</p>
+
+<p>If we feed the MFCCs as features to a machine learning algorithm, these lower-order coefficients will make good features, since they represent some simple aspects of the spectral shape, while the higher-order coefficients that you discard are more noise-like and are not important to train on. Additionally, training on the Mel spectrum magnitudes themselves would probably not be as good because the particular amplitude at different frequencies are less important than the general shape of the spectrum.</p>
+
+<h2 id="cepstral-analysis">Cepstral Analysis</h2>
+
+<p>Formants of a wave carry the identity of the sound. we’d like to extract the formants and a smooth curve connecting them, i.e. the <em>spectral envelope</em>, as shown in following figure (taken from <a href="http://www.speech.cs.cmu.edu/11-492/slides/03_mfcc.pdf">this slide</a>), </p>
+
+<p><img class="center" src="/images/posts/spectral-envelope.png" title="Spectral Envelope" alt="fig:spectral-envelope" /></p>
+
+<p>Cepstral analysis is a way to separate the envelope from the spectrum.
+As shown in the figure , if we consider the log spectrum as waveform, the frequency(quefrency) of spectral envelope is low, while that of spectral details is high. So we can filter the low frequency region to get envelope.</p>
+
+<p><img class="center" src="/images/posts/cepstrum.png" title="Cepstrum" alt="fig:cepstrum" /></p>
+
+<p>Mathematically, let $E[k]$ denotes spectral details(the periodic excitation), $H[k]$ denotes spectral envelope(vocal tract) and $X[k]$ denotes the spectrum of observed signal, then</p>
+
+<script type="math/tex; mode=display">
+X[k] = E[k]H[k] 
+</script>
+
+<script type="math/tex; mode=display">
+|X[k]|=|E[k]|\,|H[k]|
+</script>
+
+<p>Taking Log on both sides</p>
+
+<script type="math/tex; mode=display">
+\log|X[k]|=\log|E[k]|+\log|H[k]|
+</script>
+
+<p>Taking inverseFFT on both sides</p>
+
+<script type="math/tex; mode=display">
+x[k]=e[k]+h[k]
+</script>
+
+<p>Now the signal are separated with a simple addition. This procedure is called de-convolution, more details can be found in <a href="http://www.speech.cs.cmu.edu/11-492/slides/03_mfcc.pdf">this slides</a>.</p>
+
+<h2 id="mel-frequency-analysis">Mel-Frequency Analysis</h2>
+
+<p>The Mel scale relates perceived frequency, or pitch, of a pure tone to its actual measured frequency. Humans are much better at discerning small changes in pitch at low frequencies than they are at high frequencies. Incorporating this scale makes our features match more closely what humans hear.</p>
+
+<p>This figure  shows the Mel-scale function. we can see that Mel-scale gives more weight to low frequency regions. The values is came from human perception experiments.</p>
+
+<p><img class="center" src="/images/posts/mel.png" title="Mel scale" alt="fig:mel" /></p>
+
+<h2 id="implemntation">implemntation</h2>
+
+<p>To warp up, the complete recipe for extracting MFCC is,</p>
+
+<ol>
+  <li>Frame the signal into short frames.</li>
+  <li>For each frame calculate the power spectrum.</li>
+  <li>Apply the mel filterbank to the power spectra, sum the energy in each filter.</li>
+  <li>Take the logarithm of all filterbank energies.</li>
+  <li>Take the DCT of the log filterbank energies.</li>
+  <li>Keep DCT coefficients 2-13, discard the rest.</li>
+</ol>
+
+<p><a href="http://www.practicalcryptography.com/miscellaneous/machine-learning/guide-mel-frequency-cepstral-coefficients-mfccs/">this link</a> is a nice tutorial with python code.</p>
+
+<h2 id="references">References</h2>
+
+<ol class="bibliography"><li><span id="oppenheim1968homomorphic">Oppenheim, A. V., &amp; Schafer, R. W. (1968). Homomorphic analysis of speech. <i>Audio and Electroacoustics, IEEE Transactions on</i>, <i>16</i>(2), 221–226.</span></li>
+<li><span id="davis1980comparison">Davis, S., &amp; Mermelstein, P. (1980). <a href="http://home.iitk.ac.in/~rhegde/ee627_2015/mermelmfcc.pdf">Comparison of parametric representations for monosyllabic word recognition in continuously spoken sentences</a>. <i>Acoustics, Speech and Signal Processing, IEEE Transactions on</i>, <i>28</i>(4), 357–366.</span></li></ol>
+
+</div>
+  
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2015/03/14/feature-extraction-for-asr-preprocessing/">Feature Extraction for ASR: Preprocessing</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+<time class='entry-date' datetime='2015-03-14T16:51:02+08:00'><span class='date'><span class='date-month'>Mar</span> <span class='date-day'>14</span><span class='date-suffix'>th</span>, <span class='date-year'>2015</span></span> <span class='time'>4:51 pm</span></time>
+        <span class="printable">
+
+
+  
+
+
+<a href="/assets/printables/2015-03-14-feature-extraction-for-asr-preprocessing.pdf"> <img src="/images/printer.png" alt="printable version"> </a>
+
+</span>
+
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content">
+</div>
+  
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2015/03/14/feature-extraction-for-asr-intro/">Feature Extraction for ASR: Intro</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+<time class='entry-date' datetime='2015-03-14T15:49:44+08:00'><span class='date'><span class='date-month'>Mar</span> <span class='date-day'>14</span><span class='date-suffix'>th</span>, <span class='date-year'>2015</span></span> <span class='time'>3:49 pm</span></time>
+        <span class="printable">
+
+
+  
+
+
+<a href="/assets/printables/2015-03-14-feature-extraction-for-asr-intro.pdf"> <img src="/images/printer.png" alt="printable version"> </a>
+
+</span>
+
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>Feature extraction is the first step for Automatic Speech Recognition(ASR), which converts the waveform speech signal to a set of feature vectors. The main goal is to make the vectors have high discrimination between phonemes.</p>
+
+<p>Thus, the features should be</p>
+
+<ul>
+  <li>perceptually meaningful, i.e., analogous to features used by human auditory system.</li>
+  <li>invariant, i.e., robust to variations in channel, speaker and
+transducer.</li>
+</ul>
+
+<p>Three main steps for feature extraction are</p>
+
+<ol>
+  <li>Preprocessing</li>
+  <li>Feature Analysis</li>
+  <li>Parametric Transformation</li>
+</ol>
+
+<p>The <em>preprocessing</em> step converts the speech signal to a more suitable waveform for the following analysis, including <em>DC offset removal</em>, <em>pre-emphasis</em> and <em>Hamming Windowing</em>.</p>
+
+<p><em>Feature Analysis</em> is most important step, which do most of the works. Generally, it is can be divided into two main categories, <em>Spectral Analysis</em> and <em>Temporal Analysis</em>. Spectral analysis gives MFCC and PLP features, while temporal analysis produces Energy and Pitch features. MFCC involves <em>Cepstral Analysis</em> and PLP is based on <em>Linear Predictive Coding(LPC) Analysis</em>.</p>
+
+<p>The final step, <em>Parameter transformation</em>, converts the features obtained by above step into signal parameters through <em>differentiation</em> and <em>concatenation</em>.</p>
+
+<p>Details are in following posts:</p>
+
+<ol>
+  <li><a href="/blog/2015/03/14/feature-extraction-for-asr-preprocessing/">Feature Extraction for ASR: Preprocessing</a> </li>
+  <li><a href="/blog/2015/03/14/feature-extraction-for-asr-mfcc/">Feature Extraction for ASR: MFCC</a></li>
+  <li><a href="/blog/2015/03/14/feature-extraction-for-asr-plp/">Feature Extraction for ASR: PLP</a></li>
+  <li><a href="/blog/2015/03/14/feature-extraction-for-asr-pitch/">Feature Extraction for ASR: Pitch</a></li>
+  <li><a href="/blog/2015/03/14/feature-extraction-for-asr-delta/">Feature Extraction for ASR: Delta</a></li>
+</ol>
+
+</div>
+  
+  
+
+
+    </article>
   
   
     <article>
@@ -909,282 +1272,9 @@ then apply the above algorithm to each section individually and concatenate thes
 
     </article>
   
-  
-    <article>
-      
-  <header>
-    
-      <h1 class="entry-title"><a href="/blog/2015/02/05/rnnlib-softmax-layer/">RNNLIB: Softmax Layer</a></h1>
-    
-    
-      <p class="meta">
-        
-
-
-
-
-<time class='entry-date' datetime='2015-02-05T21:08:17+08:00'><span class='date'><span class='date-month'>Feb</span> <span class='date-day'>5</span><span class='date-suffix'>th</span>, <span class='date-year'>2015</span></span> <span class='time'>9:08 pm</span></time>
-        <span class="printable">
-
-
-  
-
-
-<a href="/assets/printables/2015-02-05-rnnlib-softmax-layer.pdf"> <img src="/images/printer.png" alt="printable version"> </a>
-
-</span>
-
-        
-      </p>
-    
-  </header>
-
-
-  <div class="entry-content"><ul id="markdown-toc">
-  <li><a href="#fundamentals">Fundamentals</a>    <ul>
-      <li><a href="#list-of-symbols">List of Symbols</a></li>
-      <li><a href="#formulas">Formulas</a></li>
-      <li><a href="#layers-in-rnnlib">Layers in RNNLIB</a></li>
-    </ul>
-  </li>
-  <li><a href="#forward-pass">Forward Pass</a></li>
-  <li><a href="#backpropagating">Backpropagating</a></li>
-</ul>
-
-<p>I used to think that, in order to get the proper gradient, we have to take derivative of 
-$\log$ of softmax with respect to weights. However,
-the RNNLIB shows that we can actually factorize the network into single layers. In this post, 
-we look into the Softmax Layer.</p>
-
-<h2 id="fundamentals">Fundamentals</h2>
-
-<h3 id="list-of-symbols">List of Symbols</h3>
-
-<table>
-  <thead>
-    <tr>
-      <th>Symbol</th>
-      <th>Meaning</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <td>$J$</td>
-      <td>cost function</td>
-    </tr>
-    <tr>
-      <td>$y_k$</td>
-      <td>activation of a neon</td>
-    </tr>
-    <tr>
-      <td>$u_k$</td>
-      <td>input of a neon</td>
-    </tr>
-    <tr>
-      <td>$S_i(\mathbf{u})$</td>
-      <td>softmax function, $i$th value for a vector $\mathbf{u}$</td>
-    </tr>
-  </tbody>
-</table>
-
-<h3 id="formulas">Formulas</h3>
-
-<p>Softmax of a vector $\mathbf{u}$ is defined as,</p>
-
-<script type="math/tex; mode=display">\begin{equation} \label{eq:softmax}
-S_i(\mathbf{u}) = \frac{e^{u_i}}{\sum_k{e^{u_k}}} = y_i
-\end{equation}</script>
-
-<p>the derivative of softmax is,</p>
-
-<script type="math/tex; mode=display">% <![CDATA[
-\begin{equation} \label{eq:softmax_dev}
-    \frac{\partial S_i(\mathbf{u})}{\partial u_j} =
-    \frac{\partial y_i}{\partial u_j} = 
-          \left\{\begin{array}{ll}
-                        y_i(1-y_i) & i = j \\
-                        -y_iy_j & i \neq j 
-                \end{array} \right.
-\end{equation} %]]></script>
-
-<h3 id="layers-in-rnnlib">Layers in RNNLIB</h3>
-
-<p>Every layer in RNNLIB consists of input and output sides,
-both sides contain activations and errors.
-Their relations with terms in math are shown in following table,</p>
-
-<table>
-  <thead>
-    <tr>
-      <th>Variable</th>
-      <th style="text-align: center">Term</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <td><em>inputActivations</em></td>
-      <td style="text-align: center">$u_k$</td>
-    </tr>
-    <tr>
-      <td><em>outputActivations</em></td>
-      <td style="text-align: center">$y_k$</td>
-    </tr>
-    <tr>
-      <td><em>inputErrors</em></td>
-      <td style="text-align: center">$\frac{\partial J}{\partial u_k}$</td>
-    </tr>
-    <tr>
-      <td><em>outputErrors</em></td>
-      <td style="text-align: center">$\frac{\partial J}{\partial y_k}$</td>
-    </tr>
-  </tbody>
-</table>
-
-<h2 id="forward-pass">Forward Pass</h2>
-
-<p>Forward pass computes $y_k$ from $u_k$ using equation 
-\eqref{eq:softmax}. There is a trick in the code, 
-we can call it the <em>safe</em> softmax.</p>
-
-<p>To understand it, consider dividing both numerator and denominator
-by $e^c$ in equation \eqref{eq:softmax}, </p>
-
-<script type="math/tex; mode=display">\begin{equation}
-S_i(\mathbf{u}) 
-= \frac{\frac{e^{u_i}}{e^{c}}}{\frac{\sum_k{e^{u_k}}}{e^c}} 
-= \frac{e^{u_i - c}}{\sum_k{e^{u_k - c}}} 
-= S_i(\hat{\mathbf{u}})  
-\end{equation}</script>
-
-<p>thus, in order to avoid overflow when calculating exponentials<sup id="fnref:1"><a href="#fn:1" class="footnote">1</a></sup>, 
-we can replace $u_k$ with $\hat{u}_k=u_k-c$. Typically, $c$ is set to $u_{max}$.</p>
-
-<p>In RNNLIB, <script type="math/tex">c=\frac{u\_{max}+u\_{min}}{2}</script>.</p>
-
-<h2 id="backpropagating">Backpropagating</h2>
-
-<p>Backpropagation computes $\frac{\partial J}{\partial u_k}$ 
-from $\frac{\partial J}{\partial y_k}$.</p>
-
-<p>In RNNLIB, the result is</p>
-
-<script type="math/tex; mode=display">\begin{equation} \label{eq:error_u_res}
-\frac{\partial J}{\partial u_j} = y_j (\frac{\partial J}{\partial y_j} 
-- \langle \mathbf{y}, \frac{\partial J}{\partial \mathbf{y}} \rangle)
-\end{equation}</script>
-
-<p>where, $\langle \cdot \, , \cdot \rangle$ denotes inner product.</p>
-
-<p>To get the above equation, we first notice that variations in 
-$u_j$ give rise to variations in the error function $J$ 
-through variations in all $y_k$s. 
-Thus, according to the <a href="https://www.math.hmc.edu/calculus/tutorials/multichainrule/">Multivariable Chain Rules</a>,
-we can write,</p>
-
-<script type="math/tex; mode=display">\begin{equation} \label{eq:error_u}
-\frac{\partial J}{\partial u_j} = \sum_k{\frac{\partial J}{\partial y_k}\frac{\partial y_k}{\partial u_j}}
-\end{equation}</script>
-
-<p>Using equation \eqref{eq:softmax_dev} to replace $\frac{\partial y_k}{\partial u_j}$, we get,</p>
-
-<script type="math/tex; mode=display">% <![CDATA[
-\begin{equation} 
-\begin{split}
-\frac{\partial J}{\partial u_j} &= y_j(1-y_j)\frac{\partial J}{\partial y_j} +
-\sum_{k: k\neq j}{-y_k y_j \frac{\partial J}{\partial y_k}} \\
-&= y_j(\frac{\partial J}{\partial y_j} -y_j \frac{\partial J}{\partial y_j} 
-+ \sum_{k: k\neq j}{-y_k \frac{\partial J}{\partial y_k}}) \\
-&= y_j(\frac{\partial J}{\partial y_j} - \sum_{k}{y_k \frac{\partial J}{\partial y_k}}) \\
-&= y_j(\frac{\partial J}{\partial y_j} - \langle \mathbf{y}, \frac{\partial J}{\partial \mathbf{y}} \rangle)
-\end{split}
-\end{equation} %]]></script>
-
-<p>Finally, we reach equation \eqref{eq:error_u_res}.</p>
-
-<p>In this way, softmax operation can be implemented to be a standalone layer.</p>
-
-<div class="footnotes">
-  <ol>
-    <li id="fn:1">
-      <p>Strictly speaking, this converts overflow into underflow. 
-  Underflow is no problem, because that rounds off to zero, which is a well-behaved floating point number.
-  otherwise, it will be Infinity or NaN. see <a href="http://lingpipe-blog.com/2009/03/17/softmax-without-overflow/">this article</a> for details. <a href="#fnref:1" class="reversefootnote">&#8617;</a></p>
-    </li>
-  </ol>
-</div>
-</div>
-  
-  
-
-
-    </article>
-  
-  
-    <article>
-      
-  <header>
-    
-      <h1 class="entry-title"><a href="/blog/2015/02/05/rnnlib-introduction/">RNNLIB: Introduction</a></h1>
-    
-    
-      <p class="meta">
-        
-
-
-
-
-<time class='entry-date' datetime='2015-02-05T16:02:28+08:00'><span class='date'><span class='date-month'>Feb</span> <span class='date-day'>5</span><span class='date-suffix'>th</span>, <span class='date-year'>2015</span></span> <span class='time'>4:02 pm</span></time>
-        <span class="printable">
-
-
-  
-
-
-<a href="/assets/printables/2015-02-05-rnnlib-introduction.pdf"> <img src="/images/printer.png" alt="printable version"> </a>
-
-</span>
-
-        
-      </p>
-    
-  </header>
-
-
-  <div class="entry-content"><p>RNNLIB is a recurrent neural network library for sequence learning problems,
-which is written by <a href="http://www.cs.toronto.edu/~graves/">Alex Graves</a>.</p>
-
-<p>In <a href="http://www6.in.tum.de/pub/Main/Publications/Graves2006a.pdf">this paper</a>,
-Graves proposed the CTC(Connectionist Temporal Classification), 
-which allows the system to transcribe unsegmented sequence data. 
-The most exciting thing is that by training a deep bidirectional 
-LSTM network with CTC, it is possible to 
-perform automatic speech recognition in 
-an <a href="http://www.jmlr.org/proceedings/papers/v32/graves14.pdf">end-to-end fashion</a>, 
-i.e. without any human expertise.</p>
-
-<p>RNNLIB covers all the theories in Graves’s paper, including:</p>
-
-<ul>
-  <li>Bidirectional Long Short-Term Memory</li>
-  <li>Connectionist Temporal Classification</li>
-  <li>Multidimensional Recurrent Neural Networks</li>
-</ul>
-
-<p>I will try to explain the codes in RNNLIB in following posts.</p>
-
-<ol>
-  <li><a href="/blog/2015/02/05/rnnlib-softmax-layer/">RNNLIB: Softmax Layer</a> </li>
-  <li><a href="/blog/2015/02/08/rnnlib-connectionist-temporal-classification-and-transcription-layer/">RNNLIB: Connectionist Temporal Classification and Transcription Layer</a></li>
-</ol>
-
-</div>
-  
-  
-
-
-    </article>
-  
   <div class="pagination">
+    
+      <a class="prev" href="/posts/2">&larr; Older</a>
     
     <a href="/blog/archives">Blog Archives</a>
     
@@ -1197,23 +1287,23 @@ i.e. without any human expertise.</p>
   <ul id="recent_posts">
     
       <li class="post">
-        <a href="/blog/2015/03/11/note-on-learning-neural-network/">Note on Learning Neural Network</a>
+        <a href="/blog/2015/03/14/feature-extraction-for-asr-delta/">Feature Extraction for ASR: Delta</a>
       </li>
     
       <li class="post">
-        <a href="/blog/2015/03/10/mini-batch-gradient-descent/">Mini-Batch Gradient Descent</a>
+        <a href="/blog/2015/03/14/feature-extraction-for-asr-pitch/">Feature Extraction for ASR: Pitch</a>
       </li>
     
       <li class="post">
-        <a href="/blog/2015/03/03/dropout-training/">Dropout Training</a>
+        <a href="/blog/2015/03/14/feature-extraction-for-asr-plp/">Feature Extraction for ASR: PLP</a>
       </li>
     
       <li class="post">
-        <a href="/blog/2015/02/08/rnnlib-connectionist-temporal-classification-and-transcription-layer/">RNNLIB: Connectionist Temporal Classification and Transcription Layer</a>
+        <a href="/blog/2015/03/14/feature-extraction-for-asr-mfcc/">Feature Extraction for ASR: MFCC</a>
       </li>
     
       <li class="post">
-        <a href="/blog/2015/02/05/rnnlib-softmax-layer/">RNNLIB: Softmax Layer</a>
+        <a href="/blog/2015/03/14/feature-extraction-for-asr-preprocessing/">Feature Extraction for ASR: Preprocessing</a>
       </li>
     
   </ul>

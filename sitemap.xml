@@ -1,6 +1,30 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.sitemaps.org/schemas/sitemap/0.9 http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd" xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
+    <loc>http://wantee.github.io/blog/2015/03/14/feature-extraction-for-asr-delta/</loc>
+    <lastmod>2015-03-14T16:57:00+08:00</lastmod>
+  </url>
+  <url>
+    <loc>http://wantee.github.io/blog/2015/03/14/feature-extraction-for-asr-pitch/</loc>
+    <lastmod>2015-03-14T16:55:51+08:00</lastmod>
+  </url>
+  <url>
+    <loc>http://wantee.github.io/blog/2015/03/14/feature-extraction-for-asr-plp/</loc>
+    <lastmod>2015-03-14T16:55:15+08:00</lastmod>
+  </url>
+  <url>
+    <loc>http://wantee.github.io/blog/2015/03/14/feature-extraction-for-asr-mfcc/</loc>
+    <lastmod>2015-03-14T16:55:12+08:00</lastmod>
+  </url>
+  <url>
+    <loc>http://wantee.github.io/blog/2015/03/14/feature-extraction-for-asr-preprocessing/</loc>
+    <lastmod>2015-03-14T16:51:02+08:00</lastmod>
+  </url>
+  <url>
+    <loc>http://wantee.github.io/blog/2015/03/14/feature-extraction-for-asr-intro/</loc>
+    <lastmod>2015-03-14T15:49:44+08:00</lastmod>
+  </url>
+  <url>
     <loc>http://wantee.github.io/blog/2015/03/11/note-on-learning-neural-network/</loc>
     <lastmod>2015-03-11T16:54:37+08:00</lastmod>
   </url>
@@ -25,35 +49,11 @@
     <lastmod>2015-02-05T16:02:28+08:00</lastmod>
   </url>
   <url>
-    <loc>http://wantee.github.io/assets/printables/2015-02-05-rnnlib-introduction.pdf.html</loc>
-    <lastmod>2015-03-11T18:17:19+08:00</lastmod>
-  </url>
-  <url>
-    <loc>http://wantee.github.io/assets/printables/2015-02-05-rnnlib-softmax-layer.pdf.html</loc>
-    <lastmod>2015-03-11T18:17:19+08:00</lastmod>
-  </url>
-  <url>
-    <loc>http://wantee.github.io/assets/printables/2015-02-08-rnnlib-connectionist-temporal-classification-and-transcription-layer.pdf.html</loc>
-    <lastmod>2015-03-11T18:17:19+08:00</lastmod>
-  </url>
-  <url>
-    <loc>http://wantee.github.io/assets/printables/2015-03-03-dropout-training.pdf.html</loc>
-    <lastmod>2015-03-11T18:17:19+08:00</lastmod>
-  </url>
-  <url>
-    <loc>http://wantee.github.io/assets/printables/2015-03-10-mini-batch-gradient-descent.pdf.html</loc>
-    <lastmod>2015-03-11T18:17:19+08:00</lastmod>
-  </url>
-  <url>
-    <loc>http://wantee.github.io/assets/printables/2015-03-11-note-on-learning-neural-network.pdf.html</loc>
-    <lastmod>2015-03-11T18:17:19+08:00</lastmod>
-  </url>
-  <url>
     <loc>http://wantee.github.io/blog/archives/</loc>
-    <lastmod>2015-03-11T18:17:19+08:00</lastmod>
+    <lastmod>2015-03-17T11:22:37+08:00</lastmod>
   </url>
   <url>
     <loc>http://wantee.github.io/</loc>
-    <lastmod>2015-03-11T18:17:19+08:00</lastmod>
+    <lastmod>2015-03-17T11:22:37+08:00</lastmod>
   </url>
 </urlset>

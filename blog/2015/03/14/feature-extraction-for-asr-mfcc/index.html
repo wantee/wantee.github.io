@@ -1,0 +1,391 @@
+
+<!DOCTYPE html>
+<!--[if IEMobile 7 ]><html class="no-js iem7"><![endif]-->
+<!--[if lt IE 9]><html class="no-js lte-ie8"><![endif]-->
+<!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <title>Feature Extraction for ASR: MFCC - Formula Coding</title>
+  <meta name="author" content="Wantee Wang">
+
+  
+  <meta name="description" content="Mel-frequency cepstral coefficients (MFCCs) is a popular feature used in Speech Recognition system. It is based on a concept called cepstrum. The &hellip;">
+  
+
+  <!-- http://t.co/dKP3o1e -->
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  
+  <link rel="canonical" href="http://wantee.github.io/blog/2015/03/14/feature-extraction-for-asr-mfcc/">
+  <link href="/favicon.png" rel="icon">
+  <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+  <link href="/stylesheets/data-table.css" media="screen, projection" rel="stylesheet" type="text/css">
+  <link href="/atom.xml" rel="alternate" title="Formula Coding" type="application/atom+xml">
+  <script src="/javascripts/modernizr-2.0.js"></script>
+  <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+  <script>!window.jQuery && document.write(unescape('%3Cscript src="/javascripts/libs/jquery.min.js"%3E%3C/script%3E'))</script>
+  <script src="/javascripts/octopress.js" type="text/javascript"></script>
+  <!--Fonts from Google"s Web font directory at http://google.com/webfonts -->
+<link href="//fonts.googleapis.com/css?family=PT+Serif:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+<link href="//fonts.googleapis.com/css?family=PT+Sans:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+
+  
+  <script type="text/javascript">
+    var _gaq = _gaq || [];
+    _gaq.push(['_setAccount', 'UA-58316654-2']);
+    _gaq.push(['_trackPageview']);
+
+    (function() {
+      var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+      ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+      var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+    })();
+  </script>
+
+
+</head>
+
+<body   >
+  <header role="banner"><hgroup>
+  <h1><a href="/">Formula Coding</a></h1>
+  
+</hgroup>
+
+</header>
+  <nav role="navigation"><ul class="subscription" data-subscription="rss">
+  <li><a href="/atom.xml" rel="subscribe-rss" title="subscribe via RSS">RSS</a></li>
+  
+</ul>
+  
+<form action="https://www.google.com/search" method="get">
+  <fieldset role="search">
+    <input type="hidden" name="sitesearch" value="wantee.github.io">
+    <input class="search" type="text" name="q" results="0" placeholder="Search"/>
+  </fieldset>
+</form>
+  
+<ul class="main-navigation">
+  <li><a href="/">Blog</a></li>
+  <li><a href="/blog/archives">Archives</a></li>
+</ul>
+
+</nav>
+  <div id="main">
+    <div id="content">
+      <div>
+<article class="hentry" role="article">
+  
+  <header>
+    
+      <h1 class="entry-title">Feature Extraction for ASR: MFCC</h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+<time class='entry-date' datetime='2015-03-14T16:55:12+08:00'><span class='date'><span class='date-month'>Mar</span> <span class='date-day'>14</span><span class='date-suffix'>th</span>, <span class='date-year'>2015</span></span> <span class='time'>4:55 pm</span></time>
+        <span class="printable">
+
+
+  
+
+
+<a href="/assets/printables/2015-03-14-feature-extraction-for-asr-mfcc.pdf"> <img src="/images/printer.png" alt="printable version"> </a>
+
+</span>
+
+        
+      </p>
+    
+  </header>
+
+
+<div class="entry-content"><p>Mel-frequency cepstral coefficients (MFCCs) is a popular feature used in Speech Recognition system. It is based on a concept called cepstrum.</p>
+
+<p>The crucial observation leading to the cepstrum terminology is thatnthe log spectrum can be treated as a waveform and subjected to further Fourier analysis.
+The term <em><u>ceps</u>trum</em> is coined by swapping the order of the letters in the word <em><u>spec</u>trum</em>. Likewise, the name of the independent variable of the cepstrum is known as a <em><u>quef</u>rency</em>.</p>
+
+<p>There are a couple of slightly different <a href="http://dsp.stackexchange.com/questions/13/what-is-the-difference-between-a-fourier-transform-and-a-cosine-transform">definitions</a>. Originally cepstrum<a href="#oppenheim1968homomorphic">(Oppenheim &amp; Schafer, 1968)</a> transform was defined as </p>
+
+<blockquote>
+  <p>Fourier transform -&gt; complex logarithm -&gt; inverse Fourier transform. </p>
+</blockquote>
+
+<p>The motivation is in its ability to separate convolved signals (human speech is often modelled as the convolution of an excitation and a vocal tract).</p>
+
+<p>MFCC has been found to perform well in speech recognition systems is to apply a non-linear filter bank in frequency domain (the mel binning). The particular algorithm<a href="#davis1980comparison">(Davis &amp; Mermelstein, 1980)</a> is defined as</p>
+
+<blockquote>
+  <p>Fourier transform -&gt; square of magnitude -&gt; mel filter bank -&gt; real logarithm -&gt; discrete cosine transform.</p>
+</blockquote>
+
+<p>Here DCT can be selected as the second transform, because for real-valued input, the real part of the DFT is a kind of DCT. The reason why DCT is preferred is that the output is approximately decorrelated. Decorrelated features can be modelled efficiently as a Gaussian distribution with a diagonal covariance matrix.</p>
+
+<p><a href="http://dsp.stackexchange.com/questions/31/how-do-i-interpret-the-dct-step-in-the-mfcc-extraction-process">Another reason</a> is that DCT can be thought as a compression step. Typically with MFCCs, you will take the DCT and then keep only the first few coefficients. This is basically the same reason that the DCT is used in JPEG compression. DCTs are chosen because their boundary conditions work better on these types of signals.</p>
+
+<p>Let’s contrast the DCT with the Fourier transform. The Fourier transform is made up of sinusoids that have an integer number of cycles. This means, all of the Fourier basis functions start and end at the same value – they do not do a good job of representing signals that start and end at different values. Remember that the Fourier transform assumes a periodic extension: If you imagine your signal on a sheet of paper, the Fourier transform wants to roll that sheet into a cylinder so that the left and right sides meet.</p>
+
+<p>Think of a spectrum that is shaped roughly like a line with negative slope (which is pretty typical). The Fourier transform will have to use a lot of different coefficients to fit this shape. On the other hand, the DCT has cosines with half-integer numbers of cycles. There is, for example, a DCT basis function that looks vaguely like that line with negative slope. It does not assume a period extension (instead, an even extension), so it will do a better job of fitting that shape.</p>
+
+<p>So, let’s put this together. Once you’ve computed the Mel-frequency spectrum, you have a representation of the spectrum that is sensitive in a way similar to how human hearing works. Some aspects of this shape are more relevant than others. Usually, the larger more overarching spectral shape is more important than the noisy fine details in the spectrum. You can imagine drawing a smooth line to follow the spectral shape, and that the smooth line you draw might tell you just about as much about the signal.</p>
+
+<p>When you take the DCT and discard the higher coefficients, you are taking this spectral shape, and only keeping the parts that are more important for representing this smooth shape. If you used the Fourier transform, it wouldn’t do such a good job of keeping the important information in the low coefficients.</p>
+
+<p>If we feed the MFCCs as features to a machine learning algorithm, these lower-order coefficients will make good features, since they represent some simple aspects of the spectral shape, while the higher-order coefficients that you discard are more noise-like and are not important to train on. Additionally, training on the Mel spectrum magnitudes themselves would probably not be as good because the particular amplitude at different frequencies are less important than the general shape of the spectrum.</p>
+
+<h2 id="cepstral-analysis">Cepstral Analysis</h2>
+
+<p>Formants of a wave carry the identity of the sound. we’d like to extract the formants and a smooth curve connecting them, i.e. the <em>spectral envelope</em>, as shown in following figure (taken from <a href="http://www.speech.cs.cmu.edu/11-492/slides/03_mfcc.pdf">this slide</a>), </p>
+
+<p><img class="center" src="/images/posts/spectral-envelope.png" title="Spectral Envelope" alt="fig:spectral-envelope" /></p>
+
+<p>Cepstral analysis is a way to separate the envelope from the spectrum.
+As shown in the figure , if we consider the log spectrum as waveform, the frequency(quefrency) of spectral envelope is low, while that of spectral details is high. So we can filter the low frequency region to get envelope.</p>
+
+<p><img class="center" src="/images/posts/cepstrum.png" title="Cepstrum" alt="fig:cepstrum" /></p>
+
+<p>Mathematically, let $E[k]$ denotes spectral details(the periodic excitation), $H[k]$ denotes spectral envelope(vocal tract) and $X[k]$ denotes the spectrum of observed signal, then</p>
+
+<script type="math/tex; mode=display">
+X[k] = E[k]H[k] 
+</script>
+
+<script type="math/tex; mode=display">
+|X[k]|=|E[k]|\,|H[k]|
+</script>
+
+<p>Taking Log on both sides</p>
+
+<script type="math/tex; mode=display">
+\log|X[k]|=\log|E[k]|+\log|H[k]|
+</script>
+
+<p>Taking inverseFFT on both sides</p>
+
+<script type="math/tex; mode=display">
+x[k]=e[k]+h[k]
+</script>
+
+<p>Now the signal are separated with a simple addition. This procedure is called de-convolution, more details can be found in <a href="http://www.speech.cs.cmu.edu/11-492/slides/03_mfcc.pdf">this slides</a>.</p>
+
+<h2 id="mel-frequency-analysis">Mel-Frequency Analysis</h2>
+
+<p>The Mel scale relates perceived frequency, or pitch, of a pure tone to its actual measured frequency. Humans are much better at discerning small changes in pitch at low frequencies than they are at high frequencies. Incorporating this scale makes our features match more closely what humans hear.</p>
+
+<p>This figure  shows the Mel-scale function. we can see that Mel-scale gives more weight to low frequency regions. The values is came from human perception experiments.</p>
+
+<p><img class="center" src="/images/posts/mel.png" title="Mel scale" alt="fig:mel" /></p>
+
+<h2 id="implemntation">implemntation</h2>
+
+<p>To warp up, the complete recipe for extracting MFCC is,</p>
+
+<ol>
+  <li>Frame the signal into short frames.</li>
+  <li>For each frame calculate the power spectrum.</li>
+  <li>Apply the mel filterbank to the power spectra, sum the energy in each filter.</li>
+  <li>Take the logarithm of all filterbank energies.</li>
+  <li>Take the DCT of the log filterbank energies.</li>
+  <li>Keep DCT coefficients 2-13, discard the rest.</li>
+</ol>
+
+<p><a href="http://www.practicalcryptography.com/miscellaneous/machine-learning/guide-mel-frequency-cepstral-coefficients-mfccs/">this link</a> is a nice tutorial with python code.</p>
+
+<h2 id="references">References</h2>
+
+<ol class="bibliography"><li><span id="oppenheim1968homomorphic">Oppenheim, A. V., &amp; Schafer, R. W. (1968). Homomorphic analysis of speech. <i>Audio and Electroacoustics, IEEE Transactions on</i>, <i>16</i>(2), 221–226.</span></li>
+<li><span id="davis1980comparison">Davis, S., &amp; Mermelstein, P. (1980). <a href="http://home.iitk.ac.in/~rhegde/ee627_2015/mermelmfcc.pdf">Comparison of parametric representations for monosyllabic word recognition in continuously spoken sentences</a>. <i>Acoustics, Speech and Signal Processing, IEEE Transactions on</i>, <i>28</i>(4), 357–366.</span></li></ol>
+
+</div>
+
+
+  <footer>
+    <p class="meta">
+      
+  
+
+<span class="byline author vcard">Posted by <span class="fn">Wantee Wang</span></span>
+
+      
+
+
+
+
+<time class='entry-date' datetime='2015-03-14T16:55:12+08:00'><span class='date'><span class='date-month'>Mar</span> <span class='date-day'>14</span><span class='date-suffix'>th</span>, <span class='date-year'>2015</span></span> <span class='time'>4:55 pm</span></time>
+      
+
+<span class="categories">
+  
+    <a class='category' href='/blog/categories/automatic-speech-recognition/'>automatic speech recognition</a>
+  
+</span>
+
+
+    </p>
+    
+      <div class="sharing">
+  
+  <a href="//twitter.com/share" class="twitter-share-button" data-url="http://wantee.github.io/blog/2015/03/14/feature-extraction-for-asr-mfcc/" data-via="" data-counturl="http://wantee.github.io/blog/2015/03/14/feature-extraction-for-asr-mfcc/" >Tweet</a>
+  
+  
+  
+</div>
+
+    
+    <p class="meta">
+      
+        <a class="basic-alignment left" href="/blog/2015/03/14/feature-extraction-for-asr-preprocessing/" title="Previous Post: Feature Extraction for ASR: Preprocessing">&laquo; Feature Extraction for ASR: Preprocessing</a>
+      
+      
+        <a class="basic-alignment right" href="/blog/2015/03/14/feature-extraction-for-asr-plp/" title="Next Post: Feature Extraction for ASR: PLP">Feature Extraction for ASR: PLP &raquo;</a>
+      
+    </p>
+  </footer>
+</article>
+
+  <section>
+    <h1>Comments</h1>
+    <div id="disqus_thread" aria-live="polite"><noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+</div>
+  </section>
+
+</div>
+
+<aside class="sidebar">
+  
+    <section>
+  <h1>Recent Posts</h1>
+  <ul id="recent_posts">
+    
+      <li class="post">
+        <a href="/blog/2015/03/14/feature-extraction-for-asr-delta/">Feature Extraction for ASR: Delta</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2015/03/14/feature-extraction-for-asr-pitch/">Feature Extraction for ASR: Pitch</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2015/03/14/feature-extraction-for-asr-plp/">Feature Extraction for ASR: PLP</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2015/03/14/feature-extraction-for-asr-mfcc/">Feature Extraction for ASR: MFCC</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2015/03/14/feature-extraction-for-asr-preprocessing/">Feature Extraction for ASR: Preprocessing</a>
+      </li>
+    
+  </ul>
+</section>
+
+<section>
+  <h1>GitHub Repos</h1>
+  <ul id="gh_repos">
+    <li class="loading">Status updating&#8230;</li>
+  </ul>
+  
+  <a href="https://github.com/wantee">@wantee</a> on GitHub
+  
+  <script type="text/javascript">
+    $(document).ready(function(){
+        if (!window.jXHR){
+            var jxhr = document.createElement('script');
+            jxhr.type = 'text/javascript';
+            jxhr.src = '/javascripts/libs/jXHR.js';
+            var s = document.getElementsByTagName('script')[0];
+            s.parentNode.insertBefore(jxhr, s);
+        }
+
+        github.showRepos({
+            user: 'wantee',
+            count: 0,
+            skip_forks: true,
+            skip_repos: [ "wantee.github.io" ],
+            target: '#gh_repos'
+        });
+    });
+  </script>
+  <script src="/javascripts/github.js" type="text/javascript"> </script>
+</section>
+
+
+
+
+
+  
+</aside>
+
+
+    </div>
+  </div>
+  <footer role="contentinfo"><p>
+  Copyright &copy; 2015 - Wantee Wang -
+  <span class="credit">Powered by <a href="http://octopress.org">Octopress</a></span>
+</p>
+
+</footer>
+  
+
+<script type="text/javascript">
+      var disqus_shortname = 'wantee';
+      
+        
+        // var disqus_developer = 1;
+        var disqus_identifier = 'http://wantee.github.io/blog/2015/03/14/feature-extraction-for-asr-mfcc/';
+        var disqus_url = 'http://wantee.github.io/blog/2015/03/14/feature-extraction-for-asr-mfcc/';
+        var disqus_script = 'embed.js';
+      
+    (function () {
+      var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+      dsq.src = '//' + disqus_shortname + '.disqus.com/' + disqus_script;
+      (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    }());
+</script>
+
+
+
+
+
+
+
+  <script type="text/javascript">
+    (function(){
+      var twitterWidgets = document.createElement('script');
+      twitterWidgets.type = 'text/javascript';
+      twitterWidgets.async = true;
+      twitterWidgets.src = '//platform.twitter.com/widgets.js';
+      document.getElementsByTagName('head')[0].appendChild(twitterWidgets);
+    })();
+  </script>
+
+
+
+
+
+
+  <!-- mathjax config similar to math.stackexchange -->
+  <script type="text/x-mathjax-config">
+  MathJax.Hub.Config({
+    jax: ["input/TeX", "output/HTML-CSS"],
+    tex2jax: {
+      inlineMath: [ ['$', '$'] ],
+      displayMath: [ ['$$', '$$']],
+      processEscapes: true,
+      skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+    },
+    messageStyle: "none",
+    "HTML-CSS": { preferredFont: "TeX", availableFonts: ["STIX","TeX"] },
+    TeX: { equationNumbers: { autoNumber: "AMS" } }
+  });
+  </script>
+  <script src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS_HTML" type="text/javascript"></script>
+
+</body>
+</html>

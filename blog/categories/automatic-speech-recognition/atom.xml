@@ -1,0 +1,156 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title><![CDATA[Category: Automatic Speech Recognition | Formula Coding]]></title>
+  <link href="http://wantee.github.io/blog/categories/automatic-speech-recognition/atom.xml" rel="self"/>
+  <link href="http://wantee.github.io/"/>
+  <updated>2015-03-17T11:22:37+08:00</updated>
+  <id>http://wantee.github.io/</id>
+  <author>
+    <name><![CDATA[Wantee Wang]]></name>
+    
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
+
+  
+  <entry>
+    <title type="html"><![CDATA[Feature Extraction for ASR: Delta]]></title>
+    <link href="http://wantee.github.io/blog/2015/03/14/feature-extraction-for-asr-delta/"/>
+    <updated>2015-03-14T16:57:00+08:00</updated>
+    <id>http://wantee.github.io/blog/2015/03/14/feature-extraction-for-asr-delta</id>
+    <content type="html"><![CDATA[
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[Feature Extraction for ASR: Pitch]]></title>
+    <link href="http://wantee.github.io/blog/2015/03/14/feature-extraction-for-asr-pitch/"/>
+    <updated>2015-03-14T16:55:51+08:00</updated>
+    <id>http://wantee.github.io/blog/2015/03/14/feature-extraction-for-asr-pitch</id>
+    <content type="html"><![CDATA[
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[Feature Extraction for ASR: PLP]]></title>
+    <link href="http://wantee.github.io/blog/2015/03/14/feature-extraction-for-asr-plp/"/>
+    <updated>2015-03-14T16:55:15+08:00</updated>
+    <id>http://wantee.github.io/blog/2015/03/14/feature-extraction-for-asr-plp</id>
+    <content type="html"><![CDATA[
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[Feature Extraction for ASR: MFCC]]></title>
+    <link href="http://wantee.github.io/blog/2015/03/14/feature-extraction-for-asr-mfcc/"/>
+    <updated>2015-03-14T16:55:12+08:00</updated>
+    <id>http://wantee.github.io/blog/2015/03/14/feature-extraction-for-asr-mfcc</id>
+    <content type="html"><![CDATA[<p>Mel-frequency cepstral coefficients (MFCCs) is a popular feature used in Speech Recognition system. It is based on a concept called cepstrum.</p>
+
+<p>The crucial observation leading to the cepstrum terminology is thatnthe log spectrum can be treated as a waveform and subjected to further Fourier analysis.
+The term <em><u>ceps</u>trum</em> is coined by swapping the order of the letters in the word <em><u>spec</u>trum</em>. Likewise, the name of the independent variable of the cepstrum is known as a <em><u>quef</u>rency</em>.</p>
+
+<p>There are a couple of slightly different <a href="http://dsp.stackexchange.com/questions/13/what-is-the-difference-between-a-fourier-transform-and-a-cosine-transform">definitions</a>. Originally cepstrum<a href="#oppenheim1968homomorphic">(Oppenheim &amp; Schafer, 1968)</a> transform was defined as </p>
+
+<blockquote>
+  <p>Fourier transform -&gt; complex logarithm -&gt; inverse Fourier transform. </p>
+</blockquote>
+
+<p>The motivation is in its ability to separate convolved signals (human speech is often modelled as the convolution of an excitation and a vocal tract).</p>
+
+<p>MFCC has been found to perform well in speech recognition systems is to apply a non-linear filter bank in frequency domain (the mel binning). The particular algorithm<a href="#davis1980comparison">(Davis &amp; Mermelstein, 1980)</a> is defined as</p>
+
+<blockquote>
+  <p>Fourier transform -&gt; square of magnitude -&gt; mel filter bank -&gt; real logarithm -&gt; discrete cosine transform.</p>
+</blockquote>
+
+<p>Here DCT can be selected as the second transform, because for real-valued input, the real part of the DFT is a kind of DCT. The reason why DCT is preferred is that the output is approximately decorrelated. Decorrelated features can be modelled efficiently as a Gaussian distribution with a diagonal covariance matrix.</p>
+
+<p><a href="http://dsp.stackexchange.com/questions/31/how-do-i-interpret-the-dct-step-in-the-mfcc-extraction-process">Another reason</a> is that DCT can be thought as a compression step. Typically with MFCCs, you will take the DCT and then keep only the first few coefficients. This is basically the same reason that the DCT is used in JPEG compression. DCTs are chosen because their boundary conditions work better on these types of signals.</p>
+
+<p>Let’s contrast the DCT with the Fourier transform. The Fourier transform is made up of sinusoids that have an integer number of cycles. This means, all of the Fourier basis functions start and end at the same value – they do not do a good job of representing signals that start and end at different values. Remember that the Fourier transform assumes a periodic extension: If you imagine your signal on a sheet of paper, the Fourier transform wants to roll that sheet into a cylinder so that the left and right sides meet.</p>
+
+<p>Think of a spectrum that is shaped roughly like a line with negative slope (which is pretty typical). The Fourier transform will have to use a lot of different coefficients to fit this shape. On the other hand, the DCT has cosines with half-integer numbers of cycles. There is, for example, a DCT basis function that looks vaguely like that line with negative slope. It does not assume a period extension (instead, an even extension), so it will do a better job of fitting that shape.</p>
+
+<p>So, let’s put this together. Once you’ve computed the Mel-frequency spectrum, you have a representation of the spectrum that is sensitive in a way similar to how human hearing works. Some aspects of this shape are more relevant than others. Usually, the larger more overarching spectral shape is more important than the noisy fine details in the spectrum. You can imagine drawing a smooth line to follow the spectral shape, and that the smooth line you draw might tell you just about as much about the signal.</p>
+
+<p>When you take the DCT and discard the higher coefficients, you are taking this spectral shape, and only keeping the parts that are more important for representing this smooth shape. If you used the Fourier transform, it wouldn’t do such a good job of keeping the important information in the low coefficients.</p>
+
+<p>If we feed the MFCCs as features to a machine learning algorithm, these lower-order coefficients will make good features, since they represent some simple aspects of the spectral shape, while the higher-order coefficients that you discard are more noise-like and are not important to train on. Additionally, training on the Mel spectrum magnitudes themselves would probably not be as good because the particular amplitude at different frequencies are less important than the general shape of the spectrum.</p>
+
+<h2 id="cepstral-analysis">Cepstral Analysis</h2>
+
+<p>Formants of a wave carry the identity of the sound. we’d like to extract the formants and a smooth curve connecting them, i.e. the <em>spectral envelope</em>, as shown in following figure (taken from <a href="http://www.speech.cs.cmu.edu/11-492/slides/03_mfcc.pdf">this slide</a>), </p>
+
+<p><img class="center" src="/images/posts/spectral-envelope.png" title="“Spectral Envelope” “fig:spectral-envelope”" ></p>
+
+<p>Cepstral analysis is a way to separate the envelope from the spectrum.
+As shown in the figure , if we consider the log spectrum as waveform, the frequency(quefrency) of spectral envelope is low, while that of spectral details is high. So we can filter the low frequency region to get envelope.</p>
+
+<p><img class="center" src="/images/posts/cepstrum.png" title="“Cepstrum” “fig:cepstrum”" ></p>
+
+<p>Mathematically, let $E[k]$ denotes spectral details(the periodic excitation), $H[k]$ denotes spectral envelope(vocal tract) and $X[k]$ denotes the spectrum of observed signal, then</p>
+
+<script type="math/tex; mode=display">
+X[k] = E[k]H[k] 
+</script>
+
+<script type="math/tex; mode=display">
+|X[k]|=|E[k]|\,|H[k]|
+</script>
+
+<p>Taking Log on both sides</p>
+
+<script type="math/tex; mode=display">
+\log|X[k]|=\log|E[k]|+\log|H[k]|
+</script>
+
+<p>Taking inverseFFT on both sides</p>
+
+<script type="math/tex; mode=display">
+x[k]=e[k]+h[k]
+</script>
+
+<p>Now the signal are separated with a simple addition. This procedure is called de-convolution, more details can be found in <a href="http://www.speech.cs.cmu.edu/11-492/slides/03_mfcc.pdf">this slides</a>.</p>
+
+<h2 id="mel-frequency-analysis">Mel-Frequency Analysis</h2>
+
+<p>The Mel scale relates perceived frequency, or pitch, of a pure tone to its actual measured frequency. Humans are much better at discerning small changes in pitch at low frequencies than they are at high frequencies. Incorporating this scale makes our features match more closely what humans hear.</p>
+
+<p>This figure  shows the Mel-scale function. we can see that Mel-scale gives more weight to low frequency regions. The values is came from human perception experiments.</p>
+
+<p><img class="center" src="/images/posts/mel.png" title="“Mel scale” “fig:mel”" ></p>
+
+<h2 id="implemntation">implemntation</h2>
+
+<p>To warp up, the complete recipe for extracting MFCC is,</p>
+
+<ol>
+  <li>Frame the signal into short frames.</li>
+  <li>For each frame calculate the power spectrum.</li>
+  <li>Apply the mel filterbank to the power spectra, sum the energy in each filter.</li>
+  <li>Take the logarithm of all filterbank energies.</li>
+  <li>Take the DCT of the log filterbank energies.</li>
+  <li>Keep DCT coefficients 2-13, discard the rest.</li>
+</ol>
+
+<p><a href="http://www.practicalcryptography.com/miscellaneous/machine-learning/guide-mel-frequency-cepstral-coefficients-mfccs/">this link</a> is a nice tutorial with python code.</p>
+
+<h2 id="references">References</h2>
+
+<p><ol class="bibliography"><li><span id="oppenheim1968homomorphic">Oppenheim, A. V., &amp; Schafer, R. W. (1968). Homomorphic analysis of speech. <i>Audio and Electroacoustics, IEEE Transactions on</i>, <i>16</i>(2), 221–226.</span></li>
+<li><span id="davis1980comparison">Davis, S., &amp; Mermelstein, P. (1980). <a href="http://home.iitk.ac.in/~rhegde/ee627_2015/mermelmfcc.pdf">Comparison of parametric representations for monosyllabic word recognition in continuously spoken sentences</a>. <i>Acoustics, Speech and Signal Processing, IEEE Transactions on</i>, <i>28</i>(4), 357–366.</span></li></ol></p>
+
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[Feature Extraction for ASR: Preprocessing]]></title>
+    <link href="http://wantee.github.io/blog/2015/03/14/feature-extraction-for-asr-preprocessing/"/>
+    <updated>2015-03-14T16:51:02+08:00</updated>
+    <id>http://wantee.github.io/blog/2015/03/14/feature-extraction-for-asr-preprocessing</id>
+    <content type="html"><![CDATA[
+]]></content>
+  </entry>
+  
+</feed>

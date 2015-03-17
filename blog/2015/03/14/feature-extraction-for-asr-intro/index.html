@@ -5,11 +5,11 @@
 <!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
 <head>
   <meta charset="utf-8">
-  <title>Category: Gradient Descent - Formula Coding</title>
+  <title>Feature Extraction for ASR: Intro - Formula Coding</title>
   <meta name="author" content="Wantee Wang">
 
   
-  <meta name="description" content="Category: gradient descent">
+  <meta name="description" content="Feature extraction is the first step for Automatic Speech Recognition(ASR), which converts the waveform speech signal to a set of feature vectors. &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -18,7 +18,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
   
-  <link rel="canonical" href="http://wantee.github.io/blog/categories/gradient-descent/">
+  <link rel="canonical" href="http://wantee.github.io/blog/2015/03/14/feature-extraction-for-asr-intro/">
   <link href="/favicon.png" rel="icon">
   <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
   <link href="/stylesheets/data-table.css" media="screen, projection" rel="stylesheet" type="text/css">
@@ -75,36 +75,122 @@
   <div id="main">
     <div id="content">
       <div>
-<article role="article">
+<article class="hentry" role="article">
   
   <header>
-    <h1 class="entry-title">Category: Gradient Descent</h1>
+    
+      <h1 class="entry-title">Feature Extraction for ASR: Intro</h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+<time class='entry-date' datetime='2015-03-14T15:49:44+08:00'><span class='date'><span class='date-month'>Mar</span> <span class='date-day'>14</span><span class='date-suffix'>th</span>, <span class='date-year'>2015</span></span> <span class='time'>3:49 pm</span></time>
+        <span class="printable">
+
+
+  
+
+
+<a href="/assets/printables/2015-03-14-feature-extraction-for-asr-intro.pdf"> <img src="/images/printer.png" alt="printable version"> </a>
+
+</span>
+
+        
+      </p>
     
   </header>
-  
-  <div id="blog-archives" class="category">
 
 
+<div class="entry-content"><p>Feature extraction is the first step for Automatic Speech Recognition(ASR), which converts the waveform speech signal to a set of feature vectors. The main goal is to make the vectors have high discrimination between phonemes.</p>
 
-  
-  <h2>2015</h2>
+<p>Thus, the features should be</p>
 
-<article>
-  
-<h1><a href="/blog/2015/03/10/mini-batch-gradient-descent/">Mini-Batch Gradient Descent</a></h1>
-<time datetime="2015-03-10T21:44:23+08:00" pubdate><span class='month'>Mar</span> <span class='day'>10</span> <span class='year'>2015</span></time>
+<ul>
+  <li>perceptually meaningful, i.e., analogous to features used by human auditory system.</li>
+  <li>invariant, i.e., robust to variations in channel, speaker and
+transducer.</li>
+</ul>
 
-<footer>
-  <span class="categories">posted in <a class='category' href='/blog/categories/gradient-descent/'>gradient descent</a></span>
-</footer>
+<p>Three main steps for feature extraction are</p>
 
+<ol>
+  <li>Preprocessing</li>
+  <li>Feature Analysis</li>
+  <li>Parametric Transformation</li>
+</ol>
 
-</article>
+<p>The <em>preprocessing</em> step converts the speech signal to a more suitable waveform for the following analysis, including <em>DC offset removal</em>, <em>pre-emphasis</em> and <em>Hamming Windowing</em>.</p>
+
+<p><em>Feature Analysis</em> is most important step, which do most of the works. Generally, it is can be divided into two main categories, <em>Spectral Analysis</em> and <em>Temporal Analysis</em>. Spectral analysis gives MFCC and PLP features, while temporal analysis produces Energy and Pitch features. MFCC involves <em>Cepstral Analysis</em> and PLP is based on <em>Linear Predictive Coding(LPC) Analysis</em>.</p>
+
+<p>The final step, <em>Parameter transformation</em>, converts the features obtained by above step into signal parameters through <em>differentiation</em> and <em>concatenation</em>.</p>
+
+<p>Details are in following posts:</p>
+
+<ol>
+  <li><a href="/blog/2015/03/14/feature-extraction-for-asr-preprocessing/">Feature Extraction for ASR: Preprocessing</a> </li>
+  <li><a href="/blog/2015/03/14/feature-extraction-for-asr-mfcc/">Feature Extraction for ASR: MFCC</a></li>
+  <li><a href="/blog/2015/03/14/feature-extraction-for-asr-plp/">Feature Extraction for ASR: PLP</a></li>
+  <li><a href="/blog/2015/03/14/feature-extraction-for-asr-pitch/">Feature Extraction for ASR: Pitch</a></li>
+  <li><a href="/blog/2015/03/14/feature-extraction-for-asr-delta/">Feature Extraction for ASR: Delta</a></li>
+</ol>
 
 </div>
 
+
+  <footer>
+    <p class="meta">
+      
   
+
+<span class="byline author vcard">Posted by <span class="fn">Wantee Wang</span></span>
+
+      
+
+
+
+
+<time class='entry-date' datetime='2015-03-14T15:49:44+08:00'><span class='date'><span class='date-month'>Mar</span> <span class='date-day'>14</span><span class='date-suffix'>th</span>, <span class='date-year'>2015</span></span> <span class='time'>3:49 pm</span></time>
+      
+
+<span class="categories">
+  
+    <a class='category' href='/blog/categories/automatic-speech-recognition/'>automatic speech recognition</a>
+  
+</span>
+
+
+    </p>
+    
+      <div class="sharing">
+  
+  <a href="//twitter.com/share" class="twitter-share-button" data-url="http://wantee.github.io/blog/2015/03/14/feature-extraction-for-asr-intro/" data-via="" data-counturl="http://wantee.github.io/blog/2015/03/14/feature-extraction-for-asr-intro/" >Tweet</a>
+  
+  
+  
+</div>
+
+    
+    <p class="meta">
+      
+        <a class="basic-alignment left" href="/blog/2015/03/11/note-on-learning-neural-network/" title="Previous Post: Note on Learning Neural Network">&laquo; Note on Learning Neural Network</a>
+      
+      
+        <a class="basic-alignment right" href="/blog/2015/03/14/feature-extraction-for-asr-preprocessing/" title="Next Post: Feature Extraction for ASR: Preprocessing">Feature Extraction for ASR: Preprocessing &raquo;</a>
+      
+    </p>
+  </footer>
 </article>
+
+  <section>
+    <h1>Comments</h1>
+    <div id="disqus_thread" aria-live="polite"><noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+</div>
+  </section>
 
 </div>
 
@@ -189,7 +275,10 @@
       var disqus_shortname = 'wantee';
       
         
-        var disqus_script = 'count.js';
+        // var disqus_developer = 1;
+        var disqus_identifier = 'http://wantee.github.io/blog/2015/03/14/feature-extraction-for-asr-intro/';
+        var disqus_url = 'http://wantee.github.io/blog/2015/03/14/feature-extraction-for-asr-intro/';
+        var disqus_script = 'embed.js';
       
     (function () {
       var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;

@@ -5,11 +5,11 @@
 <!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
 <head>
   <meta charset="utf-8">
-  <title>Mini-Batch Gradient Descent - Formula Coding</title>
+  <title>Category: Automatic Speech Recognition - Formula Coding</title>
   <meta name="author" content="Wantee Wang">
 
   
-  <meta name="description" content="In Mini-Batch Learning, we update the parameter $\mathbf{w}$ every $b$ examples. There are two ways to do the update. First, using the summation of &hellip;">
+  <meta name="description" content="Category: automatic speech recognition">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -18,7 +18,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
   
-  <link rel="canonical" href="http://wantee.github.io/assets/printables/2015-03-10-mini-batch-gradient-descent.pdf.html">
+  <link rel="canonical" href="http://wantee.github.io/blog/categories/automatic-speech-recognition/">
   <link href="/favicon.png" rel="icon">
   <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
   <link href="/stylesheets/data-table.css" media="screen, projection" rel="stylesheet" type="text/css">
@@ -75,100 +75,106 @@
   <div id="main">
     <div id="content">
       <div>
-<article class="hentry" role="article">
+<article role="article">
   
   <header>
-    
-      <h1 class="entry-title">Mini-Batch Gradient Descent</h1>
-    
-    
-      <p class="meta">
-        
-
-
-
-
-<time class='entry-date' datetime='2015-03-10T21:44:23+08:00'><span class='date'><span class='date-month'>Mar</span> <span class='date-day'>10</span><span class='date-suffix'>th</span>, <span class='date-year'>2015</span></span> <span class='time'>9:44 pm</span></time>
-        <span class="printable">
-
-
-  
-
-
-<a href="/assets/printables/.pdf"> <img src="/images/printer.png" alt="printable version"> </a>
-
-</span>
-
-        
-      </p>
+    <h1 class="entry-title">Category: Automatic Speech Recognition</h1>
     
   </header>
-
-
-<div class="entry-content"><p>In Mini-Batch Learning, we update the parameter $\mathbf{w}$ every $b$ examples. There are two ways to do the update.</p>
-
-<p>First, using the summation of all examples in the mini-batch, i.e.,</p>
-
-<p>\begin{equation}\label{eq:sum}
-\Delta\mathbf{w} = - \alpha_1 \sum_{i=l}^{l+b-1}{\nabla E^{(i)}}
-\end{equation}</p>
-
-<p>Second, using the average of all examples in the mini-batch, i.e.,</p>
-
-<p>\begin{equation}\label{eq:avg}
-\Delta\mathbf{w} = - \alpha_2 \frac{1}{b} \sum_{i=l}^{l+b-1}{\nabla E^{(i)}}
-\end{equation}</p>
-
-<p>From \eqref{eq:sum} and \eqref{eq:avg}, we can see that by simply scaling the learning rate, i.e. $\alpha_1 = \frac{1}{b} \alpha_2$, these two method can be equivalent.</p>
-
-</div>
-
-
-  <footer>
-    <p class="meta">
-      
   
-
-<span class="byline author vcard">Posted by <span class="fn">Wantee Wang</span></span>
-
-      
+  <div id="blog-archives" class="category">
 
 
 
-
-<time class='entry-date' datetime='2015-03-10T21:44:23+08:00'><span class='date'><span class='date-month'>Mar</span> <span class='date-day'>10</span><span class='date-suffix'>th</span>, <span class='date-year'>2015</span></span> <span class='time'>9:44 pm</span></time>
-      
-
-<span class="categories">
   
-    <a class='category' href='/blog/categories/gradient-descent/'>Gradient Descent</a>
+  <h2>2015</h2>
+
+<article>
   
-</span>
+<h1><a href="/blog/2015/03/14/feature-extraction-for-asr-delta/">Feature Extraction for ASR: Delta</a></h1>
+<time datetime="2015-03-14T16:57:00+08:00" pubdate><span class='month'>Mar</span> <span class='day'>14</span> <span class='year'>2015</span></time>
+
+<footer>
+  <span class="categories">posted in <a class='category' href='/blog/categories/automatic-speech-recognition/'>automatic speech recognition</a></span>
+</footer>
 
 
-    </p>
-    
-      <div class="sharing">
-  
-  <a href="//twitter.com/share" class="twitter-share-button" data-url="http://wantee.github.io/assets/printables/2015-03-10-mini-batch-gradient-descent.pdf.html" data-via="" data-counturl="http://wantee.github.io/assets/printables/2015-03-10-mini-batch-gradient-descent.pdf.html" >Tweet</a>
-  
-  
-  
-</div>
-
-    
-    <p class="meta">
-      
-      
-    </p>
-  </footer>
 </article>
 
-  <section>
-    <h1>Comments</h1>
-    <div id="disqus_thread" aria-live="polite"><noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+
+
+<article>
+  
+<h1><a href="/blog/2015/03/14/feature-extraction-for-asr-pitch/">Feature Extraction for ASR: Pitch</a></h1>
+<time datetime="2015-03-14T16:55:51+08:00" pubdate><span class='month'>Mar</span> <span class='day'>14</span> <span class='year'>2015</span></time>
+
+<footer>
+  <span class="categories">posted in <a class='category' href='/blog/categories/automatic-speech-recognition/'>automatic speech recognition</a></span>
+</footer>
+
+
+</article>
+
+
+
+<article>
+  
+<h1><a href="/blog/2015/03/14/feature-extraction-for-asr-plp/">Feature Extraction for ASR: PLP</a></h1>
+<time datetime="2015-03-14T16:55:15+08:00" pubdate><span class='month'>Mar</span> <span class='day'>14</span> <span class='year'>2015</span></time>
+
+<footer>
+  <span class="categories">posted in <a class='category' href='/blog/categories/automatic-speech-recognition/'>automatic speech recognition</a></span>
+</footer>
+
+
+</article>
+
+
+
+<article>
+  
+<h1><a href="/blog/2015/03/14/feature-extraction-for-asr-mfcc/">Feature Extraction for ASR: MFCC</a></h1>
+<time datetime="2015-03-14T16:55:12+08:00" pubdate><span class='month'>Mar</span> <span class='day'>14</span> <span class='year'>2015</span></time>
+
+<footer>
+  <span class="categories">posted in <a class='category' href='/blog/categories/automatic-speech-recognition/'>automatic speech recognition</a></span>
+</footer>
+
+
+</article>
+
+
+
+<article>
+  
+<h1><a href="/blog/2015/03/14/feature-extraction-for-asr-preprocessing/">Feature Extraction for ASR: Preprocessing</a></h1>
+<time datetime="2015-03-14T16:51:02+08:00" pubdate><span class='month'>Mar</span> <span class='day'>14</span> <span class='year'>2015</span></time>
+
+<footer>
+  <span class="categories">posted in <a class='category' href='/blog/categories/automatic-speech-recognition/'>automatic speech recognition</a></span>
+</footer>
+
+
+</article>
+
+
+
+<article>
+  
+<h1><a href="/blog/2015/03/14/feature-extraction-for-asr-intro/">Feature Extraction for ASR: Intro</a></h1>
+<time datetime="2015-03-14T15:49:44+08:00" pubdate><span class='month'>Mar</span> <span class='day'>14</span> <span class='year'>2015</span></time>
+
+<footer>
+  <span class="categories">posted in <a class='category' href='/blog/categories/automatic-speech-recognition/'>automatic speech recognition</a></span>
+</footer>
+
+
+</article>
+
 </div>
-  </section>
+
+  
+</article>
 
 </div>
 
@@ -179,23 +185,23 @@
   <ul id="recent_posts">
     
       <li class="post">
-        <a href="/blog/2015/03/11/note-on-learning-neural-network/">Note on Learning Neural Network</a>
+        <a href="/blog/2015/03/14/feature-extraction-for-asr-delta/">Feature Extraction for ASR: Delta</a>
       </li>
     
       <li class="post">
-        <a href="/blog/2015/03/10/mini-batch-gradient-descent/">Mini-Batch Gradient Descent</a>
+        <a href="/blog/2015/03/14/feature-extraction-for-asr-pitch/">Feature Extraction for ASR: Pitch</a>
       </li>
     
       <li class="post">
-        <a href="/blog/2015/03/03/dropout-training/">Dropout Training</a>
+        <a href="/blog/2015/03/14/feature-extraction-for-asr-plp/">Feature Extraction for ASR: PLP</a>
       </li>
     
       <li class="post">
-        <a href="/blog/2015/02/08/rnnlib-connectionist-temporal-classification-and-transcription-layer/">RNNLIB: Connectionist Temporal Classification and Transcription Layer</a>
+        <a href="/blog/2015/03/14/feature-extraction-for-asr-mfcc/">Feature Extraction for ASR: MFCC</a>
       </li>
     
       <li class="post">
-        <a href="/blog/2015/02/05/rnnlib-softmax-layer/">RNNLIB: Softmax Layer</a>
+        <a href="/blog/2015/03/14/feature-extraction-for-asr-preprocessing/">Feature Extraction for ASR: Preprocessing</a>
       </li>
     
   </ul>
@@ -253,10 +259,7 @@
       var disqus_shortname = 'wantee';
       
         
-        // var disqus_developer = 1;
-        var disqus_identifier = 'http://wantee.github.io/assets/printables/2015-03-10-mini-batch-gradient-descent.pdf.html';
-        var disqus_url = 'http://wantee.github.io/assets/printables/2015-03-10-mini-batch-gradient-descent.pdf.html';
-        var disqus_script = 'embed.js';
+        var disqus_script = 'count.js';
       
     (function () {
       var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
