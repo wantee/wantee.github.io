@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title><![CDATA[Category: Machine Learning | Formula Coding]]></title>
+  <link href="http://wantee.github.io/blog/categories/machine-learning/atom.xml" rel="self"/>
+  <link href="http://wantee.github.io/"/>
+  <updated>2015-03-22T23:22:18+08:00</updated>
+  <id>http://wantee.github.io/</id>
+  <author>
+    <name><![CDATA[Wantee Wang]]></name>
+    
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
+
+  
+  <entry>
+    <title type="html"><![CDATA[Discriminative vs Generative]]></title>
+    <link href="http://wantee.github.io/blog/2015/03/22/discriminative-vs-generative/"/>
+    <updated>2015-03-22T22:44:20+08:00</updated>
+    <id>http://wantee.github.io/blog/2015/03/22/discriminative-vs-generative</id>
+    <content type="html"><![CDATA[<p>Models in Machine Learning can often be divided into two main categories, <em>Generative</em> and <em>Discriminative</em>.
+The fundamental difference between them is:</p>
+
+<ul>
+  <li>Discriminative models learn the (hard or soft) boundary between classes</li>
+  <li>Generative models model the distribution of individual classes</li>
+</ul>
+
+<p>In mathematics, discriminative models directly estimate posterior probabilities $P(y\mathop{|}x)$, while generative models model class-conditional pdfs $p(x\mathop{|}y)$ and prior probabilities $P(y)$, therefore the joint probability distributions $p(x,y)$.</p>
+
+<p>Generative models often make some assumption on the underlying probability distributions and model it. Thus it is can be used to generate new samples from the learned distribution.</p>
+
+<p>A simple way to distinct the two models is by considered the examples used during training. Generative model only needs examples of a particular class which it modelling. However, Discriminative model needs examples of at least two classes to find the boundary. </p>
+
+<h2 id="examples">Examples</h2>
+
+<p>Some models can be seen as generative-discriminative pairs, e.g.,</p>
+
+<ul>
+  <li>Classifiers: Naive Bayes and Logistic Regression</li>
+  <li>Sequential Data: HMM and CRF</li>
+</ul>
+
+<p>Neutral networks are discriminative model because they compute $p(output\mathop{|}input)$.</p>
+
+<h2 id="discriminative-and-generative-training">Discriminative and Generative Training</h2>
+
+<p>Training approaches can also be classified as discriminative or generative. Even though with the same model, we can choose different training approaches.</p>
+
+<p>For example, the HMM-GMM model used in speech recognition, when we do MLE training with Baum–Welch algorithm, we are using a generative training method. However when we do MPE training, we are using a discriminative training method.</p>
+
+]]></content>
+  </entry>
+  
+</feed>
