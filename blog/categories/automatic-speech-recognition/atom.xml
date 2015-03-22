@@ -4,7 +4,7 @@
   <title><![CDATA[Category: Automatic Speech Recognition | Formula Coding]]></title>
   <link href="http://wantee.github.io/blog/categories/automatic-speech-recognition/atom.xml" rel="self"/>
   <link href="http://wantee.github.io/"/>
-  <updated>2015-03-17T17:34:26+08:00</updated>
+  <updated>2015-03-22T17:16:13+08:00</updated>
   <id>http://wantee.github.io/</id>
   <author>
     <name><![CDATA[Wantee Wang]]></name>
@@ -18,7 +18,16 @@
     <link href="http://wantee.github.io/blog/2015/03/14/feature-extraction-for-asr-delta/"/>
     <updated>2015-03-14T16:57:00+08:00</updated>
     <id>http://wantee.github.io/blog/2015/03/14/feature-extraction-for-asr-delta</id>
-    <content type="html"><![CDATA[
+    <content type="html"><![CDATA[<p>In order to use the time dynamic information of speech, One can calculate the <em>Deltas</em> and <em>Delta-Deltas</em> from the original features.</p>
+
+<p>Also known as <em>differential</em> and <em>acceleration</em> coefficients, they are computed as,</p>
+
+<script type="math/tex; mode=display">
+d_t = \frac{\sum_{n=1}^N n(c_{t+n} - c_{t-n})}{2\sum_{n=1}^N n^2}
+</script>
+
+<p>where $d_t$ is a delta coefficient, from frame $t$  computed in terms of the static coefficients $c_{t-N}$ to $c_{t+N}$. A typical value for $N$ is 2. Delta-Delta (Acceleration) coefficients are calculated in the same way, but they are calculated from the deltas, not the static coefficients.</p>
+
 ]]></content>
   </entry>
   
