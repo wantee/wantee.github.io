@@ -4,7 +4,7 @@
   <title><![CDATA[Category: Automatic Speech Recognition | Formula Coding]]></title>
   <link href="http://wantee.github.io/blog/categories/automatic-speech-recognition/atom.xml" rel="self"/>
   <link href="http://wantee.github.io/"/>
-  <updated>2015-03-22T23:29:23+08:00</updated>
+  <updated>2015-03-24T16:49:45+08:00</updated>
   <id>http://wantee.github.io/</id>
   <author>
     <name><![CDATA[Wantee Wang]]></name>
@@ -148,7 +148,12 @@ x[k]=e[k]+h[k]
 <h2 id="references">References</h2>
 
 <p><ol class="bibliography"><li><span id="oppenheim1968homomorphic">Oppenheim, A. V., &amp; Schafer, R. W. (1968). Homomorphic analysis of speech. <i>Audio and Electroacoustics, IEEE Transactions on</i>, <i>16</i>(2), 221–226.</span></li>
-<li><span id="davis1980comparison">Davis, S., &amp; Mermelstein, P. (1980). <a href="http://home.iitk.ac.in/~rhegde/ee627_2015/mermelmfcc.pdf">Comparison of parametric representations for monosyllabic word recognition in continuously spoken sentences</a>. <i>Acoustics, Speech and Signal Processing, IEEE Transactions on</i>, <i>28</i>(4), 357–366.</span></li></ol></p>
+<li><span id="davis1980comparison">Davis, S., &amp; Mermelstein, P. (1980). <a href="http://home.iitk.ac.in/~rhegde/ee627_2015/mermelmfcc.pdf">Comparison of parametric representations for monosyllabic word recognition in continuously spoken sentences</a>. <i>Acoustics, Speech and Signal Processing, IEEE Transactions on</i>, <i>28</i>(4), 357–366.</span></li>
+<li><span id="mikolov2013efficient">Mikolov, T., Chen, K., Corrado, G., &amp; Dean, J. (2013). Efficient estimation of word representations in vector space. <i>ArXiv Preprint ArXiv:1301.3781</i>.</span></li>
+<li><span id="mikolov2013distributed">Mikolov, T., Sutskever, I., Chen, K., Corrado, G. S., &amp; Dean, J. (2013). Distributed representations of words and phrases and their compositionality. In <i>Advances in Neural Information Processing Systems</i> (pp. 3111–3119).</span></li>
+<li><span id="le2014distributed">Le, Q. V., &amp; Mikolov, T. (2014). Distributed representations of sentences and documents. <i>ArXiv Preprint ArXiv:1405.4053</i>.</span></li>
+<li><span id="tang2015line">Tang, J., Qu, M., Wang, M., Zhang, M., Yan, J., &amp; Mei, Q. (2015). LINE: Large-scale Information Network Embedding. <i>ArXiv Preprint ArXiv:1503.03578</i>.</span></li>
+<li><span id="bengio2003neural">Bengio, Y., Ducharme, R., Vincent, P., &amp; Janvin, C. (2003). A neural probabilistic language model. <i>The Journal of Machine Learning Research</i>, <i>3</i>, 1137–1155.</span></li></ol></p>
 
 ]]></content>
   </entry>
