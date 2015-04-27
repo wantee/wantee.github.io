@@ -1,6 +1,7 @@
 require "rubygems"
 require "bundler/setup"
 require "stringex"
+require_relative "misc/tools/gist.rb"
 
 ## -- Rsync Deploy config -- ##
 # Be sure your public key is listed in your server's ~/.ssh/authorized_keys file
@@ -511,7 +512,8 @@ def gen_pdf(markdownfile, pdffile, source_dir, posts_dir, blog_url)
 
   obib="#{source_dir}/_bibliography/references"
   bib="#{pdfdir}/references"
-  has_bib=false
+  has_bib = false
+  has_gist = false
 
   tmpfile="#{pdffile}.markdown"
   comment = false
@@ -587,16 +589,37 @@ def gen_pdf(markdownfile, pdffile, source_dir, posts_dir, blog_url)
           line=line.sub(/{% cite\s+(.*?)\s+%}/, "\\cite{#{citation}}")
         end
 
+        if /{%\s+gist\s+(?<gist_txt>.*?)\s+%}/ =~ line
+          has_gist=true
+          gist = Gist.new(gist_txt)
+          gist_file = gist.render()
+          if gist_file == ""
+            line = ""
+          else
+            lang = "text"
+            if /\.py$/ =~ gist_file
+              lang = 'Python'
+            end
+
+            line = "\\inputminted[mathescape, linenos, frame=lines, framesep=2mm]{#{lang}}{#{gist_file}}"
+          end
+        end
+
         post.puts line
       end  
     end
   end 
 
+  texfile=pdffile.sub(/.pdf$/, '.tex')
+  base=pdffile.sub(/.pdf$/, '')
+  pkgfile="#{pdfdir}/header.tex"
+  system "echo > #{pkgfile}"
+  if has_gist
+    system "echo \"\\usepackage{minted}\" >> #{pkgfile}"
+  end
+
   if has_bib
-    texfile=pdffile.sub(/.pdf$/, '.tex')
-    base=pdffile.sub(/.pdf$/, '')
-    pkgfile="#{pdfdir}/header.tex"
-    system "echo \"\\usepackage[sort&compress, numbers]{natbib}\" > #{pkgfile}"
+    system "echo \"\\usepackage[sort&compress, numbers]{natbib}\" >> #{pkgfile}"
 
     system "pandoc -s --include-in-header=#{pkgfile} #{tmpfile} -o #{texfile} "
 	system "xelatex -output-directory=#{pdfdir} -no-pdf --interaction=nonstopmode #{base} >/dev/null"
@@ -604,7 +627,6 @@ def gen_pdf(markdownfile, pdffile, source_dir, posts_dir, blog_url)
 	system "xelatex -output-directory=#{pdfdir} -no-pdf --interaction=nonstopmode #{base} >/dev/null"
 	system "xelatex -output-directory=#{pdfdir} --interaction=nonstopmode #{base} >/dev/null"
 
-    system "rm -rf #{pkgfile}"
     system "rm -rf #{bib}"
 	system "rm -rf #{pdfdir}/*.aux"
 	system "rm -rf #{pdfdir}/*.log"
@@ -619,10 +641,12 @@ def gen_pdf(markdownfile, pdffile, source_dir, posts_dir, blog_url)
 	system "rm -rf #{pdfdir}/*.ver"
 	system "rm -rf #{pdfdir}/*.synctex.gz"
   else
-    system "pandoc --latex-engine=xelatex -N #{tmpfile} -o #{pdffile}"
+    system "pandoc --include-in-header=#{pkgfile} --latex-engine=xelatex -N #{tmpfile} -o #{pdffile}"
   end
 
+  system "rm -rf #{pkgfile}"
   system "rm -rf #{tmpfile}"
+  system "rm -rf input.pyg"
 end
 
 # from image_tag plugin

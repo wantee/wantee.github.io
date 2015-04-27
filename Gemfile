@@ -15,6 +15,9 @@ group :development do
   gem 'rb-fsevent', '~> 0.9'
   gem 'stringex', '~> 1.4.0'
   gem 'jekyll-scholar'
+  gem 'octopress-gist'
+  gem 'octopress-solarized'
+  gem 'octopress', '~> 3.0.0.rc.35'
 end
 
 gem 'sinatra', '~> 1.4.2'
