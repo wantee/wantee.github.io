@@ -4,7 +4,7 @@
   <title><![CDATA[Formula Coding]]></title>
   <link href="http://wantee.github.io/atom.xml" rel="self"/>
   <link href="http://wantee.github.io/"/>
-  <updated>2015-03-24T16:49:45+08:00</updated>
+  <updated>2015-04-27T20:22:48+08:00</updated>
   <id>http://wantee.github.io/</id>
   <author>
     <name><![CDATA[Wantee Wang]]></name>
@@ -12,6 +12,96 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[The XOR Problem]]></title>
+    <link href="http://wantee.github.io/blog/2015/04/27/the-xor-problem/"/>
+    <updated>2015-04-27T10:39:02+08:00</updated>
+    <id>http://wantee.github.io/blog/2015/04/27/the-xor-problem</id>
+    <content type="html"><![CDATA[<ul id="markdown-toc">
+  <li><a href="#probelm">Probelm</a></li>
+  <li><a href="#non-linear-boundary">Non-linear Boundary</a></li>
+  <li><a href="#removing-redundant-features">Removing Redundant Features</a></li>
+</ul>
+
+<p>The XOR is an interesting problem, not only because it is a classical example for <em>Linear Separability</em>, but also it played a significant role in the history of neutral network research.</p>
+
+<h2 id="probelm">Probelm</h2>
+
+<p>The truth table for XOR is</p>
+
+<table>
+  <thead>
+    <tr>
+      <th>x</th>
+      <th>y</th>
+      <th>x <em>xor</em> y</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+    </tr>
+    <tr>
+      <td>0</td>
+      <td>1</td>
+      <td>1</td>
+    </tr>
+    <tr>
+      <td>1</td>
+      <td>0</td>
+      <td>1</td>
+    </tr>
+    <tr>
+      <td>1</td>
+      <td>1</td>
+      <td>0</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>It is impossible for a classifier with linear decision boundary to learn an XOR function. This can be seen easily by the following plot.</p>
+
+<p><img class="center" src="http://wantee.github.io/images/posts/xor.png" title="The XOR Problem" alt="fig:xor" /></p>
+
+<p>Apparently, we can’t using a line to separate the two classes.</p>
+
+<h2 id="non-linear-boundary">Non-linear Boundary</h2>
+
+<p>If we take a carefully look at the scatter figure, it can be found that it’s easy to use an ellipse or hyperbola to separate the classes.</p>
+
+<p>Recall that, the general equation for ellipse or hyperbola is</p>
+
+<script type="math/tex; mode=display">\begin{equation}\label{eq:ellipse}
+Ax^2 + Bxy + Cy^2 + Dx + Ey + F = 0
+\end{equation}</script>
+
+<p>Thus, we can just feed those above components($x, y, x^2, y^2, xy$) to a linear classifier, and see if the classes can be separated.</p>
+
+<p>We use <a href="http://scikit-learn.org/">scikit-learn</a> to perform the experiments. Following shows the code,</p>
+
+<script src="https://gist.github.com/1c74b8336494cb0e9c6d.js?file=xor-5d.py"> </script>
+
+<p>After running, we see the final decision boundary,</p>
+
+<p><img class="center" src="http://wantee.github.io/images/posts/xor-5d.png" title="Non-linear boundary" alt="fig:xor-5d" /></p>
+
+<h2 id="removing-redundant-features">Removing Redundant Features</h2>
+
+<p>It is can be seen that in the final equation \eqref{eq:ellipse}, $A = D$ and $C = E$(it will be more clear if we use logistic regression to fit the data). Actually, for boolean features, the high-order polynomial features are useless, because $\forall n, x_i^n = x_i$. So we can only use the interaction features($x_ix_j$). This time we get the features from <a href="http://scikit-learn.org/stable/modules/generated/sklearn.preprocessing.PolynomialFeatures.html#sklearn.preprocessing.PolynomialFeatures">PolynomialFeatures</a> class of scikit-learn. </p>
+
+<script src="https://gist.github.com/1c74b8336494cb0e9c6d.js?file=xor-3d.py"> </script>
+
+<p>Again, we show the final decision boundary,</p>
+
+<p><img class="center" src="http://wantee.github.io/images/posts/xor-3d.png" title="Non-linear boundary using 3-d features" alt="fig:xor-3d" /></p>
+
+<p>By adding polynomial features to the model inputs, we are actually mapping the features to higher dimension. This is the SVM’s job, here we just choose the features manually.</p>
+
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[Knowledge Embedding]]></title>

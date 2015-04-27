@@ -9,7 +9,7 @@
   <meta name="author" content="Wantee Wang">
 
   
-  <meta name="description" content="Neural Networks are applied in many fields of Machine Learning. Due to their natural property, it is suitable to use them to estimate the &hellip;">
+  <meta name="description" content="Probelm Non-linear Boundary Removing Redundant Features The XOR is an interesting problem, not only because it is a classical example for Linear &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -76,6 +76,126 @@
     <div id="content">
       <div class="blog-index">
   
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2015/04/27/the-xor-problem/">The XOR Problem</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+<time class='entry-date' datetime='2015-04-27T10:39:02+08:00'><span class='date'><span class='date-month'>Apr</span> <span class='date-day'>27</span><span class='date-suffix'>th</span>, <span class='date-year'>2015</span></span> <span class='time'>10:39 am</span></time>
+        <span class="printable">
+
+
+  
+
+
+<a href="/assets/printables/2015-04-27-the-xor-problem.pdf"> <img src="/images/printer.png" alt="printable version"> </a>
+
+</span>
+
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><ul id="markdown-toc">
+  <li><a href="#probelm">Probelm</a></li>
+  <li><a href="#non-linear-boundary">Non-linear Boundary</a></li>
+  <li><a href="#removing-redundant-features">Removing Redundant Features</a></li>
+</ul>
+
+<p>The XOR is an interesting problem, not only because it is a classical example for <em>Linear Separability</em>, but also it played a significant role in the history of neutral network research.</p>
+
+<h2 id="probelm">Probelm</h2>
+
+<p>The truth table for XOR is</p>
+
+<table>
+  <thead>
+    <tr>
+      <th>x</th>
+      <th>y</th>
+      <th>x <em>xor</em> y</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+    </tr>
+    <tr>
+      <td>0</td>
+      <td>1</td>
+      <td>1</td>
+    </tr>
+    <tr>
+      <td>1</td>
+      <td>0</td>
+      <td>1</td>
+    </tr>
+    <tr>
+      <td>1</td>
+      <td>1</td>
+      <td>0</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>It is impossible for a classifier with linear decision boundary to learn an XOR function. This can be seen easily by the following plot.</p>
+
+<p><img class="center" src="/images/posts/xor.png" title="The XOR Problem" alt="fig:xor" /></p>
+
+<p>Apparently, we can’t using a line to separate the two classes.</p>
+
+<h2 id="non-linear-boundary">Non-linear Boundary</h2>
+
+<p>If we take a carefully look at the scatter figure, it can be found that it’s easy to use an ellipse or hyperbola to separate the classes.</p>
+
+<p>Recall that, the general equation for ellipse or hyperbola is</p>
+
+<script type="math/tex; mode=display">\begin{equation}\label{eq:ellipse}
+Ax^2 + Bxy + Cy^2 + Dx + Ey + F = 0
+\end{equation}</script>
+
+<p>Thus, we can just feed those above components($x, y, x^2, y^2, xy$) to a linear classifier, and see if the classes can be separated.</p>
+
+<p>We use <a href="http://scikit-learn.org/">scikit-learn</a> to perform the experiments. Following shows the code,</p>
+
+<script src="https://gist.github.com/1c74b8336494cb0e9c6d.js?file=xor-5d.py"> </script>
+
+<p>After running, we see the final decision boundary,</p>
+
+<p><img class="center" src="/images/posts/xor-5d.png" title="Non-linear boundary" alt="fig:xor-5d" /></p>
+
+<h2 id="removing-redundant-features">Removing Redundant Features</h2>
+
+<p>It is can be seen that in the final equation \eqref{eq:ellipse}, $A = D$ and $C = E$(it will be more clear if we use logistic regression to fit the data). Actually, for boolean features, the high-order polynomial features are useless, because $\forall n, x_i^n = x_i$. So we can only use the interaction features($x_ix_j$). This time we get the features from <a href="http://scikit-learn.org/stable/modules/generated/sklearn.preprocessing.PolynomialFeatures.html#sklearn.preprocessing.PolynomialFeatures">PolynomialFeatures</a> class of scikit-learn. </p>
+
+<script src="https://gist.github.com/1c74b8336494cb0e9c6d.js?file=xor-3d.py"> </script>
+
+<p>Again, we show the final decision boundary,</p>
+
+<p><img class="center" src="/images/posts/xor-3d.png" title="Non-linear boundary using 3-d features" alt="fig:xor-3d" /></p>
+
+<p>By adding polynomial features to the model inputs, we are actually mapping the features to higher dimension. This is the SVM’s job, here we just choose the features manually.</p>
+
+</div>
+  
+  
+
+
+    </article>
   
   
     <article>
@@ -872,60 +992,6 @@ transducer.</li>
 
     </article>
   
-  
-    <article>
-      
-  <header>
-    
-      <h1 class="entry-title"><a href="/blog/2015/03/10/mini-batch-gradient-descent/">Mini-Batch Gradient Descent</a></h1>
-    
-    
-      <p class="meta">
-        
-
-
-
-
-<time class='entry-date' datetime='2015-03-10T21:44:23+08:00'><span class='date'><span class='date-month'>Mar</span> <span class='date-day'>10</span><span class='date-suffix'>th</span>, <span class='date-year'>2015</span></span> <span class='time'>9:44 pm</span></time>
-        <span class="printable">
-
-
-  
-
-
-<a href="/assets/printables/2015-03-10-mini-batch-gradient-descent.pdf"> <img src="/images/printer.png" alt="printable version"> </a>
-
-</span>
-
-        
-      </p>
-    
-  </header>
-
-
-  <div class="entry-content"><p>In Mini-Batch Learning, we update the parameter $\mathbf{w}$ every $b$ examples. There are two ways to do the update.</p>
-
-<p>First, using the summation of all examples in the mini-batch, i.e.,</p>
-
-<script type="math/tex; mode=display">\begin{equation}\label{eq:sum}
-  \Delta\mathbf{w} = - \alpha_1 \sum_{i=l}^{l+b-1}{\nabla E^{(i)}}
-\end{equation}</script>
-
-<p>Second, using the average of all examples in the mini-batch, i.e.,</p>
-
-<script type="math/tex; mode=display">\begin{equation}\label{eq:avg}
-  \Delta\mathbf{w} = - \alpha_2 \frac{1}{b} \sum_{i=l}^{l+b-1}{\nabla E^{(i)}}
-\end{equation}</script>
-
-<p>From \eqref{eq:sum} and \eqref{eq:avg}, we can see that by simply scaling the learning rate, i.e. $\alpha_1 = \frac{1}{b} \alpha_2$, these two method can be equivalent. </p>
-
-</div>
-  
-  
-
-
-    </article>
-  
   <div class="pagination">
     
       <a class="prev" href="/posts/2">&larr; Older</a>
@@ -941,6 +1007,10 @@ transducer.</li>
   <ul id="recent_posts">
     
       <li class="post">
+        <a href="/blog/2015/04/27/the-xor-problem/">The XOR Problem</a>
+      </li>
+    
+      <li class="post">
         <a href="/blog/2015/03/24/knowledge-embedding/">Knowledge Embedding</a>
       </li>
     
@@ -954,10 +1024,6 @@ transducer.</li>
     
       <li class="post">
         <a href="/blog/2015/03/14/feature-extraction-for-asr-pitch/">Feature Extraction for ASR: Pitch</a>
-      </li>
-    
-      <li class="post">
-        <a href="/blog/2015/03/14/feature-extraction-for-asr-plp/">Feature Extraction for ASR: PLP</a>
       </li>
     
   </ul>
