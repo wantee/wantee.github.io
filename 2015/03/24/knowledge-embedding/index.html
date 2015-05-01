@@ -1,0 +1,319 @@
+<!DOCTYPE html>
+<html class=" " lang="en" >
+<head>
+<meta charset="utf-8">
+<meta name="author" content="Wantee Wang">
+<meta name="HandheldFriendly" content="True">
+<meta name="MobileOptimized" content="320">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link href="http://wantee.github.io/2015/03/24/knowledge-embedding/" rel="canonical">
+<meta name='generator' content='Jekyll v2.5.3, Octopress v3.0.0.rc.36 Octopress Ink v1.0.0.rc.64'>
+
+<link href='/stylesheets/all-65c36cdd63ac2471d2c185a07fc979da.css' media='all' rel='stylesheet' type='text/css'>
+<script>
+    (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+    (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+    m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+    })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+    ga('create', 'UA-58316654-2', 'auto');
+    ga('send', 'pageview');
+  </script>
+
+
+</head>
+<body>
+  <div class="site"><div class='nav-panel'>
+<nav class='mobile-nav' role="navigation">
+  <div class='mobile-nav-item mobile-nav-search'><form class='site-search' action="https://google.com/search" method="get">
+  <input type="hidden" name="sitesearch" value="wantee.github.io">
+  <input class="search-input" type="text" name="q" results="0" placeholder="Search" accesskey="/">
+</form></div>
+  <a class="mobile-nav-item " href="/"/>Posts</a>
+
+  
+  
+  
+  
+  <a class="mobile-nav-item " href="/archive/">Archive</a>
+  
+</nav>
+</div>
+<div class="site-content">
+<div class="site-top"><div class="site-top-content">
+<header role="banner" class="site-header">
+  <h1 class="site-title"><a class="site-title-link" href="/"/>Formula Coding</a></h1>
+</header>
+<nav class='main-nav' role="navigation">
+  <a class="main-nav-item " href="/"/>Posts</a>
+  <a class="main-nav-item " href="/archive/">Archive</a>
+  <div class='main-nav-item main-nav-search'><form class='site-search' action="https://google.com/search" method="get">
+  <input type="hidden" name="sitesearch" value="wantee.github.io">
+  <input class="search-input" type="text" name="q" results="0" placeholder="Search" accesskey="/">
+</form></div>
+  <button class="mobile-nav-toggle" href="#" onclick="(function(){ document.querySelector('html').classList.toggle('mobile-nav-active') })()"><span class="mobile-nav-icon"></span><span class="hidden-label">Navigate<span></span></span></button>
+</nav>
+</div></div>
+<div class="site-main">
+<div class="main ">
+  <div class="main-content"><article class="post entry  " role="article">
+  <header class="entry-header">
+    
+    <div class='entry-header-content'>
+      <h1 class="entry-title">Knowledge&nbsp;Embedding</h1>
+      
+      
+    </div>
+  </header>
+
+  <div class="entry-meta"><a href="/2015/03/24/knowledge-embedding/"><time class='entry-date' datetime='2015-03-24T10:05:58+08:00'><span class='date'><span class='date-month'>Mar</span> <span class='date-day'>24</span><span class='date-suffix'>th</span>, <span class='date-year'>2015</span></span></time></a><span class="printable"><a href="/assets/printables/2015-03-24-knowledge-embedding.pdf"> <img src="/images/octopress-printable/printer.png" alt="printable version"> </a></span><span class='entry-categories'><span class="category-links"><a class="category-link" href="/categories/neural network/">Neural network</a></span></span></div>
+
+  <div class="entry-content"><ul id="markdown-toc">
+  <li><a href="#word2vec" id="markdown-toc-word2vec">Word2Vec</a>    <ul>
+      <li><a href="#continuous-bag-of-wordscbow-model" id="markdown-toc-continuous-bag-of-wordscbow-model">Continuous Bag-of-Words(CBOW) Model</a></li>
+      <li><a href="#continuous-skip-gram-model" id="markdown-toc-continuous-skip-gram-model">Continuous Skip-gram Model</a></li>
+    </ul>
+  </li>
+  <li><a href="#paragraph-to-vector" id="markdown-toc-paragraph-to-vector">Paragraph to Vector</a></li>
+  <li><a href="#graph-to-vector" id="markdown-toc-graph-to-vector">Graph to Vector</a>    <ul>
+      <li><a href="#line-with-first-order-proximity" id="markdown-toc-line-with-first-order-proximity">LINE with First-order Proximity</a></li>
+      <li><a href="#line-with-second-order-proximity" id="markdown-toc-line-with-second-order-proximity">LINE with Second-order Proximity</a></li>
+    </ul>
+  </li>
+  <li><a href="#references" id="markdown-toc-references">References</a></li>
+</ul>
+
+<p>Neural Networks are applied in many fields of Machine Learning. Due to their natural property, it is suitable to use them to estimate the <em>distribution representations</em> from some knowledge source. This kind of representation may be referred as <em>knowledge embedding</em>.</p>
+
+<p><a href="http://en.wikipedia.org/wiki/Embedding">Embedding</a>, mathematically, denotes one instance of some mathematical structure contained within another instance. In Machine Learning context, it often means to transfer a sparse coding of an instance to a more dense coding, e.g., a 1-of-V coding to a low dimension vector.</p>
+
+<h2 id="word2vec">Word2Vec</h2>
+
+<p>The first successful application of NN-based embedding is <a href="https://code.google.com/p/word2vec/">word2vec</a>, which converts a word to a continuous vector.</p>
+
+<p>The inspiration <a href="#mikolov2013efficient">(Mikolov, Chen, Corrado, &amp; Dean, 2013)</a> of word2vec is from the observation that neutral network language model can be successfully trained in two steps: first, continuous word vectors are learned using simple model, and then the N-gram NNLM is trained on top of these distributed representations of words. Then the authors spend lots of work on learning word vectors. Thus the word-to-vector procedure can be seen as a feature extraction step for language modelling.</p>
+
+<p>To show the innovation of word2vec, we first consider the traditional N-gram NNLM. The architecture of NNLM <a href="#bengio2003neural">(Bengio, Ducharme, Vincent, &amp; Janvin, 2003)</a> is shown in following figure ,</p>
+
+<p><img class="center" src="/assets/images/posts/nnlm.png" alt="fig:nnlm" title="Architecture of NNLM" /></p>
+
+<p>The NNLM consists of input, projection, hidden and output layers. At the input layer, $N$ previous words are encoded using 1-of-V coding, where $V$ is size of the vocabulary. The input layer is then projected to a projection layer that has dimensionality $N \times D$. Next, projection layer is connected to the hidden layer, whose size is $H$, finally, we reach the output layer, which is of size $V$, through hidden layer.</p>
+
+<p>Therefore, the computational complexity per each training example is</p>
+
+<script type="math/tex; mode=display">Q = N \times D + N \times D \times H + H \times V</script>
+
+<p>Where the domination term is $H \times V$. However several output layer optimisations method can avoid it, such as <em>Hierarchical Softmax</em> which reduce the output term to $H \times \log_2(V)$. Then the domination term becomes $N \times D \times H$.</p>
+
+<p>It is can be seen from above discussion the most complexity is caused by the non-linear hidden layer in the model(if we check out the RNN LM model, same conclusion can be derived, i.e., the hidden layer occupied most computational resources).</p>
+
+<p>However, if the goal is only to extract word embeddings, we can sacrifice some precision of NN models. This leads to the key point of speedup of word2vec, that is by <strong>removing the non-linear hidden layer</strong>, and used a log-linear model directly.</p>
+
+<h3 id="continuous-bag-of-wordscbow-model">Continuous Bag-of-Words(CBOW) Model</h3>
+
+<p>There are two type of log-linear models, first one is the bag-of-words model. As the name showed, it don’t consider the order of the words in history. The architecture is the same with NNLM, except that the hidden layer is removed and the projection layer is shared for all words (not just the projection matrix), as shown in the figure ,</p>
+
+<p><img class="center" src="/assets/images/posts/cbow.png" alt="fig:cbow" title="Architecture of CBOW" /></p>
+
+<p>Another different point with traditional models is word2vec using both pre- and post-contexts of the predicting word. The training complexity is then</p>
+
+<script type="math/tex; mode=display">Q = N \times D + D \times \log_2(V)</script>
+
+<h3 id="continuous-skip-gram-model">Continuous Skip-gram Model</h3>
+
+<p>The second model is similar to CBOW, but instead of predicting the current word based on the context, it tries to maximise classification of a word based on another word in the same sentence. More precisely, it uses each current word as an input to a log-linear classifier with continuous projection layer, and predict words within a certain range before and after the current word. The architecture is shown in the following figure ,</p>
+
+<p><img class="center" src="/assets/images/posts/skip-gram.png" alt="fig:skip-gram" title="Architecture of Skip-gram" /></p>
+
+<p>The complexity of Skip-gram model is</p>
+
+<script type="math/tex; mode=display">Q = 2 \times C \times (D + D \times \log_2(V))</script>
+
+<p>where $C$ is the maximum distance of the words. Thus, for a particular $C$ , for each training word it will select randomly a number $R \in [1, C]$, and then use $R$ words from history and $R$ words from the future of the current word as correct labels.</p>
+
+<p>For both CBOW and Skip-gram models, after training, the corresponding column of the projection matrix is taken out to be the vectors of one word.</p>
+
+<p>The objective function of Skip-gram models is to maximise the average log probability</p>
+
+<script type="math/tex; mode=display">\begin{equation}
+\mathcal{O} = \frac{1}{T}\sum_{t=1}^{T} \sum_{-c \leq j \leq c, j \neq 0} \log p(w_{t+j} \mathop{|} w_t)
+\end{equation}</script>
+
+<p>where the probability $p(w_{t+j} \mathop{|} w_t)$ is defined by softmax function,</p>
+
+<script type="math/tex; mode=display">\begin{equation}
+p(w_{O} \mathop{|} w_I) = \frac{e^{\mathbf{v}^{'\top}_{w_O} \mathbf{v}_{w_I}}}{\sum_{w=1}^V e^{\mathbf{v}^{'\top}_w \mathbf{v}_{w_I}}}
+\end{equation}</script>
+
+<p>where $\mathbf{v}_w$ and $\mathbf{v}’_w$ are the “input” and “output” vector representation of $w$, which are the corresponding column of projection matrix and the weight matrix between projection and output layer.</p>
+
+<p>After above work, <a href="#mikolov2013distributed">(Mikolov, Sutskever, Chen, Corrado, &amp; Dean, 2013)</a> proposed some method to further speedup the training, such as hierarchical softmax and negative sampling, and then extended words to phrases. We won’t go deep into these in this post.</p>
+
+<h2 id="paragraph-to-vector">Paragraph to Vector</h2>
+
+<p>Inspired by word2vec, <a href="#le2014distributed">(Le &amp; Mikolov, 2014)</a> extends it to transform a variable-length of text to a <em>paragraph vector</em>. The architecture is similar with CBOW, as shown in the following figure , except that the additional paragraph token in input layer, which is mapped to a vector via matrix $D$.</p>
+
+<p><img class="center" src="/assets/images/posts/paragraph-vec.png" alt="fig:paragraph-vec" title="Architecture of Paragraph Vector" /></p>
+
+<p>The paragraph token can be thought of as another word. It acts as a memory that remembers what is missing from the current context – or the topic of the paragraph.</p>
+
+<p>The contexts are fixed-length and sampled from a sliding window over the paragraph. The paragraph vector is shared across all contexts generated from the same paragraph but not across paragraphs. The word vector matrix $W$, how-ever, is shared across paragraphs.</p>
+
+<p>At every step of stochastic gradient descent, one can sample a fixed-length context from a random paragraph, then use them to train the network.</p>
+
+<p>At prediction time, one needs to perform an inference step to compute the paragraph vector for a new paragraph. This is also obtained by gradient descent. In this step, one can add one column in $D$ and gradient descending on $D$ while holding $W$ fixed.</p>
+
+<p>After being trained, the paragraph vectors can also be used as features for the paragraph and be feed directly to other classifiers.</p>
+
+<p>The most important advantages of paragraph vectors is that they are learned from unlabelled data. Besides, paragraph vectors also address some of the key weaknesses of bag-of-words models. First, they inherit an important property of the word vectors: the semantics of the words. The second advantage of the paragraph vectors is that they take into consideration the word order, at least in a small context.</p>
+
+<h2 id="graph-to-vector">Graph to Vector</h2>
+
+<p><a href="#tang2015line">(Tang et al., 2015)</a> further extends the embedding idea to general information networks, more specifically, it transfer the vertices in a graph to vectors.</p>
+
+<p>The goal is to use a low-dimensional vector to represent a vertex in the graph, while preserving both local and global structure informations. To derive the model, they first formally defined the local and global similarity of vertices,</p>
+
+<p>The local similarity is defined by <strong>First-order Proximity</strong>, which is the weight $w_{uv}$ on the edge that connected vertex $u$ and vertex $v$.</p>
+
+<p>The <strong>Second-oder Proximity</strong> of a pair $(u, v)$ is the similarity  between their neighbourhood network structure. Mathematically, let $\mathbf{p_u} = (w_{u,1},…,w_{u,|V|})$ denotes the first-order proximity of $u$ with all the other vertices, then the second-order proximity between $u$ and $v$ is determined by the similarity between $\mathbf{p_u}$ and $\mathbf{p_v}$. The second-order proximity assumes that vertices sharing many connections to other vertices are similar to each other.</p>
+
+<p>Thus, the graph embedding problem becomes that to convert a vertex to vector, preserving the first- and second-order proximities.</p>
+
+<p>Their model is called <em>Large-scale Information Network Embedding(LINE)</em>. A graph is denotes by $G = (V, E)$, where $V$ is the set of vertices and $E$ is the set of edges.</p>
+
+<h3 id="line-with-first-order-proximity">LINE with First-order Proximity</h3>
+
+<p>To model the first-order proximity, for each undirected edge $(i, j)$, define the joint probability between vertex $v_i$ and $v_j$ as</p>
+
+<script type="math/tex; mode=display">\begin{equation}
+p_1(v_i, v_j) = \frac{1}{1 + e^{- \mathbf{u}_i^{\top} \mathbf{u}_j}}
+\end{equation}</script>
+
+<p>where $\mathbf{u}_i \in \mathbb{R}^d$ is the $d$-dimensional vector of vertex $v_i$.</p>
+
+<p>Note that the empirical probability of $p_1(\cdot, \cdot)$ can be defined as</p>
+
+<script type="math/tex; mode=display">\begin{equation}
+\hat{p}_1(v_i, v_j) = \frac{w_{ij}}{\sum_{(i,j) \in E} w_{ij}}
+\end{equation}</script>
+
+<p>Thus the objective function of first-order proximity, is to minimise the following function</p>
+
+<script type="math/tex; mode=display">\begin{equation}
+\mathcal{O}_1 = d(\hat{p}_1(\cdot, \cdot), p_1(\cdot, \cdot))
+\end{equation}</script>
+
+<p>where $d(\cdot, \cdot)$ is the distance between two distributions. Replacing it with the KL-divergence and omitting some constants<sup id="fnref:1"><a href="#fn:1" class="footnote">1</a></sup>,</p>
+
+<script type="math/tex; mode=display">\begin{equation}
+\mathcal{O}_1 = - \sum_{(i,j) \in E} w_{ij}\log p_1(v_i, v_j)
+\end{equation}</script>
+
+<p>Note that the first-order proximity is only applicable for undirected graphs, not for directed ones.</p>
+
+<h3 id="line-with-second-order-proximity">LINE with Second-order Proximity</h3>
+
+<p>The second-order proximity is applicable for both directed and undirected graphs. Given a network, without loss of generality, we assume it is directed.</p>
+
+<p>Each vertex can be treated as a specific “context” and vertices with similar distributions over the “contexts” are assumed to be similar. Therefore, each vertex plays two roles: the vertex itself and a specific “context” of other vertices.</p>
+
+<p>Let $\mathbf{u}_i$ be the representation of $v_i$ when it is treated as a vertex, while $\mathbf{u}’_i$ is the representation of $v_i$ when it is treated as a specific “context”. For each directed edge $(i, j)$, first define the probability of “context” $v_j$ generated by vertex $v_i$ as</p>
+
+<script type="math/tex; mode=display">\begin{equation}
+p_2(v_j \mathop{|} v_i) = \frac{e^{\mathbf{u}_j^{'\top} \mathbf{u}_i}}{\sum_{k=1}^{|V|} e^{\mathbf{u}_k^{'\top} \mathbf{u}_i}}
+\end{equation}</script>
+
+<p>where $|V|$ is the number of vertices or “contexts”.</p>
+
+<p>And the empirical probability is</p>
+
+<script type="math/tex; mode=display">\begin{equation}
+\hat{p}_2(v_j \mathop{|} v_i) = \frac{w_{ij}}{d_i}
+\end{equation}</script>
+
+<p>where $d_i$ is the out-degree of vertex $i$, i.e. $d_i = \sum_{k \in N(i)} w_{ik}$, where $N(i)$ is the set of out-neighbours of $v_i$.</p>
+
+<p>Similarly, the objective of second-order proximity is</p>
+
+<script type="math/tex; mode=display">\begin{equation}
+\mathcal{O}_2 = \sum_{i \in V}\lambda_i d(\hat{p}_2(\cdot \mathop{|} v_i), p_2(\cdot \mathop{|} v_i))
+\end{equation}</script>
+
+<p>For simplicity, set $\lambda_i = d_i$, then replacing $d(\cdot, \cdot)$ with the KL-divergence and omitting some constants,</p>
+
+<script type="math/tex; mode=display">\begin{equation}
+\mathcal{O}_2 = - \sum_{(i,j) \in E} w_{ij}\log p_2(v_j \mathop{|} v_i)
+\end{equation}</script>
+
+<h2 id="references">References</h2>
+
+<ol class="bibliography"><li><span id="mikolov2013efficient">Mikolov, T., Chen, K., Corrado, G., &amp; Dean, J. (2013). <a href="http://arxiv.org/pdf/1301.3781.pdf">Efficient estimation of word representations in vector space</a>. <i>ArXiv Preprint ArXiv:1301.3781</i>.</span></li>
+<li><span id="bengio2003neural">Bengio, Y., Ducharme, R., Vincent, P., &amp; Janvin, C. (2003). <a href="http://jmlr.csail.mit.edu/papers/volume3/bengio03a/bengio03a.pdf">A neural probabilistic language model</a>. <i>The Journal Of Machine Learning Research</i>, <i>3</i>, 1137–1155.</span></li>
+<li><span id="mikolov2013distributed">Mikolov, T., Sutskever, I., Chen, K., Corrado, G. S., &amp; Dean, J. (2013). <a href="http://papers.nips.cc/paper/5021-distributed-representations-of-words-and-phrases-and-their-compositionality.pdf">Distributed representations of words and phrases and their compositionality</a>. In <i>Advances in Neural Information Processing Systems</i> (pp. 3111–3119).</span></li>
+<li><span id="le2014distributed">Le, Q. V., &amp; Mikolov, T. (2014). <a href="http://cs.stanford.edu/ quocle/paragraph_vector.pdf">Distributed representations of sentences and documents</a>. <i>ArXiv Preprint ArXiv:1405.4053</i>.</span></li>
+<li><span id="tang2015line">Tang, J., Qu, M., Wang, M., Zhang, M., Yan, J., &amp; Mei, Q. (2015). <a href="http://arxiv.org/pdf/1503.03578v1.pdf">LINE: Large-scale Information Network Embedding</a>. <i>ArXiv Preprint ArXiv:1503.03578</i>.</span></li></ol>
+
+<div class="footnotes">
+  <ol>
+    <li id="fn:1">
+      <p>The relationship between cross entropy and KL distance is $H(\hat{p}, p) = H(\hat{p}) + D_{KL}(\hat{p}\|p)$. For the purpose of optimising the objective, $H(\hat{p})$ is constant, thus the objective is same as cross entropy. <a href="#fnref:1" class="reversefootnote">&#8617;</a></p>
+    </li>
+  </ol>
+</div>
+</div>
+
+  <footer class='entry-footer' role='contentinfo'>
+    
+  </footer>
+
+  <span class="entry-social-sharing social-links"><a class="twitter-share-link" href="https://twitter.com/intent/tweet?&text=Knowledge%20Embedding%20%20%20-%20http%3A%2F%2Fwantee.github.io%2F2015%2F03%2F24%2Fknowledge-embedding%2F" title="Share on Twitter">Twitter</a><a class="facebook-share-link" href="https://www.facebook.com/sharer/sharer.php?u=http://wantee.github.io/2015/03/24/knowledge-embedding/" title="Share on Facebook">Facebook</a><a class="g-plus-share-link" href="https://plus.google.com/share?url=http://wantee.github.io/2015/03/24/knowledge-embedding/" title="Share on Google+">Google+</a><a class="email-share-link" href="mailto:?subject=Knowledge%20Embedding%20by%20Wantee%20Wang&body=Knowledge%20Embedding%20by%20Wantee%20Wang%20-%20http%3A%2F%2Fwantee.github.io%2F2015%2F03%2F24%2Fknowledge-embedding%2F" title="Share via email">Email</a></span>
+
+</article>
+<nav role="pagination" class="post-nav">
+
+<a class="previous-post" href="/2015/03/22/discriminative-vs-generative/" title="Previous Article: Discriminative vs Generative">
+  <div class='previous-post-marker'><span class='previous-post-arrow'>&larr;</span> Previous Article</div>
+  <h6 class='previous-post-title'>Discriminative vs Generative</h6>
+</a>
+
+
+<a class="next-post" href="/2015/04/27/the-xor-problem/" title="Next Article: The XOR Problem">
+  <div class='next-post-marker'>Next Article <span class='next-post-arrow'>&rarr;</span></div>
+  <h6 class='next-post-title'>The XOR Problem</h6>
+</a>
+
+</nav>
+<div class='entry-comments'><div id="disqus_thread"></div> <script type="text/javascript"> var disqus_shortname = 'wantee'; var disqus_url = 'http://wantee.github.io/2015/03/24/knowledge-embedding/'; var disqus_identifier = 'http://wantee.github.io/2015/03/24/knowledge-embedding/'; var disqus_title = 'Knowledge Embedding'; (function () { var s = document.createElement('script'); s.async = true; s.type = 'text/javascript'; s.src = '//wantee.disqus.com/embed.js'; (document.getElementsByTagName('HEAD')[0] || document.getElementsByTagName('BODY')[0]).appendChild(s); }()); </script> <noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript" rel="nofollow">comments powered by Disqus.</a></noscript></div>
+</div>
+</div>
+</div>
+<div class="site-bottom"><div class="site-bottom-content">
+<footer class='site-footer' role="contentinfo">
+  <p class='footer-copyright'>Copyright © 2015- Wantee Wang
+  - Powered by <a href='http://octopress.org'>Octopress</a></p>
+  
+</footer>
+</div></div></div>
+
+<!-- mathjax config similar to math.stackexchange -->
+<script type="text/x-mathjax-config">
+MathJax.Hub.Config({
+  jax: ["input/TeX", "output/HTML-CSS"],
+  tex2jax: {
+    inlineMath: [ ['$', '$'] ],
+    displayMath: [ ['$$', '$$']],
+    processEscapes: true,
+    skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+  },
+  messageStyle: "none",
+  "HTML-CSS": { preferredFont: "TeX", availableFonts: ["STIX","TeX"] },
+  TeX: { equationNumbers: { autoNumber: "AMS" } }
+});
+</script>
+<script src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS_HTML" type="text/javascript"></script>
+</div>
+  
+  
+  
+</body>
+</html>

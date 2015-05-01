@@ -1,4 +1,0 @@
-User-agent: *
-Disallow: 
-
-Sitemap: http://wantee.github.io/sitemap.xml 

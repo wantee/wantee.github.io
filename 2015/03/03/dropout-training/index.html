@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html class=" " lang="en" >
+<head>
+<meta charset="utf-8">
+<meta name="author" content="Wantee Wang">
+<meta name="HandheldFriendly" content="True">
+<meta name="MobileOptimized" content="320">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link href="http://wantee.github.io/2015/03/03/dropout-training/" rel="canonical">
+<meta name='generator' content='Jekyll v2.5.3, Octopress v3.0.0.rc.36 Octopress Ink v1.0.0.rc.64'>
+
+<link href='/stylesheets/all-65c36cdd63ac2471d2c185a07fc979da.css' media='all' rel='stylesheet' type='text/css'>
+<script>
+    (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+    (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+    m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+    })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+    ga('create', 'UA-58316654-2', 'auto');
+    ga('send', 'pageview');
+  </script>
+
+
+</head>
+<body>
+  <div class="site"><div class='nav-panel'>
+<nav class='mobile-nav' role="navigation">
+  <div class='mobile-nav-item mobile-nav-search'><form class='site-search' action="https://google.com/search" method="get">
+  <input type="hidden" name="sitesearch" value="wantee.github.io">
+  <input class="search-input" type="text" name="q" results="0" placeholder="Search" accesskey="/">
+</form></div>
+  <a class="mobile-nav-item " href="/"/>Posts</a>
+
+  
+  
+  
+  
+  <a class="mobile-nav-item " href="/archive/">Archive</a>
+  
+</nav>
+</div>
+<div class="site-content">
+<div class="site-top"><div class="site-top-content">
+<header role="banner" class="site-header">
+  <h1 class="site-title"><a class="site-title-link" href="/"/>Formula Coding</a></h1>
+</header>
+<nav class='main-nav' role="navigation">
+  <a class="main-nav-item " href="/"/>Posts</a>
+  <a class="main-nav-item " href="/archive/">Archive</a>
+  <div class='main-nav-item main-nav-search'><form class='site-search' action="https://google.com/search" method="get">
+  <input type="hidden" name="sitesearch" value="wantee.github.io">
+  <input class="search-input" type="text" name="q" results="0" placeholder="Search" accesskey="/">
+</form></div>
+  <button class="mobile-nav-toggle" href="#" onclick="(function(){ document.querySelector('html').classList.toggle('mobile-nav-active') })()"><span class="mobile-nav-icon"></span><span class="hidden-label">Navigate<span></span></span></button>
+</nav>
+</div></div>
+<div class="site-main">
+<div class="main ">
+  <div class="main-content"><article class="post entry  " role="article">
+  <header class="entry-header">
+    
+    <div class='entry-header-content'>
+      <h1 class="entry-title">Dropout&nbsp;Training</h1>
+      
+      
+    </div>
+  </header>
+
+  <div class="entry-meta"><a href="/2015/03/03/dropout-training/"><time class='entry-date' datetime='2015-03-03T15:18:26+08:00'><span class='date'><span class='date-month'>Mar</span> <span class='date-day'>3</span><span class='date-suffix'>rd</span>, <span class='date-year'>2015</span></span></time></a><span class="printable"><a href="/assets/printables/2015-03-03-dropout-training.pdf"> <img src="/images/octopress-printable/printer.png" alt="printable version"> </a></span><span class='entry-categories'><span class="category-links"><a class="category-link" href="/categories/neural network/">Neural network</a></span></span></div>
+
+  <div class="entry-content"><ul id="markdown-toc">
+  <li><a href="#the-method" id="markdown-toc-the-method">The Method</a></li>
+  <li><a href="#implementation-in-kaldi" id="markdown-toc-implementation-in-kaldi">Implementation in Kaldi</a></li>
+</ul>
+
+<p>Dropout is a regularisation technique for reducing over-fitting in large neural nets. Hinton proposes the method in <a href="http://arxiv.org/abs/1207.0580">this paper</a>. 
+Most materials are from <a href="http://www.cs.toronto.edu/~nitish/dropout/">Srivastava’s page</a>.</p>
+
+<p>It prevents overfitting and provides a way of approximately combining exponentially many different neural network architectures efficiently. The term <em>dropout</em> refers to dropping out units (hidden and visible) in a neural network.</p>
+
+<h2 id="the-method">The Method</h2>
+
+<p>There are 2 key points for dropout learning:</p>
+
+<ul>
+  <li>a) Dropping units while training;</li>
+  <li>b) Scaling output to be matched between training and testing.</li>
+</ul>
+
+<p>As shown in following figure , where $p$ is the dropout retention.</p>
+
+<p><img class="center" src="/assets/images/posts/Dropout.png" alt="fig:dropout" title="Dropout" /></p>
+
+<p>Units to be dropped is chosen in a random way. Note that dropping a unit out means temporarily removing it from the network, along with all its incoming and outgoing connections. Therefore we have to deal with it both during forward pass and backpropagation.</p>
+
+<p>Applying dropout to a neural network amounts to sampling a <em>thinned</em> network from it. A neural net with $n$ units, can be seen as a collection of $2^n$ possible thinned neural networks. For each presentation of each training case, a new thinned network is sampled and trained.</p>
+
+<p>At test time, the ideal way is to explicitly average the predictions from exponentially many thinned models, which is obviously not feasible. The intuitive way is using a single neural net without dropout at test time, however this needs some approximation.</p>
+
+<p>The goal is that for any hidden unit the expected output (under the distribution used to drop units at training time) is the same as the actual output at test time.</p>
+
+<p>Let $\mathbb{M}$ be the set of all thinned networks, and $\mathcal{M}$ be the network without dropout used in test time, i.e. the network containing all units. Note that, weights for all networks in $\mathbb{M}$ are shared and are equal to the ones in $\mathcal{M}$. Thus the expected output of a unit $j$ is</p>
+
+<script type="math/tex; mode=display">\mathbb{E}[\mathbf{y}_j] = \sum_{M \in \mathbb{M}}{Pr(M)\mathbf{y}^{M}_j}</script>
+
+<p>Where, $\mathbf{y}^{M}$ is the output of thinned network $M$.</p>
+
+<p>Let $\mathbb{M}^{*}$ be the set of networks in which unit $j$ is active, then $|\mathbb{M}^{*}| = p|\mathbb{M}|$. If we assume that the probability of $M$s are equal, i.e. $Pr(M) = \frac{1}{|\mathbb{M}|}$, and assume $\mathbf{y}^{M} = \mathbf{y}^{\mathcal{M}}$, we get,</p>
+
+<script type="math/tex; mode=display">\mathbb{E}[\mathbf{y}_j] = p|\mathbb{M}| \frac{1}{|\mathbb{M}|} \mathbf{y}^{\mathcal{M}}_j = p\mathbf{y}^{\mathcal{M}}_j</script>
+
+<p>At this point, there are two method to match the training output and testing output.
+First one, by scaling down the weight used at test time, i.e. $\mathbf{w}’_{ji} = p\mathbf{w}_{ji}$, we can achieve the goal. This is the way used in the above paper and shown in the figure.</p>
+
+<p>The second way is to scale up the output at training time to the same magnitude as test time, i.e. $\mathbf{y}’_{j} = \frac{1}{p}\mathbf{y}_j$.</p>
+
+<h2 id="implementation-in-kaldi">Implementation in Kaldi</h2>
+
+<p>Both Karel’s and Dan’s implementation have the Dropout codes, with some differences.</p>
+
+<p>Karel’s code(<code>src/nnet/nnet-activation.h:Dorpout</code>) uses the scale-up method to get the expected output. Dropping out is implemented during forward pass and by storing the dropped out units using a 0/1 vector, the back-propagated derivative can be set properly.</p>
+
+<p>Dan’s code(<code>src/nnet2/net-component.cc:DropoutComponent</code>) use a clever way to avoid storing the dropping units. While backpropagation, we can get the input error $\mathbf{e_i}$ from output error $\mathbf{e_i}$ by</p>
+
+<script type="math/tex; mode=display">\mathbf{e_i} = \frac{\mathbf{a_o}}{\mathbf{a_i}} \mathbf{e_o}</script>
+
+<p>where $\mathbf{a_i}$ and $\mathbf{a_o}$ is the activation of input and output for Dropout component. Elements in $\mathbf{a_o}$ is the equal to the corresponding scaled value in $\mathbf{a_i}$, which maybe zero if it is the dropping ones.</p>
+
+<p>Dan’s code applies a more general form of scaling. Instead of set the output of dropping unit to zero, we can just scale the output value by a factor $\alpha$. To get a proper scaled version of output, we’d like to scale all the units besides the dropping ones and make it satisfy that the expected scale factor should be 1, i.e.,</p>
+
+<script type="math/tex; mode=display">q \alpha + (1-q)\beta = 1</script>
+
+<p>where, $q=1-p$ is the dropout proportion. Therefore, we can get the factor of other units $\beta = \frac{1-q\alpha}{1-q}$. If we set $\alpha=0$, then $\beta=\frac{1}{1-q}=\frac{1}{p}$, which is equal to the scale-up factor.</p>
+
+</div>
+
+  <footer class='entry-footer' role='contentinfo'>
+    
+  </footer>
+
+  <span class="entry-social-sharing social-links"><a class="twitter-share-link" href="https://twitter.com/intent/tweet?&text=Dropout%20Training%20%20%20-%20http%3A%2F%2Fwantee.github.io%2F2015%2F03%2F03%2Fdropout-training%2F" title="Share on Twitter">Twitter</a><a class="facebook-share-link" href="https://www.facebook.com/sharer/sharer.php?u=http://wantee.github.io/2015/03/03/dropout-training/" title="Share on Facebook">Facebook</a><a class="g-plus-share-link" href="https://plus.google.com/share?url=http://wantee.github.io/2015/03/03/dropout-training/" title="Share on Google+">Google+</a><a class="email-share-link" href="mailto:?subject=Dropout%20Training%20by%20Wantee%20Wang&body=Dropout%20Training%20by%20Wantee%20Wang%20-%20http%3A%2F%2Fwantee.github.io%2F2015%2F03%2F03%2Fdropout-training%2F" title="Share via email">Email</a></span>
+
+</article>
+<nav role="pagination" class="post-nav">
+
+<a class="previous-post" href="/2015/02/08/rnnlib-connectionist-temporal-classification-and-transcription-layer/" title="Previous Article: RNNLIB: Connectionist Temporal Classification and Transcription Layer">
+  <div class='previous-post-marker'><span class='previous-post-arrow'>&larr;</span> Previous Article</div>
+  <h6 class='previous-post-title'>RNNLIB: Connectionist Temporal Classification and Transcription Layer</h6>
+</a>
+
+
+<a class="next-post" href="/2015/03/10/mini-batch-gradient-descent/" title="Next Article: Mini-Batch Gradient Descent">
+  <div class='next-post-marker'>Next Article <span class='next-post-arrow'>&rarr;</span></div>
+  <h6 class='next-post-title'>Mini-Batch Gradient Descent</h6>
+</a>
+
+</nav>
+<div class='entry-comments'><div id="disqus_thread"></div> <script type="text/javascript"> var disqus_shortname = 'wantee'; var disqus_url = 'http://wantee.github.io/2015/03/03/dropout-training/'; var disqus_identifier = 'http://wantee.github.io/2015/03/03/dropout-training/'; var disqus_title = 'Dropout Training'; (function () { var s = document.createElement('script'); s.async = true; s.type = 'text/javascript'; s.src = '//wantee.disqus.com/embed.js'; (document.getElementsByTagName('HEAD')[0] || document.getElementsByTagName('BODY')[0]).appendChild(s); }()); </script> <noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript" rel="nofollow">comments powered by Disqus.</a></noscript></div>
+</div>
+</div>
+</div>
+<div class="site-bottom"><div class="site-bottom-content">
+<footer class='site-footer' role="contentinfo">
+  <p class='footer-copyright'>Copyright © 2015- Wantee Wang
+  - Powered by <a href='http://octopress.org'>Octopress</a></p>
+  
+</footer>
+</div></div></div>
+
+<!-- mathjax config similar to math.stackexchange -->
+<script type="text/x-mathjax-config">
+MathJax.Hub.Config({
+  jax: ["input/TeX", "output/HTML-CSS"],
+  tex2jax: {
+    inlineMath: [ ['$', '$'] ],
+    displayMath: [ ['$$', '$$']],
+    processEscapes: true,
+    skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+  },
+  messageStyle: "none",
+  "HTML-CSS": { preferredFont: "TeX", availableFonts: ["STIX","TeX"] },
+  TeX: { equationNumbers: { autoNumber: "AMS" } }
+});
+</script>
+<script src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS_HTML" type="text/javascript"></script>
+</div>
+  
+  
+  
+</body>
+</html>

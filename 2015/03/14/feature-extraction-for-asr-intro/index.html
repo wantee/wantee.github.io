@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html class=" " lang="en" >
+<head>
+<meta charset="utf-8">
+<meta name="author" content="Wantee Wang">
+<meta name="HandheldFriendly" content="True">
+<meta name="MobileOptimized" content="320">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link href="http://wantee.github.io/2015/03/14/feature-extraction-for-asr-intro/" rel="canonical">
+<meta name='generator' content='Jekyll v2.5.3, Octopress v3.0.0.rc.36 Octopress Ink v1.0.0.rc.64'>
+
+<link href='/stylesheets/all-65c36cdd63ac2471d2c185a07fc979da.css' media='all' rel='stylesheet' type='text/css'>
+<script>
+    (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+    (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+    m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+    })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+    ga('create', 'UA-58316654-2', 'auto');
+    ga('send', 'pageview');
+  </script>
+
+
+</head>
+<body>
+  <div class="site"><div class='nav-panel'>
+<nav class='mobile-nav' role="navigation">
+  <div class='mobile-nav-item mobile-nav-search'><form class='site-search' action="https://google.com/search" method="get">
+  <input type="hidden" name="sitesearch" value="wantee.github.io">
+  <input class="search-input" type="text" name="q" results="0" placeholder="Search" accesskey="/">
+</form></div>
+  <a class="mobile-nav-item " href="/"/>Posts</a>
+
+  
+  
+  
+  
+  <a class="mobile-nav-item " href="/archive/">Archive</a>
+  
+</nav>
+</div>
+<div class="site-content">
+<div class="site-top"><div class="site-top-content">
+<header role="banner" class="site-header">
+  <h1 class="site-title"><a class="site-title-link" href="/"/>Formula Coding</a></h1>
+</header>
+<nav class='main-nav' role="navigation">
+  <a class="main-nav-item " href="/"/>Posts</a>
+  <a class="main-nav-item " href="/archive/">Archive</a>
+  <div class='main-nav-item main-nav-search'><form class='site-search' action="https://google.com/search" method="get">
+  <input type="hidden" name="sitesearch" value="wantee.github.io">
+  <input class="search-input" type="text" name="q" results="0" placeholder="Search" accesskey="/">
+</form></div>
+  <button class="mobile-nav-toggle" href="#" onclick="(function(){ document.querySelector('html').classList.toggle('mobile-nav-active') })()"><span class="mobile-nav-icon"></span><span class="hidden-label">Navigate<span></span></span></button>
+</nav>
+</div></div>
+<div class="site-main">
+<div class="main ">
+  <div class="main-content"><article class="post entry  " role="article">
+  <header class="entry-header">
+    
+    <div class='entry-header-content'>
+      <h1 class="entry-title">Feature Extraction for ASR:&nbsp;Intro</h1>
+      
+      
+    </div>
+  </header>
+
+  <div class="entry-meta"><a href="/2015/03/14/feature-extraction-for-asr-intro/"><time class='entry-date' datetime='2015-03-14T15:49:44+08:00'><span class='date'><span class='date-month'>Mar</span> <span class='date-day'>14</span><span class='date-suffix'>th</span>, <span class='date-year'>2015</span></span></time></a><span class="printable"><a href="/assets/printables/2015-03-14-feature-extraction-for-asr-intro.pdf"> <img src="/images/octopress-printable/printer.png" alt="printable version"> </a></span><span class='entry-categories'><span class="category-links"><a class="category-link" href="/categories/automatic speech recognition/">Automatic speech recognition</a></span></span></div>
+
+  <div class="entry-content"><p>Feature extraction is the first step for Automatic Speech Recognition(ASR), which converts the waveform speech signal to a set of feature vectors. The main goal is to make the vectors have high discrimination between phonemes.</p>
+
+<p>Thus, the features should be</p>
+
+<ul>
+  <li>perceptually meaningful, i.e., analogous to features used by human auditory system.</li>
+  <li>invariant, i.e., robust to variations in channel, speaker and
+transducer.</li>
+</ul>
+
+<p>Three main steps for feature extraction are</p>
+
+<ol>
+  <li>Preprocessing</li>
+  <li>Feature Analysis</li>
+  <li>Parametric Transformation</li>
+</ol>
+
+<p>The <em>preprocessing</em> step converts the speech signal to a more suitable waveform for the following analysis, including <em>DC offset removal</em>, <em>pre-emphasis</em> and <em>Hamming Windowing</em>.</p>
+
+<p><em>Feature Analysis</em> is most important step, which do most of the works. Generally, it is can be divided into two main categories, <em>Spectral Analysis</em> and <em>Temporal Analysis</em>. Spectral analysis gives MFCC and PLP features, while temporal analysis produces Energy and Pitch features. MFCC involves <em>Cepstral Analysis</em> and PLP is based on <em>Linear Predictive Coding(LPC) Analysis</em>.</p>
+
+<p>The final step, <em>Parameter transformation</em>, converts the features obtained by above step into signal parameters through <em>differentiation</em> and <em>concatenation</em>.</p>
+
+<p>Details are in following posts:</p>
+
+<ol>
+  <li><a href="/2015/03/14/feature-extraction-for-asr-preprocessing/">Feature Extraction for ASR: Preprocessing</a></li>
+  <li><a href="/2015/03/14/feature-extraction-for-asr-mfcc/">Feature Extraction for ASR: MFCC</a></li>
+  <li><a href="/2015/03/14/feature-extraction-for-asr-plp/">Feature Extraction for ASR: PLP</a></li>
+  <li><a href="/2015/03/14/feature-extraction-for-asr-pitch/">Feature Extraction for ASR: Pitch</a></li>
+  <li><a href="/2015/03/14/feature-extraction-for-asr-delta/">Feature Extraction for ASR: Delta</a></li>
+</ol>
+
+</div>
+
+  <footer class='entry-footer' role='contentinfo'>
+    
+  </footer>
+
+  <span class="entry-social-sharing social-links"><a class="twitter-share-link" href="https://twitter.com/intent/tweet?&text=Feature%20Extraction%20for%20ASR%3A%20Intro%20%20%20-%20http%3A%2F%2Fwantee.github.io%2F2015%2F03%2F14%2Ffeature-extraction-for-asr-intro%2F" title="Share on Twitter">Twitter</a><a class="facebook-share-link" href="https://www.facebook.com/sharer/sharer.php?u=http://wantee.github.io/2015/03/14/feature-extraction-for-asr-intro/" title="Share on Facebook">Facebook</a><a class="g-plus-share-link" href="https://plus.google.com/share?url=http://wantee.github.io/2015/03/14/feature-extraction-for-asr-intro/" title="Share on Google+">Google+</a><a class="email-share-link" href="mailto:?subject=Feature%20Extraction%20for%20ASR%3A%20Intro%20by%20Wantee%20Wang&body=Feature%20Extraction%20for%20ASR%3A%20Intro%20by%20Wantee%20Wang%20-%20http%3A%2F%2Fwantee.github.io%2F2015%2F03%2F14%2Ffeature-extraction-for-asr-intro%2F" title="Share via email">Email</a></span>
+
+</article>
+<nav role="pagination" class="post-nav">
+
+<a class="previous-post" href="/2015/03/11/note-on-learning-neural-network/" title="Previous Article: Note on Learning Neural Network">
+  <div class='previous-post-marker'><span class='previous-post-arrow'>&larr;</span> Previous Article</div>
+  <h6 class='previous-post-title'>Note on Learning Neural Network</h6>
+</a>
+
+
+<a class="next-post" href="/2015/03/14/feature-extraction-for-asr-preprocessing/" title="Next Article: Feature Extraction for ASR: Preprocessing">
+  <div class='next-post-marker'>Next Article <span class='next-post-arrow'>&rarr;</span></div>
+  <h6 class='next-post-title'>Feature Extraction for ASR: Preprocessing</h6>
+</a>
+
+</nav>
+<div class='entry-comments'><div id="disqus_thread"></div> <script type="text/javascript"> var disqus_shortname = 'wantee'; var disqus_url = 'http://wantee.github.io/2015/03/14/feature-extraction-for-asr-intro/'; var disqus_identifier = 'http://wantee.github.io/2015/03/14/feature-extraction-for-asr-intro/'; var disqus_title = 'Feature Extraction for ASR: Intro'; (function () { var s = document.createElement('script'); s.async = true; s.type = 'text/javascript'; s.src = '//wantee.disqus.com/embed.js'; (document.getElementsByTagName('HEAD')[0] || document.getElementsByTagName('BODY')[0]).appendChild(s); }()); </script> <noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript" rel="nofollow">comments powered by Disqus.</a></noscript></div>
+</div>
+</div>
+</div>
+<div class="site-bottom"><div class="site-bottom-content">
+<footer class='site-footer' role="contentinfo">
+  <p class='footer-copyright'>Copyright © 2015- Wantee Wang
+  - Powered by <a href='http://octopress.org'>Octopress</a></p>
+  
+</footer>
+</div></div></div>
+
+<!-- mathjax config similar to math.stackexchange -->
+<script type="text/x-mathjax-config">
+MathJax.Hub.Config({
+  jax: ["input/TeX", "output/HTML-CSS"],
+  tex2jax: {
+    inlineMath: [ ['$', '$'] ],
+    displayMath: [ ['$$', '$$']],
+    processEscapes: true,
+    skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+  },
+  messageStyle: "none",
+  "HTML-CSS": { preferredFont: "TeX", availableFonts: ["STIX","TeX"] },
+  TeX: { equationNumbers: { autoNumber: "AMS" } }
+});
+</script>
+<script src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS_HTML" type="text/javascript"></script>
+</div>
+  
+  
+  
+</body>
+</html>

@@ -1,1131 +1,379 @@
-
 <!DOCTYPE html>
-<!--[if IEMobile 7 ]><html class="no-js iem7"><![endif]-->
-<!--[if lt IE 9]><html class="no-js lte-ie8"><![endif]-->
-<!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
+<html class=" " lang="en" >
 <head>
-  <meta charset="utf-8">
-  <title>Formula Coding</title>
-  <meta name="author" content="Wantee Wang">
+<meta charset="utf-8">
+<meta name="author" content="Wantee Wang">
+<meta name="HandheldFriendly" content="True">
+<meta name="MobileOptimized" content="320">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link href="http://wantee.github.io/" rel="canonical">
+<meta name='generator' content='Jekyll v2.5.3, Octopress v3.0.0.rc.36 Octopress Ink v1.0.0.rc.64'>
 
-  
-  <meta name="description" content="Probelm Non-linear Boundary Removing Redundant Features The XOR is an interesting problem, not only because it is a classical example for Linear &hellip;">
-  
+<link href='/stylesheets/all-65c36cdd63ac2471d2c185a07fc979da.css' media='all' rel='stylesheet' type='text/css'>
+<script>
+    (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+    (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+    m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+    })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
 
-  <!-- http://t.co/dKP3o1e -->
-  <meta name="HandheldFriendly" content="True">
-  <meta name="MobileOptimized" content="320">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-
-  
-  <link rel="canonical" href="http://wantee.github.io/">
-  <link href="/favicon.png" rel="icon">
-  <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
-  <link href="/stylesheets/data-table.css" media="screen, projection" rel="stylesheet" type="text/css">
-  <link href="/atom.xml" rel="alternate" title="Formula Coding" type="application/atom+xml">
-  <script src="/javascripts/modernizr-2.0.js"></script>
-  <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
-  <script>!window.jQuery && document.write(unescape('%3Cscript src="/javascripts/libs/jquery.min.js"%3E%3C/script%3E'))</script>
-  <script src="/javascripts/octopress.js" type="text/javascript"></script>
-  <!--Fonts from Google"s Web font directory at http://google.com/webfonts -->
-<link href="//fonts.googleapis.com/css?family=PT+Serif:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
-<link href="//fonts.googleapis.com/css?family=PT+Sans:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
-
-  
-  <script type="text/javascript">
-    var _gaq = _gaq || [];
-    _gaq.push(['_setAccount', 'UA-58316654-2']);
-    _gaq.push(['_trackPageview']);
-
-    (function() {
-      var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
-      ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
-      var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
-    })();
+    ga('create', 'UA-58316654-2', 'auto');
+    ga('send', 'pageview');
   </script>
 
 
 </head>
+<body>
+  <div class="site"><div class='nav-panel'>
+<nav class='mobile-nav' role="navigation">
+  <div class='mobile-nav-item mobile-nav-search'><form class='site-search' action="https://google.com/search" method="get">
+  <input type="hidden" name="sitesearch" value="wantee.github.io">
+  <input class="search-input" type="text" name="q" results="0" placeholder="Search" accesskey="/">
+</form></div>
+  <a class="mobile-nav-item active " href="/"/>Posts</a>
 
-<body   >
-  <header role="banner"><hgroup>
-  <h1><a href="/">Formula Coding</a></h1>
   
-</hgroup>
-
-</header>
-  <nav role="navigation"><ul class="subscription" data-subscription="rss">
-  <li><a href="/atom.xml" rel="subscribe-rss" title="subscribe via RSS">RSS</a></li>
   
-</ul>
   
-<form action="https://www.google.com/search" method="get">
-  <fieldset role="search">
-    <input type="hidden" name="sitesearch" value="wantee.github.io">
-    <input class="search" type="text" name="q" results="0" placeholder="Search"/>
-  </fieldset>
-</form>
   
-<ul class="main-navigation">
-  <li><a href="/">Blog</a></li>
-  <li><a href="/blog/archives">Archives</a></li>
-</ul>
-
+  <a class="mobile-nav-item " href="/archive/">Archive</a>
+  
 </nav>
-  <div id="main">
-    <div id="content">
-      <div class="blog-index">
+</div>
+<div class="site-content">
+<div class="site-top"><div class="site-top-content">
+<header role="banner" class="site-header">
+  <h1 class="site-title"><a class="site-title-link" href="/"/>Formula Coding</a></h1>
+</header>
+<nav class='main-nav' role="navigation">
+  <a class="main-nav-item active " href="/"/>Posts</a>
+  <a class="main-nav-item " href="/archive/">Archive</a>
+  <div class='main-nav-item main-nav-search'><form class='site-search' action="https://google.com/search" method="get">
+  <input type="hidden" name="sitesearch" value="wantee.github.io">
+  <input class="search-input" type="text" name="q" results="0" placeholder="Search" accesskey="/">
+</form></div>
+  <button class="mobile-nav-toggle" href="#" onclick="(function(){ document.querySelector('html').classList.toggle('mobile-nav-active') })()"><span class="mobile-nav-icon"></span><span class="hidden-label">Navigate<span></span></span></button>
+</nav>
+</div></div>
+<div class="site-main">
+<div class="main ">
+  <div class="main-content"><div class="post-index">
   
-  
-  
-    <article>
-      
-  <header>
+    <article class="entry excerpted" role="article">
+  <header class="entry-header">
+    <h2 class="entry-title"><a href='/2015/04/27/the-xor-problem/' class='article-link'>The XOR&nbsp;Problem</a></h2>
     
-      <h1 class="entry-title"><a href="/blog/2015/04/27/the-xor-problem/">The XOR Problem</a></h1>
-    
-    
-      <p class="meta">
-        
-
-
-
-
-<time class='entry-date' datetime='2015-04-27T10:39:02+08:00'><span class='date'><span class='date-month'>Apr</span> <span class='date-day'>27</span><span class='date-suffix'>th</span>, <span class='date-year'>2015</span></span> <span class='time'>10:39 am</span></time>
-        <span class="printable">
+    <div class="entry-meta">
+      <a href="/2015/04/27/the-xor-problem/"><time class='entry-date' datetime='2015-04-27T10:39:02+08:00'><span class='date'><span class='date-month'>Apr</span> <span class='date-day'>27</span><span class='date-suffix'>th</span>, <span class='date-year'>2015</span></span></time></a>
+      <span class="printable">
 
 
   
 
 
-<a href="/assets/printables/2015-04-27-the-xor-problem.pdf"> <img src="/images/printer.png" alt="printable version"> </a>
+
+  <a href="/assets/printables/2015-04-27-the-xor-problem.pdf"> <img src="/images/octopress-printable/printer.png" alt="printable version"> </a>
+
 
 </span>
-
-        
-      </p>
-    
+    </div>
   </header>
 
-
-  <div class="entry-content"><ul id="markdown-toc">
-  <li><a href="#probelm">Probelm</a></li>
-  <li><a href="#non-linear-boundary">Non-linear Boundary</a></li>
-  <li><a href="#removing-redundant-features">Removing Redundant Features</a></li>
-</ul>
-
-<p>The XOR is an interesting problem, not only because it is a classical example for <em>Linear Separability</em>, but also it played a significant role in the history of neutral network research.</p>
-
-<h2 id="probelm">Probelm</h2>
-
-<p>The truth table for XOR is</p>
-
-<table>
-  <thead>
-    <tr>
-      <th>x</th>
-      <th>y</th>
-      <th>x <em>xor</em> y</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <td>0</td>
-      <td>0</td>
-      <td>0</td>
-    </tr>
-    <tr>
-      <td>0</td>
-      <td>1</td>
-      <td>1</td>
-    </tr>
-    <tr>
-      <td>1</td>
-      <td>0</td>
-      <td>1</td>
-    </tr>
-    <tr>
-      <td>1</td>
-      <td>1</td>
-      <td>0</td>
-    </tr>
-  </tbody>
-</table>
-
-<p>It is impossible for a classifier with linear decision boundary to learn an XOR function. This can be seen easily by the following plot.</p>
-
-<p><img class="center" src="/images/posts/xor.png" title="The XOR Problem" alt="fig:xor" /></p>
-
-<p>Apparently, we can’t using a line to separate the two classes.</p>
-
-<h2 id="non-linear-boundary">Non-linear Boundary</h2>
-
-<p>If we take a carefully look at the scatter figure, it can be found that it’s easy to use an ellipse or hyperbola to separate the classes.</p>
-
-<p>Recall that, the general equation for ellipse or hyperbola is</p>
-
-<script type="math/tex; mode=display">\begin{equation}\label{eq:ellipse}
-Ax^2 + Bxy + Cy^2 + Dx + Ey + F = 0
-\end{equation}</script>
-
-<p>Thus, we can just feed those above components($x, y, x^2, y^2, xy$) to a linear classifier, and see if the classes can be separated.</p>
-
-<p>We use <a href="http://scikit-learn.org/">scikit-learn</a> to perform the experiments. Following shows the code,</p>
-
-<script src="https://gist.github.com/1c74b8336494cb0e9c6d.js?file=xor-5d.py"> </script>
-
-<p>After running, we see the final decision boundary,</p>
-
-<p><img class="center" src="/images/posts/xor-5d.png" title="Non-linear boundary" alt="fig:xor-5d" /></p>
-
-<h2 id="removing-redundant-features">Removing Redundant Features</h2>
-
-<p>It is can be seen that in the final equation \eqref{eq:ellipse}, $A = D$ and $C = E$(it will be more clear if we use logistic regression to fit the data). Actually, for boolean features, the high-order polynomial features are useless, because $\forall n, x_i^n = x_i$. So we can only use the interaction features($x_ix_j$). This time we get the features from <a href="http://scikit-learn.org/stable/modules/generated/sklearn.preprocessing.PolynomialFeatures.html#sklearn.preprocessing.PolynomialFeatures">PolynomialFeatures</a> class of scikit-learn. </p>
-
-<script src="https://gist.github.com/1c74b8336494cb0e9c6d.js?file=xor-3d.py"> </script>
-
-<p>Again, we show the final decision boundary,</p>
-
-<p><img class="center" src="/images/posts/xor-3d.png" title="Non-linear boundary using 3-d features" alt="fig:xor-3d" /></p>
-
-<p>By adding polynomial features to the model inputs, we are actually mapping the features to higher dimension. This is the SVM’s job, here we just choose the features manually.</p>
-
+  <div class="entry-content">
 </div>
-  
-  
 
-
-    </article>
+  <footer class='entry-footer'>
+    <a class='permalink' rel="full-article" href="/2015/04/27/the-xor-problem/">Continue Reading →</a>
+  </footer>
+</article>
   
-  
-    <article>
-      
-  <header>
+    <article class="entry excerpted" role="article">
+  <header class="entry-header">
+    <h2 class="entry-title"><a href='/2015/03/24/knowledge-embedding/' class='article-link'>Knowledge&nbsp;Embedding</a></h2>
     
-      <h1 class="entry-title"><a href="/blog/2015/03/24/knowledge-embedding/">Knowledge Embedding</a></h1>
-    
-    
-      <p class="meta">
-        
-
-
-
-
-<time class='entry-date' datetime='2015-03-24T10:05:58+08:00'><span class='date'><span class='date-month'>Mar</span> <span class='date-day'>24</span><span class='date-suffix'>th</span>, <span class='date-year'>2015</span></span> <span class='time'>10:05 am</span></time>
-        <span class="printable">
+    <div class="entry-meta">
+      <a href="/2015/03/24/knowledge-embedding/"><time class='entry-date' datetime='2015-03-24T10:05:58+08:00'><span class='date'><span class='date-month'>Mar</span> <span class='date-day'>24</span><span class='date-suffix'>th</span>, <span class='date-year'>2015</span></span></time></a>
+      <span class="printable">
 
 
   
 
 
-<a href="/assets/printables/2015-03-24-knowledge-embedding.pdf"> <img src="/images/printer.png" alt="printable version"> </a>
+
+  <a href="/assets/printables/2015-03-24-knowledge-embedding.pdf"> <img src="/images/octopress-printable/printer.png" alt="printable version"> </a>
+
 
 </span>
-
-        
-      </p>
-    
+    </div>
   </header>
 
-
-  <div class="entry-content"><p>Neural Networks are applied in many fields of Machine Learning. Due to their natural property, it is suitable to use them to estimate the <em>distribution representations</em> from some knowledge source. This kind of representation may be referred as <em>knowledge embedding</em>.</p>
-
-<p><a href="http://en.wikipedia.org/wiki/Embedding">Embedding</a>, mathematically, denotes one instance of some mathematical structure contained within another instance. In Machine Learning context, it often means to transfer a sparse coding of an instance to a more dense coding, e.g., a 1-of-V coding to a low dimension vector.</p>
-
-<h2 id="word2vec">Word2Vec</h2>
-
-<p>The first successful application of NN-based embedding is <a href="https://code.google.com/p/word2vec/">word2vec</a>, which converts a word to a continuous vector.</p>
-
-<p>The inspiration <a href="#mikolov2013efficient">(Mikolov, Chen, Corrado, &amp; Dean, 2013)</a> of word2vec is from the observation that neutral network language model can be successfully trained in two steps: first, continuous word vectors are learned using simple model, and then the N-gram NNLM is trained on top of these distributed representations of words. Then the authors spend lots of work on learning word vectors. Thus the word-to-vector procedure can be seen as a feature extraction step for language modelling.</p>
-
-<p>To show the innovation of word2vec, we first consider the traditional N-gram NNLM. The architecture of NNLM <a href="#bengio2003neural">(Bengio, Ducharme, Vincent, &amp; Janvin, 2003)</a> is shown in following figure </p>
-
-<p><img class="center" src="/images/posts/nnlm.png" title="Architecture of NNLM" alt="fig:nnlm" /></p>
-
-<p>The NNLM consists of input, projection, hidden and output layers. At the input layer, $N$ previous words are encoded using 1-of-V coding, where $V$ is size of the vocabulary. The input layer is then projected to a projection layer that has dimensionality $N \times D$. Next, projection layer is connected to the hidden layer, whose size is $H$, finally, we reach the output layer, which is of size $V$, through hidden layer.</p>
-
-<p>Therefore, the computational complexity per each training example is</p>
-
-<script type="math/tex; mode=display">
-Q = N \times D + N \times D \times H + H \times V
-</script>
-
-<p>Where the domination term is $H \times V$. However several output layer optimisations method can avoid it, such as <em>Hierarchical Softmax</em> which reduce the output term to $H \times \log_2(V)$. Then the domination term becomes $N \times D \times H$.</p>
-
-<p>It is can be seen from above discussion the most complexity is caused by the non-linear hidden layer in the model(if we check out the RNN LM model, same conclusion can be derived, i.e., the hidden layer occupied most computational resources).</p>
-
-<p>However, if the goal is only to extract word embeddings, we can sacrifice some precision of NN models. This leads to the key point of speedup of word2vec, that is by <strong>removing the non-linear hidden layer</strong>, and used a log-linear model directly.</p>
-
-<h3 id="continuous-bag-of-wordscbow-model">Continuous Bag-of-Words(CBOW) Model</h3>
-
-<p>There are two type of log-linear models, first one is the bag-of-words model. As the name showed, it don’t consider the order of the words in history. The architecture is the same with NNLM, except that the hidden layer is removed and the projection layer is shared for all words (not just the projection matrix), as shown in the figure </p>
-
-<p><img class="center" src="/images/posts/cbow.png" title="Architecture of CBOW" alt="fig:cbow" /></p>
-
-<p>Another different point with traditional models is word2vec using both pre- and post-contexts of the predicting word. The training complexity is then</p>
-
-<script type="math/tex; mode=display">
-Q = N \times D + D \times \log_2(V)
-</script>
-
-<h3 id="continuous-skip-gram-model">Continuous Skip-gram Model</h3>
-
-<p>The second model is similar to CBOW, but instead of predicting the current word based on the context, it tries to maximise classification of a word based on another word in the same sentence. More precisely, it uses each current word as an input to a log-linear classifier with continuous projection layer, and predict words within a certain range before and after the current word. The architecture is shown in the following figure </p>
-
-<p><img class="center" src="/images/posts/skip-gram.png" title="Architecture of Skip-gram" alt="fig:skip-gram" /></p>
-
-<p>The complexity of Skip-gram model is</p>
-
-<script type="math/tex; mode=display">
-Q = 2 \times C \times (D + D \times \log_2(V))
-</script>
-
-<p>where $C$ is the maximum distance of the words. Thus, for a particular $C$ , for each training word it will select randomly a number $R \in [1, C]$, and then use $R$ words from history and $R$ words from the future of the current word as correct labels.</p>
-
-<p>For both CBOW and Skip-gram models, after training, the corresponding column of the projection matrix is taken out to be the vectors of one word.</p>
-
-<p>The objective function of Skip-gram models is to maximise the average log probability </p>
-
-<script type="math/tex; mode=display">\begin{equation}
-\mathcal{O} = \frac{1}{T}\sum_{t=1}^{T} \sum_{-c \leq j \leq c, j \neq 0} \log p(w_{t+j} \mathop{|} w_t)
-\end{equation}</script>
-
-<p>where the probability $p(w_{t+j} \mathop{|} w_t)$ is defined by softmax function,</p>
-
-<script type="math/tex; mode=display">\begin{equation}
-p(w_{O} \mathop{|} w_I) = \frac{e^{\mathbf{v}^{'\top}_{w_O} \mathbf{v}_{w_I}}}{\sum_{w=1}^V e^{\mathbf{v}^{'\top}_w \mathbf{v}_{w_I}}}
-\end{equation}</script>
-
-<p>where $\mathbf{v}_w$ and $\mathbf{v}’_w$ are the “input” and “output” vector representation of $w$, which are the corresponding column of projection matrix and the weight matrix between projection and output layer.</p>
-
-<p>After above work, <a href="#mikolov2013distributed">(Mikolov, Sutskever, Chen, Corrado, &amp; Dean, 2013)</a> proposed some method to further speedup the training, such as hierarchical softmax and negative sampling, and then extended words to phrases. We won’t go deep into these in this post.</p>
-
-<h2 id="paragraph-to-vector">Paragraph to Vector</h2>
-
-<p>Inspired by word2vec, <a href="#le2014distributed">(Le &amp; Mikolov, 2014)</a> extends it to transform a variable-length of text to a <em>paragraph vector</em>. The architecture is similar with CBOW, as shown in the following figure , except that the additional paragraph token in input layer, which is mapped to a vector via matrix $D$.</p>
-
-<p><img class="center" src="/images/posts/paragraph-vec.png" title="Architecture of Paragraph Vector" alt="fig:paragraph-vec" /></p>
-
-<p>The paragraph token can be thought of as another word. It acts as a memory that remembers what is missing from the current context – or the topic of the paragraph.</p>
-
-<p>The contexts are fixed-length and sampled from a sliding window over the paragraph. The paragraph vector is shared across all contexts generated from the same paragraph but not across paragraphs. The word vector matrix $W$, how-ever, is shared across paragraphs.</p>
-
-<p>At every step of stochastic gradient descent, one can sample a fixed-length context from a random paragraph, then use them to train the network.</p>
-
-<p>At prediction time, one needs to perform an inference step to compute the paragraph vector for a new paragraph. This is also obtained by gradient descent. In this step, one can add one column in $D$ and gradient descending on $D$ while holding $W$ fixed. </p>
-
-<p>After being trained, the paragraph vectors can also be used as features for the paragraph and be feed directly to other classifiers.</p>
-
-<p>The most important advantages of paragraph vectors is that they are learned from unlabelled data. Besides, paragraph vectors also address some of the key weaknesses of bag-of-words models. First, they inherit an important property of the word vectors: the semantics of the words. The second advantage of the paragraph vectors is that they take into consideration the word order, at least in a small context.</p>
-
-<h2 id="graph-to-vector">Graph to Vector</h2>
-
-<p><a href="#tang2015line">(Tang et al., 2015)</a> further extends the embedding idea to general information networks, more specifically, it transfer the vertices in a graph to vectors.</p>
-
-<p>The goal is to use a low-dimensional vector to represent a vertex in the graph, while preserving both local and global structure informations. To derive the model, they first formally defined the local and global similarity of vertices,</p>
-
-<p>The local similarity is defined by <strong>First-order Proximity</strong>, which is the weight $w_{uv}$ on the edge that connected vertex $u$ and vertex $v$.</p>
-
-<p>The <strong>Second-oder Proximity</strong> of a pair $(u, v)$ is the similarity  between their neighbourhood network structure. Mathematically, let $\mathbf{p_u} = (w_{u,1},…,w_{u,|V|})$ denotes the first-order proximity of $u$ with all the other vertices, then the second-order proximity between $u$ and $v$ is determined by the similarity between $\mathbf{p_u}$ and $\mathbf{p_v}$. The second-order proximity assumes that vertices sharing many connections to other vertices are similar to each other. </p>
-
-<p>Thus, the graph embedding problem becomes that to convert a vertex to vector, preserving the first- and second-order proximities.</p>
-
-<p>Their model is called <em>Large-scale Information Network Embedding(LINE)</em>. A graph is denotes by $G = (V, E)$, where $V$ is the set of vertices and $E$ is the set of edges.</p>
-
-<h3 id="line-with-first-order-proximity">LINE with First-order Proximity</h3>
-
-<p>To model the first-order proximity, for each undirected edge $(i, j)$, define the joint probability between vertex $v_i$ and $v_j$ as</p>
-
-<script type="math/tex; mode=display">\begin{equation}
-p_1(v_i, v_j) = \frac{1}{1 + e^{- \mathbf{u}_i^{\top} \mathbf{u}_j}}
-\end{equation}</script>
-
-<p>where $\mathbf{u}_i \in \mathbb{R}^d$ is the $d$-dimensional vector of vertex $v_i$.</p>
-
-<p>Note that the empirical probability of $p_1(\cdot, \cdot)$ can be defined as </p>
-
-<script type="math/tex; mode=display">\begin{equation}
-\hat{p}_1(v_i, v_j) = \frac{w_{ij}}{\sum_{(i,j) \in E} w_{ij}}
-\end{equation}</script>
-
-<p>Thus the objective function of first-order proximity, is to minimise the following function</p>
-
-<script type="math/tex; mode=display">\begin{equation}
-\mathcal{O}_1 = d(\hat{p}_1(\cdot, \cdot), p_1(\cdot, \cdot))
-\end{equation}</script>
-
-<p>where $d(\cdot, \cdot)$ is the distance between two distributions. Replacing it with the KL-divergence and omitting some constants<sup id="fnref:1"><a href="#fn:1" class="footnote">1</a></sup>, </p>
-
-<script type="math/tex; mode=display">\begin{equation}
-\mathcal{O}_1 = - \sum_{(i,j) \in E} w_{ij}\log p_1(v_i, v_j)
-\end{equation}</script>
-
-<p>Note that the first-order proximity is only applicable for undirected graphs, not for directed ones.</p>
-
-<h3 id="line-with-second-order-proximity">LINE with Second-order Proximity</h3>
-
-<p>The second-order proximity is applicable for both directed and undirected graphs. Given a network, without loss of generality, we assume it is directed.</p>
-
-<p>Each vertex can be treated as a specific “context” and vertices with similar distributions over the “contexts” are assumed to be similar. Therefore, each vertex plays two roles: the vertex itself and a specific “context” of other vertices. </p>
-
-<p>Let $\mathbf{u}_i$ be the representation of $v_i$ when it is treated as a vertex, while $\mathbf{u}’_i$ is the representation of $v_i$ when it is treated as a specific “context”. For each directed edge $(i, j)$, first define the probability of “context” $v_j$ generated by vertex $v_i$ as</p>
-
-<script type="math/tex; mode=display">\begin{equation}
-p_2(v_j \mathop{|} v_i) = \frac{e^{\mathbf{u}_j^{'\top} \mathbf{u}_i}}{\sum_{k=1}^{|V|} e^{\mathbf{u}_k^{'\top} \mathbf{u}_i}}
-\end{equation}</script>
-
-<p>where $|V|$ is the number of vertices or “contexts”. </p>
-
-<p>And the empirical probability is</p>
-
-<script type="math/tex; mode=display">\begin{equation}
-\hat{p}_2(v_j \mathop{|} v_i) = \frac{w_{ij}}{d_i}
-\end{equation}</script>
-
-<p>where $d_i$ is the out-degree of vertex $i$, i.e. $d_i = \sum_{k \in N(i)} w_{ik}$, where $N(i)$ is the set of out-neighbours of $v_i$. </p>
-
-<p>Similarly, the objective of second-order proximity is</p>
-
-<script type="math/tex; mode=display">\begin{equation}
-\mathcal{O}_2 = \sum_{i \in V}\lambda_i d(\hat{p}_2(\cdot \mathop{|} v_i), p_2(\cdot \mathop{|} v_i))
-\end{equation}</script>
-
-<p>For simplicity, set $\lambda_i = d_i$, then replacing $d(\cdot, \cdot)$ with the KL-divergence and omitting some constants, </p>
-
-<script type="math/tex; mode=display">\begin{equation}
-\mathcal{O}_2 = - \sum_{(i,j) \in E} w_{ij}\log p_2(v_j \mathop{|} v_i)
-\end{equation}</script>
-
-<h2 id="references">References</h2>
-
-<ol class="bibliography"><li><span id="mikolov2013efficient">Mikolov, T., Chen, K., Corrado, G., &amp; Dean, J. (2013). Efficient estimation of word representations in vector space. <i>ArXiv Preprint ArXiv:1301.3781</i>.</span></li>
-<li><span id="bengio2003neural">Bengio, Y., Ducharme, R., Vincent, P., &amp; Janvin, C. (2003). A neural probabilistic language model. <i>The Journal of Machine Learning Research</i>, <i>3</i>, 1137–1155.</span></li>
-<li><span id="mikolov2013distributed">Mikolov, T., Sutskever, I., Chen, K., Corrado, G. S., &amp; Dean, J. (2013). Distributed representations of words and phrases and their compositionality. In <i>Advances in Neural Information Processing Systems</i> (pp. 3111–3119).</span></li>
-<li><span id="le2014distributed">Le, Q. V., &amp; Mikolov, T. (2014). Distributed representations of sentences and documents. <i>ArXiv Preprint ArXiv:1405.4053</i>.</span></li>
-<li><span id="tang2015line">Tang, J., Qu, M., Wang, M., Zhang, M., Yan, J., &amp; Mei, Q. (2015). LINE: Large-scale Information Network Embedding. <i>ArXiv Preprint ArXiv:1503.03578</i>.</span></li></ol>
-
-<div class="footnotes">
-  <ol>
-    <li id="fn:1">
-      <p>The relationship between cross entropy and KL distance is $H(\hat{p}, p) = H(\hat{p}) + D_{KL}(\hat{p}\|p)$. For the purpose of optimising the objective, $H(\hat{p})$ is constant, thus the objective is same as cross entropy. <a href="#fnref:1" class="reversefootnote">&#8617;</a></p>
-    </li>
-  </ol>
+  <div class="entry-content">
 </div>
-</div>
-  
-  
 
-
-    </article>
+  <footer class='entry-footer'>
+    <a class='permalink' rel="full-article" href="/2015/03/24/knowledge-embedding/">Continue Reading →</a>
+  </footer>
+</article>
   
-  
-    <article>
-      
-  <header>
+    <article class="entry excerpted" role="article">
+  <header class="entry-header">
+    <h2 class="entry-title"><a href='/2015/03/22/discriminative-vs-generative/' class='article-link'>Discriminative vs&nbsp;Generative</a></h2>
     
-      <h1 class="entry-title"><a href="/blog/2015/03/22/discriminative-vs-generative/">Discriminative vs Generative</a></h1>
-    
-    
-      <p class="meta">
-        
-
-
-
-
-<time class='entry-date' datetime='2015-03-22T22:44:20+08:00'><span class='date'><span class='date-month'>Mar</span> <span class='date-day'>22</span><span class='date-suffix'>nd</span>, <span class='date-year'>2015</span></span> <span class='time'>10:44 pm</span></time>
-        <span class="printable">
+    <div class="entry-meta">
+      <a href="/2015/03/22/discriminative-vs-generative/"><time class='entry-date' datetime='2015-03-22T22:44:20+08:00'><span class='date'><span class='date-month'>Mar</span> <span class='date-day'>22</span><span class='date-suffix'>nd</span>, <span class='date-year'>2015</span></span></time></a>
+      <span class="printable">
 
 
   
 
 
-<a href="/assets/printables/2015-03-22-discriminative-vs-generative.pdf"> <img src="/images/printer.png" alt="printable version"> </a>
+
+  <a href="/assets/printables/2015-03-22-discriminative-vs-generative.pdf"> <img src="/images/octopress-printable/printer.png" alt="printable version"> </a>
+
 
 </span>
-
-        
-      </p>
-    
+    </div>
   </header>
-
 
   <div class="entry-content"><p>Models in Machine Learning can often be divided into two main categories, <em>Generative</em> and <em>Discriminative</em>.
 The fundamental difference between them is:</p>
 
-<ul>
-  <li>Discriminative models learn the (hard or soft) boundary between classes</li>
-  <li>Generative models model the distribution of individual classes</li>
-</ul>
-
-<p>In mathematics, discriminative models directly estimate posterior probabilities $P(y\mathop{|}x)$, while generative models model class-conditional pdfs $p(x\mathop{|}y)$ and prior probabilities $P(y)$, therefore the joint probability distributions $p(x,y)$.</p>
-
-<p>Generative models often make some assumption on the underlying probability distributions and model it. Thus it is can be used to generate new samples from the learned distribution.</p>
-
-<p>A simple way to distinct the two models is by considered the examples used during training. Generative model only needs examples of a particular class which it modelling. However, Discriminative model needs examples of at least two classes to find the boundary. </p>
-
-<h2 id="examples">Examples</h2>
-
-<p>Some models can be seen as generative-discriminative pairs, e.g.,</p>
-
-<ul>
-  <li>Classifiers: Naive Bayes and Logistic Regression</li>
-  <li>Sequential Data: HMM and CRF</li>
-</ul>
-
-<p>Neutral networks are discriminative model because they compute $p(output\mathop{|}input)$.</p>
-
-<h2 id="discriminative-and-generative-training">Discriminative and Generative Training</h2>
-
-<p>Training approaches can also be classified as discriminative or generative. Even though with the same model, we can choose different training approaches.</p>
-
-<p>For example, the HMM-GMM model used in speech recognition, when we do MLE training with Baum–Welch algorithm, we are using a generative training method. However when we do MPE training, we are using a discriminative training method.</p>
-
 </div>
-  
-  
 
-
-    </article>
+  <footer class='entry-footer'>
+    <a class='permalink' rel="full-article" href="/2015/03/22/discriminative-vs-generative/">Continue Reading →</a>
+  </footer>
+</article>
   
-  
-    <article>
-      
-  <header>
+    <article class="entry excerpted" role="article">
+  <header class="entry-header">
+    <h2 class="entry-title"><a href='/2015/03/14/feature-extraction-for-asr-delta/' class='article-link'>Feature Extraction for ASR:&nbsp;Delta</a></h2>
     
-      <h1 class="entry-title"><a href="/blog/2015/03/14/feature-extraction-for-asr-delta/">Feature Extraction for ASR: Delta</a></h1>
-    
-    
-      <p class="meta">
-        
-
-
-
-
-<time class='entry-date' datetime='2015-03-14T16:57:00+08:00'><span class='date'><span class='date-month'>Mar</span> <span class='date-day'>14</span><span class='date-suffix'>th</span>, <span class='date-year'>2015</span></span> <span class='time'>4:57 pm</span></time>
-        <span class="printable">
+    <div class="entry-meta">
+      <a href="/2015/03/14/feature-extraction-for-asr-delta/"><time class='entry-date' datetime='2015-03-14T16:57:00+08:00'><span class='date'><span class='date-month'>Mar</span> <span class='date-day'>14</span><span class='date-suffix'>th</span>, <span class='date-year'>2015</span></span></time></a>
+      <span class="printable">
 
 
   
 
 
-<a href="/assets/printables/2015-03-14-feature-extraction-for-asr-delta.pdf"> <img src="/images/printer.png" alt="printable version"> </a>
+
+  <a href="/assets/printables/2015-03-14-feature-extraction-for-asr-delta.pdf"> <img src="/images/octopress-printable/printer.png" alt="printable version"> </a>
+
 
 </span>
-
-        
-      </p>
-    
+    </div>
   </header>
-
 
   <div class="entry-content"><p>In order to use the time dynamic information of speech, One can calculate the <em>Deltas</em> and <em>Delta-Deltas</em> from the original features.</p>
 
-<p>Also known as <em>differential</em> and <em>acceleration</em> coefficients, they are computed as,</p>
-
-<script type="math/tex; mode=display">
-d_t = \frac{\sum_{n=1}^N n(c_{t+n} - c_{t-n})}{2\sum_{n=1}^N n^2}
-</script>
-
-<p>where $d_t$ is a delta coefficient, from frame $t$  computed in terms of the static coefficients $c_{t-N}$ to $c_{t+N}$. A typical value for $N$ is 2. Delta-Delta (Acceleration) coefficients are calculated in the same way, but they are calculated from the deltas, not the static coefficients.</p>
-
 </div>
-  
-  
 
-
-    </article>
+  <footer class='entry-footer'>
+    <a class='permalink' rel="full-article" href="/2015/03/14/feature-extraction-for-asr-delta/">Continue Reading →</a>
+  </footer>
+</article>
   
-  
-    <article>
-      
-  <header>
+    <article class="entry " role="article">
+  <header class="entry-header">
+    <h2 class="entry-title"><a href='/2015/03/14/feature-extraction-for-asr-pitch/' class='article-link'>Feature Extraction for ASR:&nbsp;Pitch</a></h2>
     
-      <h1 class="entry-title"><a href="/blog/2015/03/14/feature-extraction-for-asr-pitch/">Feature Extraction for ASR: Pitch</a></h1>
-    
-    
-      <p class="meta">
-        
-
-
-
-
-<time class='entry-date' datetime='2015-03-14T16:55:51+08:00'><span class='date'><span class='date-month'>Mar</span> <span class='date-day'>14</span><span class='date-suffix'>th</span>, <span class='date-year'>2015</span></span> <span class='time'>4:55 pm</span></time>
-        <span class="printable">
+    <div class="entry-meta">
+      <a href="/2015/03/14/feature-extraction-for-asr-pitch/"><time class='entry-date' datetime='2015-03-14T16:55:51+08:00'><span class='date'><span class='date-month'>Mar</span> <span class='date-day'>14</span><span class='date-suffix'>th</span>, <span class='date-year'>2015</span></span></time></a>
+      <span class="printable">
 
 
   
 
 
-<a href="/assets/printables/2015-03-14-feature-extraction-for-asr-pitch.pdf"> <img src="/images/printer.png" alt="printable version"> </a>
+
+  <a href="/assets/printables/2015-03-14-feature-extraction-for-asr-pitch.pdf"> <img src="/images/octopress-printable/printer.png" alt="printable version"> </a>
+
 
 </span>
-
-        
-      </p>
-    
+    </div>
   </header>
-
 
   <div class="entry-content">
 </div>
-  
-  
 
-
-    </article>
+  <footer class='entry-footer'>
+    <a class='permalink' rel="full-article" href="/2015/03/14/feature-extraction-for-asr-pitch/">Permalink</a>
+  </footer>
+</article>
   
-  
-    <article>
-      
-  <header>
+    <article class="entry " role="article">
+  <header class="entry-header">
+    <h2 class="entry-title"><a href='/2015/03/14/feature-extraction-for-asr-plp/' class='article-link'>Feature Extraction for ASR:&nbsp;PLP</a></h2>
     
-      <h1 class="entry-title"><a href="/blog/2015/03/14/feature-extraction-for-asr-plp/">Feature Extraction for ASR: PLP</a></h1>
-    
-    
-      <p class="meta">
-        
-
-
-
-
-<time class='entry-date' datetime='2015-03-14T16:55:15+08:00'><span class='date'><span class='date-month'>Mar</span> <span class='date-day'>14</span><span class='date-suffix'>th</span>, <span class='date-year'>2015</span></span> <span class='time'>4:55 pm</span></time>
-        <span class="printable">
+    <div class="entry-meta">
+      <a href="/2015/03/14/feature-extraction-for-asr-plp/"><time class='entry-date' datetime='2015-03-14T16:55:15+08:00'><span class='date'><span class='date-month'>Mar</span> <span class='date-day'>14</span><span class='date-suffix'>th</span>, <span class='date-year'>2015</span></span></time></a>
+      <span class="printable">
 
 
   
 
 
-<a href="/assets/printables/2015-03-14-feature-extraction-for-asr-plp.pdf"> <img src="/images/printer.png" alt="printable version"> </a>
+
+  <a href="/assets/printables/2015-03-14-feature-extraction-for-asr-plp.pdf"> <img src="/images/octopress-printable/printer.png" alt="printable version"> </a>
+
 
 </span>
-
-        
-      </p>
-    
+    </div>
   </header>
-
 
   <div class="entry-content">
 </div>
-  
-  
 
-
-    </article>
+  <footer class='entry-footer'>
+    <a class='permalink' rel="full-article" href="/2015/03/14/feature-extraction-for-asr-plp/">Permalink</a>
+  </footer>
+</article>
   
-  
-    <article>
-      
-  <header>
+    <article class="entry excerpted" role="article">
+  <header class="entry-header">
+    <h2 class="entry-title"><a href='/2015/03/14/feature-extraction-for-asr-mfcc/' class='article-link'>Feature Extraction for ASR:&nbsp;MFCC</a></h2>
     
-      <h1 class="entry-title"><a href="/blog/2015/03/14/feature-extraction-for-asr-mfcc/">Feature Extraction for ASR: MFCC</a></h1>
-    
-    
-      <p class="meta">
-        
-
-
-
-
-<time class='entry-date' datetime='2015-03-14T16:55:12+08:00'><span class='date'><span class='date-month'>Mar</span> <span class='date-day'>14</span><span class='date-suffix'>th</span>, <span class='date-year'>2015</span></span> <span class='time'>4:55 pm</span></time>
-        <span class="printable">
+    <div class="entry-meta">
+      <a href="/2015/03/14/feature-extraction-for-asr-mfcc/"><time class='entry-date' datetime='2015-03-14T16:55:12+08:00'><span class='date'><span class='date-month'>Mar</span> <span class='date-day'>14</span><span class='date-suffix'>th</span>, <span class='date-year'>2015</span></span></time></a>
+      <span class="printable">
 
 
   
 
 
-<a href="/assets/printables/2015-03-14-feature-extraction-for-asr-mfcc.pdf"> <img src="/images/printer.png" alt="printable version"> </a>
+
+  <a href="/assets/printables/2015-03-14-feature-extraction-for-asr-mfcc.pdf"> <img src="/images/octopress-printable/printer.png" alt="printable version"> </a>
+
 
 </span>
-
-        
-      </p>
-    
+    </div>
   </header>
 
-
-  <div class="entry-content"><p>Mel-frequency cepstral coefficients (MFCCs) is a popular feature used in Speech Recognition system. It is based on a concept called cepstrum.</p>
-
-<p>The crucial observation leading to the cepstrum terminology is thatnthe log spectrum can be treated as a waveform and subjected to further Fourier analysis.
-The term <em><u>ceps</u>trum</em> is coined by swapping the order of the letters in the word <em><u>spec</u>trum</em>. Likewise, the name of the independent variable of the cepstrum is known as a <em><u>quef</u>rency</em>.</p>
-
-<p>There are a couple of slightly different <a href="http://dsp.stackexchange.com/questions/13/what-is-the-difference-between-a-fourier-transform-and-a-cosine-transform">definitions</a>. Originally cepstrum<a href="#oppenheim1968homomorphic">(Oppenheim &amp; Schafer, 1968)</a> transform was defined as </p>
-
-<blockquote>
-  <p>Fourier transform -&gt; complex logarithm -&gt; inverse Fourier transform. </p>
-</blockquote>
-
-<p>The motivation is in its ability to separate convolved signals (human speech is often modelled as the convolution of an excitation and a vocal tract).</p>
-
-<p>MFCC has been found to perform well in speech recognition systems is to apply a non-linear filter bank in frequency domain (the mel binning). The particular algorithm<a href="#davis1980comparison">(Davis &amp; Mermelstein, 1980)</a> is defined as</p>
-
-<blockquote>
-  <p>Fourier transform -&gt; square of magnitude -&gt; mel filter bank -&gt; real logarithm -&gt; discrete cosine transform.</p>
-</blockquote>
-
-<p>Here DCT can be selected as the second transform, because for real-valued input, the real part of the DFT is a kind of DCT. The reason why DCT is preferred is that the output is approximately decorrelated. Decorrelated features can be modelled efficiently as a Gaussian distribution with a diagonal covariance matrix.</p>
-
-<p><a href="http://dsp.stackexchange.com/questions/31/how-do-i-interpret-the-dct-step-in-the-mfcc-extraction-process">Another reason</a> is that DCT can be thought as a compression step. Typically with MFCCs, you will take the DCT and then keep only the first few coefficients. This is basically the same reason that the DCT is used in JPEG compression. DCTs are chosen because their boundary conditions work better on these types of signals.</p>
-
-<p>Let’s contrast the DCT with the Fourier transform. The Fourier transform is made up of sinusoids that have an integer number of cycles. This means, all of the Fourier basis functions start and end at the same value – they do not do a good job of representing signals that start and end at different values. Remember that the Fourier transform assumes a periodic extension: If you imagine your signal on a sheet of paper, the Fourier transform wants to roll that sheet into a cylinder so that the left and right sides meet.</p>
-
-<p>Think of a spectrum that is shaped roughly like a line with negative slope (which is pretty typical). The Fourier transform will have to use a lot of different coefficients to fit this shape. On the other hand, the DCT has cosines with half-integer numbers of cycles. There is, for example, a DCT basis function that looks vaguely like that line with negative slope. It does not assume a period extension (instead, an even extension), so it will do a better job of fitting that shape.</p>
-
-<p>So, let’s put this together. Once you’ve computed the Mel-frequency spectrum, you have a representation of the spectrum that is sensitive in a way similar to how human hearing works. Some aspects of this shape are more relevant than others. Usually, the larger more overarching spectral shape is more important than the noisy fine details in the spectrum. You can imagine drawing a smooth line to follow the spectral shape, and that the smooth line you draw might tell you just about as much about the signal.</p>
-
-<p>When you take the DCT and discard the higher coefficients, you are taking this spectral shape, and only keeping the parts that are more important for representing this smooth shape. If you used the Fourier transform, it wouldn’t do such a good job of keeping the important information in the low coefficients.</p>
-
-<p>If we feed the MFCCs as features to a machine learning algorithm, these lower-order coefficients will make good features, since they represent some simple aspects of the spectral shape, while the higher-order coefficients that you discard are more noise-like and are not important to train on. Additionally, training on the Mel spectrum magnitudes themselves would probably not be as good because the particular amplitude at different frequencies are less important than the general shape of the spectrum.</p>
-
-<h2 id="cepstral-analysis">Cepstral Analysis</h2>
-
-<p>Formants of a wave carry the identity of the sound. we’d like to extract the formants and a smooth curve connecting them, i.e. the <em>spectral envelope</em>, as shown in following figure (taken from <a href="http://www.speech.cs.cmu.edu/11-492/slides/03_mfcc.pdf">this slide</a>), </p>
-
-<p><img class="center" src="/images/posts/spectral-envelope.png" title="Spectral Envelope" alt="fig:spectral-envelope" /></p>
-
-<p>Cepstral analysis is a way to separate the envelope from the spectrum.
-As shown in the figure , if we consider the log spectrum as waveform, the frequency(quefrency) of spectral envelope is low, while that of spectral details is high. So we can filter the low frequency region to get envelope.</p>
-
-<p><img class="center" src="/images/posts/cepstrum.png" title="Cepstrum" alt="fig:cepstrum" /></p>
-
-<p>Mathematically, let $E[k]$ denotes spectral details(the periodic excitation), $H[k]$ denotes spectral envelope(vocal tract) and $X[k]$ denotes the spectrum of observed signal, then</p>
-
-<script type="math/tex; mode=display">
-X[k] = E[k]H[k] 
-</script>
-
-<script type="math/tex; mode=display">
-|X[k]|=|E[k]|\,|H[k]|
-</script>
-
-<p>Taking Log on both sides</p>
-
-<script type="math/tex; mode=display">
-\log|X[k]|=\log|E[k]|+\log|H[k]|
-</script>
-
-<p>Taking inverseFFT on both sides</p>
-
-<script type="math/tex; mode=display">
-x[k]=e[k]+h[k]
-</script>
-
-<p>Now the signal are separated with a simple addition. This procedure is called de-convolution, more details can be found in <a href="http://www.speech.cs.cmu.edu/11-492/slides/03_mfcc.pdf">this slides</a>.</p>
-
-<h2 id="mel-frequency-analysis">Mel-Frequency Analysis</h2>
-
-<p>The Mel scale relates perceived frequency, or pitch, of a pure tone to its actual measured frequency. Humans are much better at discerning small changes in pitch at low frequencies than they are at high frequencies. Incorporating this scale makes our features match more closely what humans hear.</p>
-
-<p>This figure  shows the Mel-scale function. we can see that Mel-scale gives more weight to low frequency regions. The values is came from human perception experiments.</p>
-
-<p><img class="center" src="/images/posts/mel.png" title="Mel scale" alt="fig:mel" /></p>
-
-<h2 id="implemntation">implemntation</h2>
-
-<p>To warp up, the complete recipe for extracting MFCC is,</p>
-
-<ol>
-  <li>Frame the signal into short frames.</li>
-  <li>For each frame calculate the power spectrum.</li>
-  <li>Apply the mel filterbank to the power spectra, sum the energy in each filter.</li>
-  <li>Take the logarithm of all filterbank energies.</li>
-  <li>Take the DCT of the log filterbank energies.</li>
-  <li>Keep DCT coefficients 2-13, discard the rest.</li>
-</ol>
-
-<p><a href="http://www.practicalcryptography.com/miscellaneous/machine-learning/guide-mel-frequency-cepstral-coefficients-mfccs/">this link</a> is a nice tutorial with python code.</p>
-
-<h2 id="references">References</h2>
-
-<ol class="bibliography"><li><span id="oppenheim1968homomorphic">Oppenheim, A. V., &amp; Schafer, R. W. (1968). Homomorphic analysis of speech. <i>Audio and Electroacoustics, IEEE Transactions on</i>, <i>16</i>(2), 221–226.</span></li>
-<li><span id="davis1980comparison">Davis, S., &amp; Mermelstein, P. (1980). <a href="http://home.iitk.ac.in/~rhegde/ee627_2015/mermelmfcc.pdf">Comparison of parametric representations for monosyllabic word recognition in continuously spoken sentences</a>. <i>Acoustics, Speech and Signal Processing, IEEE Transactions on</i>, <i>28</i>(4), 357–366.</span></li></ol>
-
+  <div class="entry-content">
 </div>
-  
-  
 
-
-    </article>
+  <footer class='entry-footer'>
+    <a class='permalink' rel="full-article" href="/2015/03/14/feature-extraction-for-asr-mfcc/">Continue Reading →</a>
+  </footer>
+</article>
   
-  
-    <article>
-      
-  <header>
+    <article class="entry excerpted" role="article">
+  <header class="entry-header">
+    <h2 class="entry-title"><a href='/2015/03/14/feature-extraction-for-asr-preprocessing/' class='article-link'>Feature Extraction for ASR:&nbsp;Preprocessing</a></h2>
     
-      <h1 class="entry-title"><a href="/blog/2015/03/14/feature-extraction-for-asr-preprocessing/">Feature Extraction for ASR: Preprocessing</a></h1>
-    
-    
-      <p class="meta">
-        
-
-
-
-
-<time class='entry-date' datetime='2015-03-14T16:51:02+08:00'><span class='date'><span class='date-month'>Mar</span> <span class='date-day'>14</span><span class='date-suffix'>th</span>, <span class='date-year'>2015</span></span> <span class='time'>4:51 pm</span></time>
-        <span class="printable">
+    <div class="entry-meta">
+      <a href="/2015/03/14/feature-extraction-for-asr-preprocessing/"><time class='entry-date' datetime='2015-03-14T16:51:02+08:00'><span class='date'><span class='date-month'>Mar</span> <span class='date-day'>14</span><span class='date-suffix'>th</span>, <span class='date-year'>2015</span></span></time></a>
+      <span class="printable">
 
 
   
 
 
-<a href="/assets/printables/2015-03-14-feature-extraction-for-asr-preprocessing.pdf"> <img src="/images/printer.png" alt="printable version"> </a>
+
+  <a href="/assets/printables/2015-03-14-feature-extraction-for-asr-preprocessing.pdf"> <img src="/images/octopress-printable/printer.png" alt="printable version"> </a>
+
 
 </span>
-
-        
-      </p>
-    
+    </div>
   </header>
 
-
-  <div class="entry-content"><p>Audio signal is constantly changing, so to simplify analysis we need first frame the signal into short frames. Then we assume the signal within the short time is statistically stationary. Typically we choose  the time of 25ms, and the frames are overlapped with shift of 10ms. If the frame is much shorter we don’t have enough samples to get a reliable spectral estimate, if it is longer the signal changes too much throughout the frame.</p>
-
-<h2 id="dc-offset-removal">DC Offset Removal</h2>
-
-<p>The first processing we do is to remove the <em>DC offset</em> of the signal. The DC offset is the mean value of the waveform. The term originated in electronics, where it refers to a direct current voltage. For a real sound wave propagated in the air, the mean value should equal to zero. Thus we remove the DC offset by subtracting the mean value from the original signal, i.e.,</p>
-
-<script type="math/tex; mode=display">
-x'[n] = x[n] - \frac{1}{N}\sum_ix[i]
-</script>
-
-<h2 id="pre-emphasis">Pre-emphasis</h2>
-
-<p><a href="http://wiki.hydrogenaud.io/index.php?title=Pre-emphasis">Pre-emphasis</a> is performed for flattening the magnitude spectrum and balancing the high and low frequency components. It boosts the high frequencies component, thereby improving the signal-to-noise ratio,  before they are transmitted or recorded onto a storage medium. Upon playback, a de-emphasis filter is applied to reverse the process.</p>
-
-<p>The reason for using pre-emphasis in speech processing, is due to the  rapid decaying spectrum of speech, when one deals with music signals , it is may not need to apply the filter. This decay in high-frequency part is seen to be suppressed during the sound production mechanism of humans. Moreover, it can also amplify the importance of high-frequency formants.</p>
-
-<p>The formula for pre-emphasis filter is</p>
-
-<script type="math/tex; mode=display">
-x'[n] = x[n] - kx[n-1]
-</script>
-
-<p>where $k$ is the pre-emphasis coefficient which should be in the range $0 \leq k &lt; 1$, typical value is $k=0.97$.</p>
-
-<p>Take the $z$ transform for both sides,</p>
-
-<script type="math/tex; mode=display">
-X'(z) = X(z) - kX(z)z^{-1}
-</script>
-
-<p>Therefore, $H(z) = \frac{X’(z)}{X(z)}=1-kz^{-1}$, the weight for low frequency is smaller than high frequency.</p>
-
-<h2 id="hamming-windowing">Hamming windowing</h2>
-
-<p><a href="http://en.wikipedia.org/wiki/Window_function#Hamming_window">Hamming windowing</a> is given by</p>
-
-<script type="math/tex; mode=display">
-x'[n] = \left\{\alpha - \beta\cos(\frac{2\pi(n-1)}{N-1})\right\}x[n]
-</script>
-
-<p>where $\alpha=0.54$ and $\beta=0.46$.</p>
-
-<p>It is used to deal with the finite Fourier transform problem. If the start and end of the finite samples don’t match then that will look just like a discontinuity in the signal, and show up as lots of high-frequency nonsense in the Fourier transform. And if the samples happen to be a beautiful sinusoid but an integer number of periods don’t happen to fit exactly into the finite sample, your FT will show appreciable energy in all sorts of places nowhere near the real frequency. </p>
-
-<p>Windowing the data makes sure that the ends match up while keeping everything reasonably smooth, this greatly reduces the sort of <a href="http://en.wikipedia.org/wiki/Spectral_leakage">spectral leakage</a>. Detail explanation is in <a href="https://ccrma.stanford.edu/~jos/sasp/Hamming_Window.html">this link</a>.</p>
-
+  <div class="entry-content">
 </div>
-  
-  
 
-
-    </article>
+  <footer class='entry-footer'>
+    <a class='permalink' rel="full-article" href="/2015/03/14/feature-extraction-for-asr-preprocessing/">Continue Reading →</a>
+  </footer>
+</article>
   
-  
-    <article>
-      
-  <header>
+    <article class="entry excerpted" role="article">
+  <header class="entry-header">
+    <h2 class="entry-title"><a href='/2015/03/14/feature-extraction-for-asr-intro/' class='article-link'>Feature Extraction for ASR:&nbsp;Intro</a></h2>
     
-      <h1 class="entry-title"><a href="/blog/2015/03/14/feature-extraction-for-asr-intro/">Feature Extraction for ASR: Intro</a></h1>
-    
-    
-      <p class="meta">
-        
-
-
-
-
-<time class='entry-date' datetime='2015-03-14T15:49:44+08:00'><span class='date'><span class='date-month'>Mar</span> <span class='date-day'>14</span><span class='date-suffix'>th</span>, <span class='date-year'>2015</span></span> <span class='time'>3:49 pm</span></time>
-        <span class="printable">
+    <div class="entry-meta">
+      <a href="/2015/03/14/feature-extraction-for-asr-intro/"><time class='entry-date' datetime='2015-03-14T15:49:44+08:00'><span class='date'><span class='date-month'>Mar</span> <span class='date-day'>14</span><span class='date-suffix'>th</span>, <span class='date-year'>2015</span></span></time></a>
+      <span class="printable">
 
 
   
 
 
-<a href="/assets/printables/2015-03-14-feature-extraction-for-asr-intro.pdf"> <img src="/images/printer.png" alt="printable version"> </a>
+
+  <a href="/assets/printables/2015-03-14-feature-extraction-for-asr-intro.pdf"> <img src="/images/octopress-printable/printer.png" alt="printable version"> </a>
+
 
 </span>
-
-        
-      </p>
-    
+    </div>
   </header>
-
 
   <div class="entry-content"><p>Feature extraction is the first step for Automatic Speech Recognition(ASR), which converts the waveform speech signal to a set of feature vectors. The main goal is to make the vectors have high discrimination between phonemes.</p>
 
-<p>Thus, the features should be</p>
-
-<ul>
-  <li>perceptually meaningful, i.e., analogous to features used by human auditory system.</li>
-  <li>invariant, i.e., robust to variations in channel, speaker and
-transducer.</li>
-</ul>
-
-<p>Three main steps for feature extraction are</p>
-
-<ol>
-  <li>Preprocessing</li>
-  <li>Feature Analysis</li>
-  <li>Parametric Transformation</li>
-</ol>
-
-<p>The <em>preprocessing</em> step converts the speech signal to a more suitable waveform for the following analysis, including <em>DC offset removal</em>, <em>pre-emphasis</em> and <em>Hamming Windowing</em>.</p>
-
-<p><em>Feature Analysis</em> is most important step, which do most of the works. Generally, it is can be divided into two main categories, <em>Spectral Analysis</em> and <em>Temporal Analysis</em>. Spectral analysis gives MFCC and PLP features, while temporal analysis produces Energy and Pitch features. MFCC involves <em>Cepstral Analysis</em> and PLP is based on <em>Linear Predictive Coding(LPC) Analysis</em>.</p>
-
-<p>The final step, <em>Parameter transformation</em>, converts the features obtained by above step into signal parameters through <em>differentiation</em> and <em>concatenation</em>.</p>
-
-<p>Details are in following posts:</p>
-
-<ol>
-  <li><a href="/blog/2015/03/14/feature-extraction-for-asr-preprocessing/">Feature Extraction for ASR: Preprocessing</a> </li>
-  <li><a href="/blog/2015/03/14/feature-extraction-for-asr-mfcc/">Feature Extraction for ASR: MFCC</a></li>
-  <li><a href="/blog/2015/03/14/feature-extraction-for-asr-plp/">Feature Extraction for ASR: PLP</a></li>
-  <li><a href="/blog/2015/03/14/feature-extraction-for-asr-pitch/">Feature Extraction for ASR: Pitch</a></li>
-  <li><a href="/blog/2015/03/14/feature-extraction-for-asr-delta/">Feature Extraction for ASR: Delta</a></li>
-</ol>
-
 </div>
-  
-  
 
-
-    </article>
+  <footer class='entry-footer'>
+    <a class='permalink' rel="full-article" href="/2015/03/14/feature-extraction-for-asr-intro/">Continue Reading →</a>
+  </footer>
+</article>
   
-  
-    <article>
-      
-  <header>
+    <article class="entry excerpted" role="article">
+  <header class="entry-header">
+    <h2 class="entry-title"><a href='/2015/03/11/note-on-learning-neural-network/' class='article-link'>Note on Learning Neural&nbsp;Network</a></h2>
     
-      <h1 class="entry-title"><a href="/blog/2015/03/11/note-on-learning-neural-network/">Note on Learning Neural Network</a></h1>
-    
-    
-      <p class="meta">
-        
-
-
-
-
-<time class='entry-date' datetime='2015-03-11T16:54:37+08:00'><span class='date'><span class='date-month'>Mar</span> <span class='date-day'>11</span><span class='date-suffix'>th</span>, <span class='date-year'>2015</span></span> <span class='time'>4:54 pm</span></time>
-        <span class="printable">
+    <div class="entry-meta">
+      <a href="/2015/03/11/note-on-learning-neural-network/"><time class='entry-date' datetime='2015-03-11T16:54:37+08:00'><span class='date'><span class='date-month'>Mar</span> <span class='date-day'>11</span><span class='date-suffix'>th</span>, <span class='date-year'>2015</span></span></time></a>
+      <span class="printable">
 
 
   
 
 
-<a href="/assets/printables/2015-03-11-note-on-learning-neural-network.pdf"> <img src="/images/printer.png" alt="printable version"> </a>
+
+  <a href="/assets/printables/2015-03-11-note-on-learning-neural-network.pdf"> <img src="/images/octopress-printable/printer.png" alt="printable version"> </a>
+
 
 </span>
-
-        
-      </p>
-    
+    </div>
   </header>
-
 
   <div class="entry-content"><p>This is a paper about back-propagation algorithm for Neural Network.</p>
 
-<p>The table of contents is</p>
-
-<ul>
-  <li>1 Preliminary
-    <ul>
-      <li>1.1 Non-linear function
-        <ul>
-          <li>1.1.1 Sigmoid</li>
-          <li>1.1.2 Hyperbolic tangent</li>
-          <li>1.1.3 Softmax</li>
-        </ul>
-      </li>
-      <li>1.2 Cross entropy</li>
-      <li>1.3 Gradient descent
-        <ul>
-          <li>1.3.1 Batch Gradient Descent</li>
-          <li>1.3.2 Stochastic Gradient Descent</li>
-        </ul>
-      </li>
-      <li>1.4 The Multivariable Chain Rule</li>
-      <li>1.5 Network architecture</li>
-    </ul>
-  </li>
-  <li>2 Feed-forward Network
-    <ul>
-      <li>2.1 Forward pass</li>
-      <li>2.2 Backpropagation
-        <ul>
-          <li>2.2.1 Weight between hidden layer and output layer</li>
-          <li>2.2.2 Weight between input layer and hidden layer</li>
-        </ul>
-      </li>
-    </ul>
-  </li>
-  <li>3 Recurrent Neural Network
-    <ul>
-      <li>3.1 Forward pass</li>
-      <li>3.2 Backpropagation
-        <ul>
-          <li>3.2.1 Real-Time Recurrent Learning</li>
-          <li>3.2.2 Backpropagation Through Time</li>
-        </ul>
-      </li>
-    </ul>
-  </li>
-</ul>
-
-<p>The pdf version is in <a href="http://wantee.github.io/assets/miscs/BP-0.3.pdf">this link</a>.</p>
-
 </div>
-  
-  
 
-
-    </article>
+  <footer class='entry-footer'>
+    <a class='permalink' rel="full-article" href="/2015/03/11/note-on-learning-neural-network/">Continue Reading →</a>
+  </footer>
+</article>
   
-  <div class="pagination">
-    
-      <a class="prev" href="/posts/2">&larr; Older</a>
-    
-    <a href="/blog/archives">Blog Archives</a>
-    
-  </div>
 </div>
-<aside class="sidebar">
+</div>
+</div>
+</div>
+<div class="site-bottom"><div class="site-bottom-content">
+<footer class='site-footer' role="contentinfo">
+  <p class='footer-copyright'>Copyright © 2015- Wantee Wang
+  - Powered by <a href='http://octopress.org'>Octopress</a></p>
   
-    <section>
-  <h1>Recent Posts</h1>
-  <ul id="recent_posts">
-    
-      <li class="post">
-        <a href="/blog/2015/04/27/the-xor-problem/">The XOR Problem</a>
-      </li>
-    
-      <li class="post">
-        <a href="/blog/2015/03/24/knowledge-embedding/">Knowledge Embedding</a>
-      </li>
-    
-      <li class="post">
-        <a href="/blog/2015/03/22/discriminative-vs-generative/">Discriminative vs Generative</a>
-      </li>
-    
-      <li class="post">
-        <a href="/blog/2015/03/14/feature-extraction-for-asr-delta/">Feature Extraction for ASR: Delta</a>
-      </li>
-    
-      <li class="post">
-        <a href="/blog/2015/03/14/feature-extraction-for-asr-pitch/">Feature Extraction for ASR: Pitch</a>
-      </li>
-    
-  </ul>
-</section>
-
-<section>
-  <h1>GitHub Repos</h1>
-  <ul id="gh_repos">
-    <li class="loading">Status updating&#8230;</li>
-  </ul>
-  
-  <a href="https://github.com/wantee">@wantee</a> on GitHub
-  
-  <script type="text/javascript">
-    $(document).ready(function(){
-        if (!window.jXHR){
-            var jxhr = document.createElement('script');
-            jxhr.type = 'text/javascript';
-            jxhr.src = '/javascripts/libs/jXHR.js';
-            var s = document.getElementsByTagName('script')[0];
-            s.parentNode.insertBefore(jxhr, s);
-        }
-
-        github.showRepos({
-            user: 'wantee',
-            count: 0,
-            skip_forks: true,
-            skip_repos: [ "wantee.github.io" ],
-            target: '#gh_repos'
-        });
-    });
-  </script>
-  <script src="/javascripts/github.js" type="text/javascript"> </script>
-</section>
-
-
-
-
-
-  
-</aside>
-
-    </div>
-  </div>
-  <footer role="contentinfo"><p>
-  Copyright &copy; 2015 - Wantee Wang -
-  <span class="credit">Powered by <a href="http://octopress.org">Octopress</a></span>
-</p>
-
 </footer>
-  
+</div></div></div>
 
-<script type="text/javascript">
-      var disqus_shortname = 'wantee';
-      
-        
-        var disqus_script = 'count.js';
-      
-    (function () {
-      var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
-      dsq.src = '//' + disqus_shortname + '.disqus.com/' + disqus_script;
-      (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
-    }());
+<!-- mathjax config similar to math.stackexchange -->
+<script type="text/x-mathjax-config">
+MathJax.Hub.Config({
+  jax: ["input/TeX", "output/HTML-CSS"],
+  tex2jax: {
+    inlineMath: [ ['$', '$'] ],
+    displayMath: [ ['$$', '$$']],
+    processEscapes: true,
+    skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+  },
+  messageStyle: "none",
+  "HTML-CSS": { preferredFont: "TeX", availableFonts: ["STIX","TeX"] },
+  TeX: { equationNumbers: { autoNumber: "AMS" } }
+});
 </script>
-
-
-
-
-
-
-
-  <script type="text/javascript">
-    (function(){
-      var twitterWidgets = document.createElement('script');
-      twitterWidgets.type = 'text/javascript';
-      twitterWidgets.async = true;
-      twitterWidgets.src = '//platform.twitter.com/widgets.js';
-      document.getElementsByTagName('head')[0].appendChild(twitterWidgets);
-    })();
-  </script>
-
-
-
-
-
-
-  <!-- mathjax config similar to math.stackexchange -->
-  <script type="text/x-mathjax-config">
-  MathJax.Hub.Config({
-    jax: ["input/TeX", "output/HTML-CSS"],
-    tex2jax: {
-      inlineMath: [ ['$', '$'] ],
-      displayMath: [ ['$$', '$$']],
-      processEscapes: true,
-      skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
-    },
-    messageStyle: "none",
-    "HTML-CSS": { preferredFont: "TeX", availableFonts: ["STIX","TeX"] },
-    TeX: { equationNumbers: { autoNumber: "AMS" } }
-  });
-  </script>
-  <script src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS_HTML" type="text/javascript"></script>
-
+<script src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS_HTML" type="text/javascript"></script>
+</div>
+  
+  
+  
 </body>
 </html>
