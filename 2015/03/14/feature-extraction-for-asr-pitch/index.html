@@ -9,7 +9,7 @@
 <link href="http://wantee.github.io/2015/03/14/feature-extraction-for-asr-pitch/" rel="canonical">
 <meta name='generator' content='Jekyll v2.5.3, Octopress v3.0.0.rc.37 Octopress Ink v1.0.0.rc.64'>
 
-<link href='/stylesheets/all-6811b0809930f663307ddbaaf4f331d2.css' media='all' rel='stylesheet' type='text/css'>
+<link href='/stylesheets/all-9f53ba143488c212825617ef96703520.css' media='all' rel='stylesheet' type='text/css'>
 <script>
     (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
     (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
@@ -68,7 +68,159 @@
 
   <div class="entry-meta"><a href="/2015/03/14/feature-extraction-for-asr-pitch/"><time class='entry-date' datetime='2015-03-14T16:55:51+08:00'><span class='date'><span class='date-month'>Mar</span> <span class='date-day'>14</span><span class='date-suffix'>th</span>, <span class='date-year'>2015</span></span></time></a><span class="printable"><a href="/assets/printables/2015-03-14-feature-extraction-for-asr-pitch.pdf"> <img src="/images/octopress-printable/printer.png" alt="printable version"> </a></span><span class='entry-categories'><span class="category-links"><a class="category-link" href="/categories/automatic speech recognition/">Automatic speech recognition</a></span></span></div>
 
-  <div class="entry-content">
+  <div class="entry-content"><ul id="markdown-toc">
+  <li><a href="#cross-correlation-and-autocorrelation" id="markdown-toc-cross-correlation-and-autocorrelation">Cross-correlation and Autocorrelation</a></li>
+  <li><a href="#normalized-cross-correlation-function" id="markdown-toc-normalized-cross-correlation-function">Normalized Cross-Correlation Function</a></li>
+  <li><a href="#rapt" id="markdown-toc-rapt">RAPT</a></li>
+  <li><a href="#kaldi-pitch-tracker" id="markdown-toc-kaldi-pitch-tracker">Kaldi Pitch Tracker</a></li>
+  <li><a href="#references" id="markdown-toc-references">References</a></li>
+</ul>
+
+<p><em>Pitch</em> is a perceptual property that allows the ordering of sounds on a frequency-related scale. Pitch may be quantified as a frequency, which is referred as <em>Fundamental frequency</em> (F0). Pitch and pitch changes in words form the <em>tone</em> of a tonal language, such as Chinese.</p>
+
+<p>RAPT<a href="#talkin1995robust">(Talkin, 1995)</a> is a time-domain algorithm for F0 estimation, which Kaldi’s pitch feature <a href="#ghahremani2014pitch">(Ghahremani et al., 2014)</a> is based on.</p>
+
+<p>Most F0 estimators consist of three main steps:</p>
+
+<ol>
+  <li>Pre-processing, including DC-removing and framing, etc.;</li>
+  <li>Candidate generating, main method to estimate the F0;</li>
+  <li>Post-processing, choosing the best candidate and refining the result output.</li>
+</ol>
+
+<p>Here, we present main ideas for RAPT algorithm and its variant introduced by Kaldi.</p>
+
+<h2 id="cross-correlation-and-autocorrelation">Cross-correlation and Autocorrelation</h2>
+
+<p>In signal processing, cross-correlation is a measure of similarity of two series as a function of the lag of one relative to the other.</p>
+
+<p>For continuous functions $f$ and $g$, the cross-correlation is defined as,</p>
+
+<script type="math/tex; mode=display">(f \star g)(\tau) = f(t) \star g(t) = \int^{+\infty}_{-\infty} f(t)g(\tau + t) dt</script>
+
+<p>and the discrete form is,</p>
+
+<script type="math/tex; mode=display">\begin{equation}\label{eq:cc}
+(x \star y)[m] = x[n] \star y[n] = \sum_{n=-\infty}^{+\infty} x[n] y[m + n]
+\end{equation}</script>
+
+<p>Here $m$ is called the lag. The cross-correlation is similar in nature to the convolution of two functions. Recall that convolution of two function $f$ and $g$ is,</p>
+
+<script type="math/tex; mode=display">(f \ast g)(\tau) = f(t) \ast g(t) = \int^{+\infty}_{-\infty} f(t)g(\tau - t) dt</script>
+
+<p>and</p>
+
+<script type="math/tex; mode=display">\begin{equation}
+(x \ast y)[m] = x[n] \ast y[n] = \sum_{n=-\infty}^{+\infty} x[n] y[m - n]
+\end{equation}</script>
+
+<p>It is easy to see $f(t) \ast g(t) =  f(t) \star g(−t)$.</p>
+
+<p>Autocorrelation is defined as the cross-correlation of a signal with itself. For autocorrelation, there will always be a peak at a lag of zero.</p>
+
+<p>From the definitions, we can compute a convolution of $f$ and $g$ by following steps:</p>
+
+<ol>
+  <li>Reflect functions $g$: $g(t) \rightarrow g(-t)$.</li>
+  <li>Add a time-offset, $\tau$, which allows $g(\tau - t)$ to slide along the $t$-axis.</li>
+  <li>Find the integral of their product, wherever the two functions intersect.</li>
+</ol>
+
+<p>Similar procedure can be performed for cross-correlation, i.e. just skipping the first step.</p>
+
+<p>This figure  from <a href="http://en.wikipedia.org/wiki/Cross-correlation">Wikipedia</a> illustrates the idea,</p>
+
+<p><img class="center" src="/assets/images/posts/convolution-vs-correlation.png" alt="fig:convolution-vs-correlation" title="Visual comparison of convolution, cross-correlation and autocorrelation." /></p>
+
+<p>Autocorrelation can be used to find repeating patterns, or the period of a signal. For a periodic signal, its autocorrelation will have peaks at its period. This property can be used to find F0s.</p>
+
+<h2 id="normalized-cross-correlation-function">Normalized Cross-Correlation Function</h2>
+
+<p>In real signal processing, we would have to split the waveform into shorter frames. We perform the mathematical operations within frames, this leads to the <em>AutoCorrelation Function</em> (ACF), <em>Cross-Correlation Funcion</em> (CCF) and <em>Normalized Cross-Correlation Function</em> (NCCF).</p>
+
+<p>Suppose the window size is $N$ samples, for a frame $i$, the ACF of signal $s[n]$ is,</p>
+
+<script type="math/tex; mode=display">\begin{equation}\label{eq:acf}
+R_i[m] = \sum_{n=b_i}^{b_i+N-1-m} s[n] s[m + n]
+\end{equation}</script>
+
+<p>And the CCF is,</p>
+
+<script type="math/tex; mode=display">\begin{equation}\label{eq:ccf}
+\chi_i[m] = \sum_{n=b_i}^{b_i+N-1} s[n] s[m + n]
+\end{equation}</script>
+
+<p>where $b_i$ is the beginning sample of frame $i$.</p>
+
+<p>At first glance, the equation for CCF \eqref{eq:ccf} seems more likely to the autocorrelation formula. Notice that the difference between ACF and CCF is we clip the value of signal outside the window to zero when computing ACF. But as we computing CCF, we use the origin signal, thus we actually do not using the same signal to compute CCF, i.e., $x[n] = s[b_i:b_i+N-1]$ and $y[n+m] = s[b_i+m:b_i+m+N-1]$.</p>
+
+<p><a href="http://www.fit.vutbr.cz/~grezl/ZRE/lectures/05_pitch_en.pdf">This slide</a> uses many plots to show the ideas.</p>
+
+<p>The drawback of the ACF is a stepwise “shortening” of the segment, however, the CCF also has problem: the shifted signal has much higher energy, and has no bound on values.</p>
+
+<p>Thus we use normalization to compensate the energy, which leads to NCCF,</p>
+
+<script type="math/tex; mode=display">\begin{equation}\label{eq:nccf}
+\phi_i[m] = \frac{\sum_{n=b_i}^{b_i+N-1} s[n] s[m + n]}{\sqrt{E[b_i] E[m + b_i]}}
+\end{equation}</script>
+
+<p>where, $E[j]$ is energy for signal $s[j:j+N-1]$,</p>
+
+<script type="math/tex; mode=display">E[j] = \sum_{n = j}^{j+N-1}s^2[n]</script>
+
+<p>Note that $-1.0 \leq \phi \leq 1.0$, $\phi$ tends to be close to 1.0 for lags corresponding to integer multiples of the “true” period.</p>
+
+<h2 id="rapt">RAPT</h2>
+
+<p>With NCCF, we can estimate the F0. To reduce the computation of NCCF, RAPT uses a two-pass NCCF procedure. The outline of RAPT is:</p>
+
+<ol>
+  <li>Down-sample the original signal;</li>
+  <li>Compute the NCCF of the low sample rate signal. Record the locations of local maxima;</li>
+  <li>Compute the NCCF of the original signal only in the vicinity of promising peaks found in the first pass. Every frame may have several candidates;</li>
+  <li>Find the best candidate for every frame using dynamic programming.</li>
+</ol>
+
+<p>In order to form the DP recursion, we define the <em>local cost</em> for proposing F0 of frame $i$ is $C_{i,j}$ is $d_{i,j}$, where $C_{i,j}$ is the value of $j$-th local maximum in $\phi$ at frame $i$. And the inter-frame F0 <em>transition cost</em> is $\delta_{i,j,k}$, which denotes the cost at frame $i$ when hypotheses $j$ and $k$ at the current and previous frame. Thus, the total cost for $j$ candidate at frame $i$ is,</p>
+
+<script type="math/tex; mode=display">D_{i,j} = d_{i,j} + min_{k \in I_{i-1}}{\{D_{i-1, k} + \delta_{i,j,k}\}}, 1 \leq j \leq I_i,</script>
+
+<p>with the initial condition</p>
+
+<script type="math/tex; mode=display">D_{0,j} = 0, 1 \leq j \leq I_0; I_0 = 2.</script>
+
+<p>where, $I_i$ denotes the number of candidates proposed at frame $i$, which is the number of non-zero-lag local maxima plus one (for unvoiced state).</p>
+
+<p>Next, we need to choose a proper $d_{i,j}$ and a $\delta_{i,j,k}$<sup id="fnref:1"><a href="#fn:1" class="footnote">1</a></sup>.</p>
+
+<p>Apparently, we should choose larger value of $\phi$, i.e., $d_{i,j} \propto -C_{i,j}$. On the other side, in order to encourage the selection of shorter period, suppose $L_{i,j}$ is the corresponding lag of $C_{i,j}$, then $d_{i,j} \propto L_{i,j}$. Finally, we have,</p>
+
+<script type="math/tex; mode=display">d_{i,j} = 1 - C_{i,j}(1 - \beta L_{i,j})</script>
+
+<p>where $\beta$ is the factor to weight the penalization of long lag.</p>
+
+<p>The main concern of the transition cost is to smooth the final F0 among frames, therefore we can penalty the changes of lags, i.e.,</p>
+
+<script type="math/tex; mode=display">\delta_{i,j,k} = \alpha \left| \log{\frac{L_{i,j}}{L_{i-1,k}}} \right|</script>
+
+<p>similarly, $\alpha$ is a constant factor to weight the penalization.</p>
+
+<h2 id="kaldi-pitch-tracker">Kaldi Pitch Tracker</h2>
+
+<p>Kaldi uses a highly modified version of the RAPT algorithm. The most difference is that Kaldi does not make a hard decision whether any given frame is voiced or unvoiced; instead, it assigns a pitch even to unvoiced frames while constraining the pitch trajectory to be continuous. And it is also produces a probability of voicing (POV) and other features used in ASR tasks.</p>
+
+<h2 id="references">References</h2>
+
+<ol class="bibliography"><li><span id="talkin1995robust">Talkin, D. (1995). <a href="http://www.ee.columbia.edu/ dpwe/papers/Talkin95-rapt.pdf">A robust algorithm for pitch tracking (RAPT)</a>. <i>Speech Coding and Synthesis</i>, <i>495</i>, 518.</span></li>
+<li><span id="ghahremani2014pitch">Ghahremani, P., BabaAli, B., Povey, D., Riedhammer, K., Trmal, J., &amp; Khudanpur, S. (2014). <a href="https://ccrma.stanford.edu/ pdelac/PitchDetection/icmc01-pitch.pdf">A pitch extraction algorithm tuned for automatic speech recognition</a>. In <i>Acoustics, Speech and Signal Processing (ICASSP), 2014 IEEE International Conference on</i> (pp. 2494–2498). IEEE.</span></li></ol>
+
+<div class="footnotes">
+  <ol>
+    <li id="fn:1">
+      <p>Note that $d_{i,j}$ and $\delta_{i,j,k}$ in the original RAPT paper looks like something more complicated than this post. Here, we just show the basic ideas in simpler form. <a href="#fnref:1" class="reversefootnote">&#8617;</a></p>
+    </li>
+  </ol>
+</div>
 </div>
 
   <footer class='entry-footer' role='contentinfo'>
