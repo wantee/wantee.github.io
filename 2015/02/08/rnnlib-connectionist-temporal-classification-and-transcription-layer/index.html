@@ -99,6 +99,8 @@ RNNLIB implements it in a single layer called Transcription Layer.
 We go into this particular layer in this post, the main reference is the Graves’
 <a href="http://www6.in.tum.de/pub/Main/Publications/Graves2006a.pdf">original paper</a>.</p>
 
+<!-- more -->
+
 <p>The key point for CTC is to use a simple map transforming the RNN output to unsegmented labelling,
 and construct a new objective function based on the map.
 This map do not need a precise alignment, thus greatly simplify the task and reduce human expert involvement.</p>

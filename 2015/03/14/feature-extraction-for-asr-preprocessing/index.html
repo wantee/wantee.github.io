@@ -86,6 +86,8 @@
 
 <p>Audio signal is constantly changing, so to simplify analysis we need first frame the signal into short frames. Then we assume the signal within the short time is statistically stationary. Typically we choose  the time of 25ms, and the frames are overlapped with shift of 10ms. If the frame is much shorter we don’t have enough samples to get a reliable spectral estimate, if it is longer the signal changes too much throughout the frame.</p>
 
+<!-- more -->
+
 <h2 id="dc-offset-removal">DC Offset Removal</h2>
 
 <p>The first processing we do is to remove the <em>DC offset</em> of the signal. The DC offset is the mean value of the waveform. The term originated in electronics, where it refers to a direct current voltage. For a real sound wave propagated in the air, the mean value should equal to zero. Thus we remove the DC offset by subtracting the mean value from the original signal, i.e.,</p>

@@ -78,9 +78,18 @@
   <div class="entry-meta"><a href="/2015/07/29/cross-the-gfw-by-myself/"><time class='entry-date' datetime='2015-07-29T16:04:10+08:00'><span class='date'><span class='date-month'>Jul</span> <span class='date-day'>29</span><span class='date-suffix'>th</span>, <span class='date-year'>2015</span></span></time></a><span class='entry-categories'><span class="category-links"><a class="category-link" href="/categories/technology/">Technology</a></span></span></div>
 
   <div class="entry-content">
+<ul id="markdown-toc">
+  <li><a href="#shadowsocks-" id="markdown-toc-shadowsocks-">配置 shadowsocks 代理</a></li>
+  <li><a href="#pac-" id="markdown-toc-pac-">配置 pac 控制</a></li>
+</ul>
+
 <p>今天，用了一年多的<a href="https://getqujing.com/">曲径</a>被关闭了。做翻墙的服务总是有这么个悲剧，用的人多了就容易被约谈。还是搭建一个个人的服务，自己用可能会稳定一些。</p>
 
 <p>从昨晚开始，研究了一下怎么能方便的搭一个代理自己用。思路挺简单：找一个国外的VPS主机，搭建一个 <a href="http://shadowsocks.org/">shadowsocks</a> 服务，然后自己电脑代理设成 VPS，就可以科学上网了。</p>
+
+<!-- more -->
+
+<h2 id="shadowsocks-">配置 shadowsocks 代理</h2>
 
 <p>Step1. 申请 VPS。 之前没玩过云主机的东西，先拿 amazon AWS EC2 试试，因为看到有一年的试用。</p>
 
@@ -100,11 +109,17 @@
 
 <p>这样，需要在终端需要用代理的时候，敲一下 <code>start_ec2</code> 就 OK 了。</p>
 
+<h2 id="pac-">配置 pac 控制</h2>
+
 <p>为了访问不被墙的网站时不拖慢速度，曲径用的是 pac 的方式。幸好 SwitchyOmega 之前缓存了我的曲径的 rule list，我就直接复制到新建的 EC2 代理的 profile 里了。</p>
+
+<p>GoAgentX 自带 PAC 功能，可以方便系统全局的配置。从上面的 SwitchyOmega 导出 *.pac 文件，在 GoAgentX 设置里 <code>Select Local File</code>， 然后 <code>Restart PAC server</code>。Safari 等 APP 就可以按需使用了。</p>
 
 <p>目前用了一会，速度还可以，反正我也多是用 google，不看 youtube，应该没什么大问题。</p>
 
 <p>现在这种用法相比曲径还是麻烦一些，主要是需要装一个客户端。知乎有一个分析曲径的<a href="http://www.zhihu.com/question/22378456">答案</a>，大概是说，在国内租一些 VPS（阿里云），然后在阿里云上运行客户端，然后本地就只需要一个 pac 配置连客户端就可以了。这样客户端的 VPS 就可以做很多其他的事情了，比如分流，防攻击等。</p>
+
+<p>为了同步 pac 的方便，确实可以采用这种方法，在 VPS 再搭一个 PAC server，所以客户端都去那里下载。</p>
 
 
 <div class="entry-social-sharing social-links"><a class="twitter-share-link" href="https://twitter.com/intent/tweet?&text=%E7%BF%BB%E5%A2%99%20DIY%20%20%20-%20http%3A%2F%2Fwantee.github.io%2F2015%2F07%2F29%2Fcross-the-gfw-by-myself%2F" title="Share on Twitter">Twitter</a><a class="facebook-share-link" href="https://www.facebook.com/sharer/sharer.php?u=http://wantee.github.io/2015/07/29/cross-the-gfw-by-myself/" title="Share on Facebook">Facebook</a><a class="g-plus-share-link" href="https://plus.google.com/share?url=http://wantee.github.io/2015/07/29/cross-the-gfw-by-myself/" title="Share on Google+">Google+</a><a class="email-share-link" href="mailto:?subject=%E7%BF%BB%E5%A2%99%20DIY%20by%20Wantee%20Wang&body=%E7%BF%BB%E5%A2%99%20DIY%20by%20Wantee%20Wang%20-%20http%3A%2F%2Fwantee.github.io%2F2015%2F07%2F29%2Fcross-the-gfw-by-myself%2F" title="Share via email">Email</a></div>
