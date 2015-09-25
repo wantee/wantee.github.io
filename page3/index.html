@@ -3,6 +3,26 @@
 <head>
 <meta charset="utf-8">
 
+<!--<link rel="stylesheet" href="http://yui.yahooapis.com/pure/0.5.0/pure-min.css">-->
+
+
+<!-- Load jQuery -->
+<script src="/lib/fancyBox-2.1.5/lib/jquery-1.10.1.min.js" type="text/javascript"></script>
+<!--<script type="text/javascript">
+    jQuery.noConflict(); // ender.js conflicts with jQuery
+</script>-->
+ 
+<!-- Load FancyBox -->
+<link rel="stylesheet" href="/lib/fancyBox-2.1.5/source/jquery.fancybox.css" />
+<script src="/lib/fancyBox-2.1.5/source/jquery.fancybox.pack.js" type="text/javascript"></script>
+ 
+<!-- Custom Scripts -->
+<script language="Javascript" type="text/javascript">
+    // ender.js gobbles jQuery's ready event: Use ender.js $ instead
+    $(document).ready(function() {
+        jQuery(".fancybox").fancybox();
+    });
+</script>
 
 <title> - page 3 | Formula Coding</title>
 
@@ -66,7 +86,78 @@
 <div class="main ">
   <div class="main-content"><div class="post-index">
   
-    <article class="entry excerpted" role="article">
+    
+      <article class="entry excerpted" role="article">
+  <header class="entry-header">
+    <h2 class="entry-title"><a href='/2015/02/08/rnnlib-connectionist-temporal-classification-and-transcription-layer/' class='article-link'>RNNLIB: Connectionist Temporal Classification and Transcription&nbsp;Layer</a></h2>
+    
+    <div class="entry-meta">
+      <a href="/2015/02/08/rnnlib-connectionist-temporal-classification-and-transcription-layer/"><time class='entry-date' datetime='2015-02-08T16:56:40+08:00'><span class='date'><span class='date-month'>Feb</span> <span class='date-day'>8</span><span class='date-suffix'>th</span>, <span class='date-year'>2015</span></span></time></a>
+      <span class="printable">
+
+
+  
+
+
+
+  <a href="/assets/printables/2015-02-08-rnnlib-connectionist-temporal-classification-and-transcription-layer.pdf"> <i class="fa fa-print"></i> </a>
+
+
+</span>
+    </div>
+  </header>
+
+  <div class="entry-content">
+<p>CTC is the core concept make it possible to transcribe unsegmented sequence data.
+RNNLIB implements it in a single layer called Transcription Layer.
+We go into this particular layer in this post, the main reference is the Graves’
+<a href="http://www6.in.tum.de/pub/Main/Publications/Graves2006a.pdf">original paper</a>.</p>
+
+</div>
+
+  <footer class='entry-footer'>
+    <a class='permalink' rel="full-article" href="/2015/02/08/rnnlib-connectionist-temporal-classification-and-transcription-layer/">Continue Reading →</a>
+  </footer>
+</article>
+    
+  
+    
+      <article class="entry excerpted" role="article">
+  <header class="entry-header">
+    <h2 class="entry-title"><a href='/2015/02/05/rnnlib-softmax-layer/' class='article-link'>RNNLIB: Softmax&nbsp;Layer</a></h2>
+    
+    <div class="entry-meta">
+      <a href="/2015/02/05/rnnlib-softmax-layer/"><time class='entry-date' datetime='2015-02-05T21:08:17+08:00'><span class='date'><span class='date-month'>Feb</span> <span class='date-day'>5</span><span class='date-suffix'>th</span>, <span class='date-year'>2015</span></span></time></a>
+      <span class="printable">
+
+
+  
+
+
+
+  <a href="/assets/printables/2015-02-05-rnnlib-softmax-layer.pdf"> <i class="fa fa-print"></i> </a>
+
+
+</span>
+    </div>
+  </header>
+
+  <div class="entry-content">
+<p>I used to think that, in order to get the proper gradient, we have to take derivative of 
+$\log$ of softmax with respect to weights. However,
+the RNNLIB shows that we can actually factorize the network into single layers. In this post, 
+we look into the Softmax Layer.</p>
+
+</div>
+
+  <footer class='entry-footer'>
+    <a class='permalink' rel="full-article" href="/2015/02/05/rnnlib-softmax-layer/">Continue Reading →</a>
+  </footer>
+</article>
+    
+  
+    
+      <article class="entry excerpted" role="article">
   <header class="entry-header">
     <h2 class="entry-title"><a href='/2015/02/05/rnnlib-introduction/' class='article-link'>RNNLIB:&nbsp;Introduction</a></h2>
     
@@ -95,6 +186,7 @@ which is written by <a href="http://www.cs.toronto.edu/~graves/">Alex Graves</a>
     <a class='permalink' rel="full-article" href="/2015/02/05/rnnlib-introduction/">Continue Reading →</a>
   </footer>
 </article>
+    
   
 </div>
 </div>

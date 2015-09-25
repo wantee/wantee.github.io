@@ -3,6 +3,26 @@
 <head>
 <meta charset="utf-8">
 
+<!--<link rel="stylesheet" href="http://yui.yahooapis.com/pure/0.5.0/pure-min.css">-->
+
+
+<!-- Load jQuery -->
+<script src="/lib/fancyBox-2.1.5/lib/jquery-1.10.1.min.js" type="text/javascript"></script>
+<!--<script type="text/javascript">
+    jQuery.noConflict(); // ender.js conflicts with jQuery
+</script>-->
+ 
+<!-- Load FancyBox -->
+<link rel="stylesheet" href="/lib/fancyBox-2.1.5/source/jquery.fancybox.css" />
+<script src="/lib/fancyBox-2.1.5/source/jquery.fancybox.pack.js" type="text/javascript"></script>
+ 
+<!-- Custom Scripts -->
+<script language="Javascript" type="text/javascript">
+    // ender.js gobbles jQuery's ready event: Use ender.js $ instead
+    $(document).ready(function() {
+        jQuery(".fancybox").fancybox();
+    });
+</script>
 
 <title>Tips for connLM Training | Formula Coding</title>
 
@@ -98,6 +118,11 @@
   <h6 class='previous-post-title'>色彩</h6>
 </a>
 
+
+<a class="next-post" href="/2015/09/25/my-pics-gel-pen/" title="Next Article: My Pics -- Gel Pen">
+  <div class='next-post-marker'>Next Article <span class='next-post-arrow'>&rarr;</span></div>
+  <h6 class='next-post-title'>My Pics -- Gel Pen</h6>
+</a>
 
 </nav>
 

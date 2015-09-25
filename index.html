@@ -3,6 +3,26 @@
 <head>
 <meta charset="utf-8">
 
+<!--<link rel="stylesheet" href="http://yui.yahooapis.com/pure/0.5.0/pure-min.css">-->
+
+
+<!-- Load jQuery -->
+<script src="/lib/fancyBox-2.1.5/lib/jquery-1.10.1.min.js" type="text/javascript"></script>
+<!--<script type="text/javascript">
+    jQuery.noConflict(); // ender.js conflicts with jQuery
+</script>-->
+ 
+<!-- Load FancyBox -->
+<link rel="stylesheet" href="/lib/fancyBox-2.1.5/source/jquery.fancybox.css" />
+<script src="/lib/fancyBox-2.1.5/source/jquery.fancybox.pack.js" type="text/javascript"></script>
+ 
+<!-- Custom Scripts -->
+<script language="Javascript" type="text/javascript">
+    // ender.js gobbles jQuery's ready event: Use ender.js $ instead
+    $(document).ready(function() {
+        jQuery(".fancybox").fancybox();
+    });
+</script>
 
 <title>Formula Coding</title>
 
@@ -66,7 +86,14 @@
 <div class="main ">
   <div class="main-content"><div class="post-index">
   
-    <article class="entry excerpted" role="article">
+    
+    
+  
+    
+    
+  
+    
+      <article class="entry excerpted" role="article">
   <header class="entry-header">
     <h2 class="entry-title"><a href='/2015/08/15/tips-for-connlm-training/' class='article-link'>Tips for connLM&nbsp;Training</a></h2>
     
@@ -93,8 +120,10 @@
     <a class='permalink' rel="full-article" href="/2015/08/15/tips-for-connlm-training/">Continue Reading →</a>
   </footer>
 </article>
+    
   
-    <article class="entry excerpted" role="article">
+    
+      <article class="entry excerpted" role="article">
   <header class="entry-header">
     <h2 class="entry-title"><a href='/2015/08/05/color/' class='article-link'>色彩</a></h2>
     
@@ -113,8 +142,10 @@
     <a class='permalink' rel="full-article" href="/2015/08/05/color/">Continue Reading →</a>
   </footer>
 </article>
+    
   
-    <article class="entry excerpted" role="article">
+    
+      <article class="entry excerpted" role="article">
   <header class="entry-header">
     <h2 class="entry-title"><a href='/2015/07/29/cross-the-gfw-by-myself/' class='article-link'>翻墙&nbsp;DIY</a></h2>
     
@@ -135,8 +166,10 @@
     <a class='permalink' rel="full-article" href="/2015/07/29/cross-the-gfw-by-myself/">Continue Reading →</a>
   </footer>
 </article>
+    
   
-    <article class="entry excerpted" role="article">
+    
+      <article class="entry excerpted" role="article">
   <header class="entry-header">
     <h2 class="entry-title"><a href='/2015/05/29/drawing/' class='article-link'>新概念素描</a></h2>
     
@@ -155,8 +188,10 @@
     <a class='permalink' rel="full-article" href="/2015/05/29/drawing/">Continue Reading →</a>
   </footer>
 </article>
+    
   
-    <article class="entry excerpted" role="article">
+    
+      <article class="entry excerpted" role="article">
   <header class="entry-header">
     <h2 class="entry-title"><a href='/2015/05/13/pseudo-random-number-sampling/' class='article-link'>Pseudo-random Number&nbsp;Sampling</a></h2>
     
@@ -185,8 +220,10 @@
     <a class='permalink' rel="full-article" href="/2015/05/13/pseudo-random-number-sampling/">Continue Reading →</a>
   </footer>
 </article>
+    
   
-    <article class="entry excerpted" role="article">
+    
+      <article class="entry excerpted" role="article">
   <header class="entry-header">
     <h2 class="entry-title"><a href='/2015/05/02/migrate-blog-to-octopress-3-0/' class='article-link'>Migrate Blog to Octopress&nbsp;3.0</a></h2>
     
@@ -206,8 +243,10 @@
     <a class='permalink' rel="full-article" href="/2015/05/02/migrate-blog-to-octopress-3-0/">Continue Reading →</a>
   </footer>
 </article>
+    
   
-    <article class="entry excerpted" role="article">
+    
+      <article class="entry excerpted" role="article">
   <header class="entry-header">
     <h2 class="entry-title"><a href='/2015/04/27/the-xor-problem/' class='article-link'>The XOR&nbsp;Problem</a></h2>
     
@@ -236,8 +275,10 @@
     <a class='permalink' rel="full-article" href="/2015/04/27/the-xor-problem/">Continue Reading →</a>
   </footer>
 </article>
+    
   
-    <article class="entry excerpted" role="article">
+    
+      <article class="entry excerpted" role="article">
   <header class="entry-header">
     <h2 class="entry-title"><a href='/2015/03/24/knowledge-embedding/' class='article-link'>Knowledge&nbsp;Embedding</a></h2>
     
@@ -266,70 +307,7 @@
     <a class='permalink' rel="full-article" href="/2015/03/24/knowledge-embedding/">Continue Reading →</a>
   </footer>
 </article>
-  
-    <article class="entry excerpted" role="article">
-  <header class="entry-header">
-    <h2 class="entry-title"><a href='/2015/03/22/discriminative-vs-generative/' class='article-link'>Discriminative vs&nbsp;Generative</a></h2>
     
-    <div class="entry-meta">
-      <a href="/2015/03/22/discriminative-vs-generative/"><time class='entry-date' datetime='2015-03-22T22:44:20+08:00'><span class='date'><span class='date-month'>Mar</span> <span class='date-day'>22</span><span class='date-suffix'>nd</span>, <span class='date-year'>2015</span></span></time></a>
-      <span class="printable">
-
-
-  
-
-
-
-  <a href="/assets/printables/2015-03-22-discriminative-vs-generative.pdf"> <i class="fa fa-print"></i> </a>
-
-
-</span>
-    </div>
-  </header>
-
-  <div class="entry-content"><p>Models in Machine Learning can often be divided into two main categories, <em>Generative</em> and <em>Discriminative</em>.
-The fundamental difference between them is:</p>
-
-<ul>
-  <li>Discriminative models learn the (hard or soft) boundary between classes</li>
-  <li>Generative models model the distribution of individual classes</li>
-</ul>
-
-</div>
-
-  <footer class='entry-footer'>
-    <a class='permalink' rel="full-article" href="/2015/03/22/discriminative-vs-generative/">Continue Reading →</a>
-  </footer>
-</article>
-  
-    <article class="entry excerpted" role="article">
-  <header class="entry-header">
-    <h2 class="entry-title"><a href='/2015/03/14/feature-extraction-for-asr-delta/' class='article-link'>Feature Extraction for ASR:&nbsp;Delta</a></h2>
-    
-    <div class="entry-meta">
-      <a href="/2015/03/14/feature-extraction-for-asr-delta/"><time class='entry-date' datetime='2015-03-14T16:57:00+08:00'><span class='date'><span class='date-month'>Mar</span> <span class='date-day'>14</span><span class='date-suffix'>th</span>, <span class='date-year'>2015</span></span></time></a>
-      <span class="printable">
-
-
-  
-
-
-
-  <a href="/assets/printables/2015-03-14-feature-extraction-for-asr-delta.pdf"> <i class="fa fa-print"></i> </a>
-
-
-</span>
-    </div>
-  </header>
-
-  <div class="entry-content"><p>In order to use the time dynamic information of speech, One can calculate the <em>Deltas</em> and <em>Delta-Deltas</em> from the original features.</p>
-
-</div>
-
-  <footer class='entry-footer'>
-    <a class='permalink' rel="full-article" href="/2015/03/14/feature-extraction-for-asr-delta/">Continue Reading →</a>
-  </footer>
-</article>
   
 </div>
 </div>
