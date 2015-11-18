@@ -33,7 +33,7 @@
 <meta name="HandheldFriendly" content="True">
 <meta name="MobileOptimized" content="320">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<link href="http://wantee.github.io/2015/02/08/rnnlib-connectionist-temporal-classification-and-transcription-layer/" rel="canonical">
+<link href="http://wantee.github.io/2015-02-08-rnnlib-connectionist-temporal-classification-and-transcription-layer.html" rel="canonical">
 <meta name='generator' content='Octopress v Jekyll v2.5.3, Octopress v3.0.12.pre.1 Octopress Ink v1.1.4'>
 
 <link href='/stylesheets/all-9e6421b570884e3becd80d540cc472be.css' media='all' rel='stylesheet' type='text/css'>
@@ -85,7 +85,7 @@
 <div class="site-main">
 <div class="main ">
   <div class="main-content">
-<article class="entry post   " role="article">
+<article class="entry page   " role="article">
   <header class="entry-header">
     
     <div class='entry-header-content'>
@@ -95,7 +95,7 @@
     </div>
   </header>
 
-  <div class="entry-meta"><a href="/2015/02/08/rnnlib-connectionist-temporal-classification-and-transcription-layer/"><time class='entry-date' datetime='2015-02-08T16:56:40+08:00'><span class='date'><span class='date-month'>Feb</span> <span class='date-day'>8</span><span class='date-suffix'>th</span>, <span class='date-year'>2015</span></span></time></a><span class="printable"><a href="/assets/printables/2015-02-08-rnnlib-connectionist-temporal-classification-and-transcription-layer.pdf"> <i class="fa fa-print"></i> </a></span><span class='entry-categories'><span class="category-links"><a class="category-link" href="/categories/neural network/">Neural network</a></span></span></div>
+  <div class="entry-meta"><a href="/2015-02-08-rnnlib-connectionist-temporal-classification-and-transcription-layer.html"><time class='entry-date' datetime='2015-02-08T16:56:40+08:00'><span class='date'><span class='date-month'>Feb</span> <span class='date-day'>8</span><span class='date-suffix'>th</span>, <span class='date-year'>2015</span></span></time></a><span class="printable"><a href="/assets/printables/.pdf"> <i class="fa fa-print"></i> </a></span></div>
 
   <div class="entry-content">
 <ul id="markdown-toc">
@@ -218,6 +218,10 @@ into output sequence(e.g. words).</p>
       <td>map from path to labelling</td>
     </tr>
     <tr>
+      <td>$\mathcal{B}’:L’^{T} \mapsto L’^{\leq T}$</td>
+      <td>map from path to labelling without removing blanks</td>
+    </tr>
+    <tr>
       <td>$\mathbf{l}_{a\mathord{:}b}$</td>
       <td>sub-sequence of $\mathbf{l}$ from $a$th to $b$th labels</td>
     </tr>
@@ -227,15 +231,15 @@ into output sequence(e.g. words).</p>
     </tr>
     <tr>
       <td>$\alpha_t(s)$</td>
-      <td>forward variable, the total probability of $\mathbf{l}_{1:s}$ at time $t$</td>
+      <td>forward variable, the total probability of $\mathbf{l}’_{1:s}$ at time $t$</td>
     </tr>
     <tr>
       <td>$\beta_t(s)$</td>
-      <td>backward variable, the total probability of $\mathbf{l}_{s:|\mathbf{l}’|}$ at time $t$</td>
+      <td>backward variable, the total probability of $\mathbf{l}’_{s:|\mathbf{l}’|}$ at time $t$</td>
     </tr>
     <tr>
       <td>$\tilde{\beta}_t(s)$</td>
-      <td>backward variable, the total probability of $\mathbf{l}_{s:|\mathbf{l}’|}$ start at time $t+1$</td>
+      <td>backward variable, the total probability of $\mathbf{l}’_{s:|\mathbf{l}’|}$ start at time $t+1$</td>
     </tr>
     <tr>
       <td>$O^{ML}(S,\mathcal{N}_{w})$</td>
@@ -282,72 +286,66 @@ p(\mathbf{l}|\mathbf{x}) = \sum_{\pi \in \mathcal{B}^{-1}(\mathbf{l})}{p(\pi|\ma
 p(\pi|\mathbf{x}) = \prod_{t=1}^{T}{y_{\pi_t}^{t}},\forall \pi \in L'^{T}
 \end{equation}</script>
 
-<p>To allow for blanks in the output paths, we first extend $\mathbf{l}$ to $\mathbf{l}’$ with blanks added to the beginning 
+<p>To calculate \eqref{eq:obj}, we first extend the labelling $\mathbf{l}$ to $\mathbf{l}’$ with blanks added to the beginning 
 and the end and inserted between every pair of labels. 
 The length of $\mathbf{l}’$ is therefore $2|\mathbf{l}| + 1$. 
 In calculating the probabilities of prefixes of $\mathbf{l}’$ we allow all transitions between blank and non-blank labels, 
-and also those between any pair of distinct non-blank labels(because of the map $\mathcal{B}$, the repeated labels will be merged).</p>
+and also those between any pair of distinct non-blank labels(because of the map $\mathcal{B}$, the repeated labels will be merged). And we need a modified version of map $\mathcal{B}$, i.e. $\mathcal{B}’$, which only merges the repeated labels but without removing the remaining blanks. e.g. $\mathcal{B}’(–a–aab-)=\mathcal{B}(-aa-abb–)=-a-ab-$.</p>
 
-<p>Then to calculate \eqref{eq:obj}, we can define the forward and backward variable,</p>
+<p>Then we can define the forward and backward variable,</p>
 
 <script type="math/tex; mode=display">\begin{equation} \label{eq:fwd}
-\alpha_t(s) = \sum_{\pi \in L'^{T}:\mathcal{B}(\pi_{1\mathord{:}t})=\mathbf{l}_{1\mathord{:}\frac{s}{2}}}
+\alpha_t(s) = \sum_{\pi \in L'^{T}:\mathcal{B}'(\pi_{1\mathord{:}t})=\mathbf{l}'_{1\mathord{:}s}}
    {\prod_{t'=1}^{t}{y^{t'}_{\pi_{t'}}}}
 \end{equation}</script>
 
 <script type="math/tex; mode=display">\begin{equation} \label{eq:bwd}
-\beta_t(s) = \sum_{\pi \in L'^{T}:\mathcal{B}(\pi_{t\mathord{:}T})=\mathbf{l}_{\frac{s}{2}\mathord{:} |\mathbf{l}|}}
+\beta_t(s) = \sum_{\pi \in L'^{T}:\mathcal{B}'(\pi_{t\mathord{:}T})=\mathbf{l}'_{s\mathord{:} |\mathbf{l}'|}}
    {\prod_{t'=t}^{T}{y^{t'}_{\pi_{t'}}}}
 \end{equation}</script>
 
-<p>where, $\frac{s}{2}$ is rounded down to an integer value. Note that the product of the forward and backward variables at a given $s$ and $t$ is the probability of all the paths corresponding to $\mathbf{l}$ that go through the symbol $\mathbf{l}’_{s}$ at time $t$, i.e.,</p>
+<p>Note that the product of the forward and backward variables at a given $s$ and $t$ is the probability of all the paths corresponding to $\mathbf{l}$ that go through the symbol $s$ at time $t$, i.e.,</p>
 
 <script type="math/tex; mode=display">\begin{equation} \label{eq:fwd_bwd_ori}
-\alpha_t(s)\beta_t(s) = \sum_{\pi \in \mathcal{B}^{-1}(\mathbf{l}):\pi_{t}=\mathbf{l}'_{s}}
+\alpha_t(s)\beta_t(s) = \sum_{\pi \in \mathcal{B}'^{-1}(\mathbf{l}'):\pi_{t}=\mathbf{l}'_{s}}
    {y^{t}_{\mathbf{l}'_{s}}\prod_{t=1}^{T}{y^{t}_{\pi_{t}}}}
 \end{equation}</script>
 
 <p>Rearranging and substituting in from \eqref{eq:path} gives,</p>
 
 <script type="math/tex; mode=display">\begin{equation} \label{eq:fwd_bwd}
-\frac{\alpha_t(s)\beta_t(s)}{y^{t}_{\mathbf{l}'_{s}}} = \sum_{\pi \in \mathcal{B}^{-1}(\mathbf{l}):\pi_{t}=\mathbf{l}'_{s}}
+\frac{\alpha_t(s)\beta_t(s)}{y^{t}_{\mathbf{l}'_{s}}} = \sum_{\pi \in \mathcal{B}'^{-1}(\mathbf{l}'):\pi_{t}=\mathbf{l}'_{s}}
    {p(\pi|\mathbf{x})}
 \end{equation}</script>
 
-<p>For any $t$, we can therefore sum over all $s$ to get $p(\mathbf{l} | \mathbf{x})$:</p>
+<p>Note that $\mathbf{l}$ is one-to-one mapped to $\mathbf{l}’$. Thus for any $t$, we can sum over all $s$ to get $p(\mathbf{l} | \mathbf{x})$:</p>
 
 <script type="math/tex; mode=display">\begin{equation} \label{eq:labelling_fwd_bwd}
-p(\mathbf{l}|\mathbf{x}) = \sum_{s=1}^{|\mathbf{l}'|}\frac{\alpha_t(s)\beta_t(s)}{y^{t}_{\mathbf{l}'_{s}}}
+p(\mathbf{l}|\mathbf{x}) = p(\mathbf{l}'|\mathbf{x}) = \sum_{s=1}^{|\mathbf{l}'|}\frac{\alpha_t(s)\beta_t(s)}{y^{t}_{\mathbf{l}'_{s}}}
+\end{equation}</script>
+
+<p>On the other hand, combining \eqref{eq:labelling} and \eqref{eq:path},</p>
+
+<script type="math/tex; mode=display">\begin{equation} \label{eq:labelling_all}
+p(\mathbf{l}|\mathbf{x}) = \sum_{\pi \in \mathcal{B}'^{-1}(\mathbf{l}')}{\prod_{t=1}^{T}{y_{\pi_t}^{t}}}
 \end{equation}</script>
 
 <p>Thus to differentiate this with respect to $y_k^t$ , 
 we need only consider those paths going through label $k$ at time $t$
 (derivatives of other paths is zero). 
-Noting that the same label (or blank) may be repeated several times for a single labelling $\mathbf{l}$, 
-we define the set of positions where label $k$ occurs as $lab(\mathbf{l},k) = \{s : \mathbf{l}’_s = k \}$, 
-which may be empty.</p>
-
-<p>Differentiating \eqref{eq:fwd_bwd}, we get,</p>
-
-<script type="math/tex; mode=display">% <![CDATA[
-\begin{equation} \label{eq:fwd_bwd_drv}
-\begin{split} 
-\frac{\partial \frac{\alpha_t(s)\beta_t(s)}{y^{t}_{\mathbf{l}'_{s}}}}{\partial y_k^t} 
-  &= \left\{\begin{array}{ll}
-            \prod_{t' \neq t}{y_{\pi_{t'}}^{t'}} = \frac{\alpha_t(s)\beta_t(s)}{ {y^{t}_k}^2} & k = \mathbf{l}'_{s} \\
-            0                                   & \text{otherwise} \\
-            \end{array}
-     \right.  
-\end{split} 
-\end{equation} %]]></script>
-
-<p>Therefore, by using notation $lab(\mathbf{l}, k)$</p>
+Noting that the same label (or blank) may be repeated several times for a single labelling $\mathbf{l}’$, 
+we define the set of positions where label $k$ occurs as $lab(\mathbf{l}’,k) = \{s : \mathbf{l}’_s = k\}$, 
+which may be empty. We then differentiate \eqref{eq:labelling_all} to get,</p>
 
 <script type="math/tex; mode=display">% <![CDATA[
 \begin{equation} \label{eq:labelling_drv}
 \begin{split} 
 \frac{\partial p(\mathbf{l}|\mathbf{x})}{\partial y_k^t} 
-  &= \sum_{s \in lab(\mathbf{l}, k)}{\frac{\alpha_t(s)\beta_t(s)}{ {y^{t}_k}^2}}  
+  &= \sum_{s \in lab(\mathbf{l}', k)}{\frac{\partial p(\pi|\mathbf{x})}{\partial y_k^t}} \\
+  &= \sum_{s \in lab(\mathbf{l}', k)}{\frac{\partial \prod_{t'=1}^{T}{y_{\pi_{t'}}^{t'}}}{\partial y_k^t}} \\
+  &= \sum_{s \in lab(\mathbf{l}', k)}{\frac{\partial y_k^t\prod_{t' \neq t}{y_{\pi_{t'}}^{t'}}}{\partial y_k^t}} \\
+  &= \sum_{s \in lab(\mathbf{l}', k)}{\prod_{t' \neq t}{y_{\pi_{t'}}^{t'}}} \\
+  &= \frac{1}{ {y^t_k}^2 } \sum_{s \in lab(\mathbf{l}', k)}{\alpha_t(s)\beta_t(s)}
 \end{split} 
 \end{equation} %]]></script>
 
@@ -355,7 +353,7 @@ which may be empty.</p>
 
 <script type="math/tex; mode=display">\begin{equation} \label{eq:grad}
 \frac{\partial O^{ML}(\{(\mathbf{x},\mathbf{z}\},\mathcal{N}_{w})}{\partial y_k^t} 
-    = - \frac{1}{p(\mathbf{z}|\mathbf{x})} \frac{1}{ {y^t_k}^2 } \sum_{s \in lab(\mathbf{l}, k)}{\alpha_t(s)\beta_t(s)}
+    = - \frac{1}{p(\mathbf{z}|\mathbf{x})} \frac{1}{ {y^t_k}^2 } \sum_{s \in lab(\mathbf{l}', k)}{\alpha_t(s)\beta_t(s)}
 \end{equation}</script>
 
 <p>where, $p(\mathbf{z}|\mathbf{x})$ can be calculated from \eqref{eq:labelling_fwd_bwd}.</p>
@@ -374,16 +372,16 @@ which may be empty.</p>
 \frac{\partial O}{\partial u_k^t} 
   &= \sum_{k'}{\frac{\partial O}{\partial y^t_{k'}}\frac{\partial y^t_{k'}}{\partial u^t_k}} \\
   &= \sum_{k'}{((y^t_{k'}\delta_{kk'} - y^t_{k'}y^t_k) (-\frac{1}{p(\mathbf{z}|\mathbf{x})} \frac{1}{ {y^t_{k'}}^2 } 
-                \sum_{s \in lab(\mathbf{l}, k')}{\alpha_t(s)\beta_t(s)}))} \\
+                \sum_{s \in lab(\mathbf{l}', k')}{\alpha_t(s)\beta_t(s)}))} \\
   &= \sum_{k'}{(\frac{1}{p(\mathbf{z}|\mathbf{x})} \frac{y^t_{k}}{ {y^t_{k'}} } 
-                \sum_{s \in lab(\mathbf{l}, k')}{\alpha_t(s)\beta_t(s)})} - \frac{1}{p(\mathbf{z}|\mathbf{x})} \frac{1}{ {y^t_k} } 
-                \sum_{s \in lab(\mathbf{l}, k)}{\alpha_t(s)\beta_t(s)}\\  
+                \sum_{s \in lab(\mathbf{l}', k')}{\alpha_t(s)\beta_t(s)})} - \frac{1}{p(\mathbf{z}|\mathbf{x})} \frac{1}{ {y^t_k} } 
+                \sum_{s \in lab(\mathbf{l}', k)}{\alpha_t(s)\beta_t(s)}\\  
   &= y^t_k - \frac{1}{p(\mathbf{z}|\mathbf{x})} \frac{1}{ {y^t_k} } 
-                \sum_{s \in lab(\mathbf{l}, k)}{\alpha_t(s)\beta_t(s)}\\                               
+                \sum_{s \in lab(\mathbf{l}', k)}{\alpha_t(s)\beta_t(s)}\\                               
 \end{split} 
 \end{equation} %]]></script>
 
-<p>we write the last step by noting that $\sum_{k’}\sum_{s \in lab(\mathbf{l}, k’)}{(\cdot)} \equiv \sum_{s=1}^{|\mathbf{l}’|}{(\cdot)}$,
+<p>we write the last step by noting that $\sum_{k’}\sum_{s \in lab(\mathbf{l}’, k’)}{(\cdot)} \equiv \sum_{s=1}^{|\mathbf{l}’|}{(\cdot)}$,
 then, using \eqref{eq:labelling_fwd_bwd}, the $p(\mathbf{z}|\mathbf{x})$ is canceled out.</p>
 
 <h3 id="the-ctc-forward-backward-algorithm">The CTC Forward-Backward Algorithm</h3>
@@ -458,7 +456,7 @@ Forward variables are got using \eqref{eq:alpha}.</p>
 Consider backward variable started from time $t+1$,</p>
 
 <script type="math/tex; mode=display">\begin{equation} \label{eq:bwd_new}
-\tilde\beta_t(s) = \sum_{\pi \in L'^{T}:\mathcal{B}(\pi_{t\mathord{:}T})=\mathbf{l}_{\frac{s}{2}\mathord{:} |\mathbf{l}|}}
+\tilde\beta_t(s) = \sum_{\pi \in L^{T}:\mathcal{B}(\pi_{t\mathord{:}T})=\mathbf{l}'_{s\mathord{:} |\mathbf{l}'|}}
    {\prod_{t'=t+1}^{T}{y^{t'}_{\pi_{t'}}}}
 \end{equation}</script>
 
@@ -491,7 +489,7 @@ Consider backward variable started from time $t+1$,</p>
 
 <script type="math/tex; mode=display">\begin{equation} \label{eq:grad_new}
 \frac{\partial O^{ML}(\{(\mathbf{x},\mathbf{z}\},\mathcal{N}_{w})}{\partial y_k^t} 
-    = - \frac{1}{p(\mathbf{z}|\mathbf{x})} \frac{1}{ y^t_k } \sum_{s \in lab(\mathbf{l}, k)}{\alpha_t(s)\tilde\beta_t(s)}
+    = - \frac{1}{p(\mathbf{z}|\mathbf{x})} \frac{1}{ y^t_k } \sum_{s \in lab(\mathbf{l}', k)}{\alpha_t(s)\tilde\beta_t(s)}
 \end{equation}</script>
 
 <p>where,</p>
@@ -640,30 +638,17 @@ then apply the above algorithm to each section individually and concatenate thes
 
 
 
-<div class="entry-social-sharing social-links"><a class="twitter-share-link" href="https://twitter.com/intent/tweet?&text=RNNLIB%3A%20Connectionist%20Temporal%20Classification%20and%20Transcription%20Layer%20%20%20-%20http%3A%2F%2Fwantee.github.io%2F2015%2F02%2F08%2Frnnlib-connectionist-temporal-classification-and-transcription-layer%2F" title="Share on Twitter">Twitter</a><a class="facebook-share-link" href="https://www.facebook.com/sharer/sharer.php?u=http://wantee.github.io/2015/02/08/rnnlib-connectionist-temporal-classification-and-transcription-layer/" title="Share on Facebook">Facebook</a><a class="g-plus-share-link" href="https://plus.google.com/share?url=http://wantee.github.io/2015/02/08/rnnlib-connectionist-temporal-classification-and-transcription-layer/" title="Share on Google+">Google+</a><a class="email-share-link" href="mailto:?subject=RNNLIB%3A%20Connectionist%20Temporal%20Classification%20and%20Transcription%20Layer%20by%20Wantee%20Wang&body=RNNLIB%3A%20Connectionist%20Temporal%20Classification%20and%20Transcription%20Layer%20by%20Wantee%20Wang%20-%20http%3A%2F%2Fwantee.github.io%2F2015%2F02%2F08%2Frnnlib-connectionist-temporal-classification-and-transcription-layer%2F" title="Share via email">Email</a></div>
+<div class="entry-social-sharing social-links"><a class="twitter-share-link" href="https://twitter.com/intent/tweet?&text=RNNLIB%3A%20Connectionist%20Temporal%20Classification%20and%20Transcription%20Layer%20%20%20-%20http%3A%2F%2Fwantee.github.io%2F2015-02-08-rnnlib-connectionist-temporal-classification-and-transcription-layer.html" title="Share on Twitter">Twitter</a><a class="facebook-share-link" href="https://www.facebook.com/sharer/sharer.php?u=http://wantee.github.io/2015-02-08-rnnlib-connectionist-temporal-classification-and-transcription-layer.html" title="Share on Facebook">Facebook</a><a class="g-plus-share-link" href="https://plus.google.com/share?url=http://wantee.github.io/2015-02-08-rnnlib-connectionist-temporal-classification-and-transcription-layer.html" title="Share on Google+">Google+</a><a class="email-share-link" href="mailto:?subject=RNNLIB%3A%20Connectionist%20Temporal%20Classification%20and%20Transcription%20Layer%20by%20Wantee%20Wang&body=RNNLIB%3A%20Connectionist%20Temporal%20Classification%20and%20Transcription%20Layer%20by%20Wantee%20Wang%20-%20http%3A%2F%2Fwantee.github.io%2F2015-02-08-rnnlib-connectionist-temporal-classification-and-transcription-layer.html" title="Share via email">Email</a></div>
 
 <div class='modified-date'> Last Modified:
 <span class='modified-date-value'>
-  Wed Jul 29 18:12:42 2015 UTC+0800
+  Wed Nov 18 10:50:38 2015 UTC+0800
 </span>
 </div>
 
-<nav role="pagination" class="post-nav">
-
-<a class="previous-post" href="/2015/02/05/rnnlib-softmax-layer/" title="Previous Article: RNNLIB: Softmax Layer">
-  <div class='previous-post-marker'><span class='previous-post-arrow'>&larr;</span> Previous Article</div>
-  <h6 class='previous-post-title'>RNNLIB: Softmax Layer</h6>
-</a>
 
 
-<a class="next-post" href="/2015/03/03/dropout-training/" title="Next Article: Dropout Training">
-  <div class='next-post-marker'>Next Article <span class='next-post-arrow'>&rarr;</span></div>
-  <h6 class='next-post-title'>Dropout Training</h6>
-</a>
-
-</nav>
-
-<div class='entry-comments'><div id="disqus_thread"></div> <script type="text/javascript"> var disqus_shortname = 'wantee'; var disqus_url = 'http://wantee.github.io/2015/02/08/rnnlib-connectionist-temporal-classification-and-transcription-layer/'; var disqus_identifier = 'http://wantee.github.io/2015/02/08/rnnlib-connectionist-temporal-classification-and-transcription-layer/'; var disqus_title = 'RNNLIB: Connectionist Temporal Classification and Transcription Layer'; (function () { var s = document.createElement('script'); s.async = true; s.type = 'text/javascript'; s.src = '//wantee.disqus.com/embed.js'; (document.getElementsByTagName('HEAD')[0] || document.getElementsByTagName('BODY')[0]).appendChild(s); }()); </script> <noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript" rel="nofollow">comments powered by Disqus.</a></noscript></div>
+<div class='entry-comments'><div id="disqus_thread"></div> <script type="text/javascript"> var disqus_shortname = 'wantee'; var disqus_url = 'http://wantee.github.io/2015-02-08-rnnlib-connectionist-temporal-classification-and-transcription-layer.html'; var disqus_identifier = 'http://wantee.github.io/2015-02-08-rnnlib-connectionist-temporal-classification-and-transcription-layer.html'; var disqus_title = 'RNNLIB: Connectionist Temporal Classification and Transcription Layer'; (function () { var s = document.createElement('script'); s.async = true; s.type = 'text/javascript'; s.src = '//wantee.disqus.com/embed.js'; (document.getElementsByTagName('HEAD')[0] || document.getElementsByTagName('BODY')[0]).appendChild(s); }()); </script> <noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript" rel="nofollow">comments powered by Disqus.</a></noscript></div>
 </div>
 
   <footer class='entry-footer' role='contentinfo'>
